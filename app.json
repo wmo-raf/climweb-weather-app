@@ -21,7 +21,11 @@
     },
     "android": {
       "package": "com.zanyengo",
-      "versionCode": 14
+      "versionCode": 14,
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -59,7 +63,11 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "bef4595e-6aaa-4349-b669-c06646b868a0"
       }
-    }
+    },
+    "owner": "robeleq"
   }
 }
