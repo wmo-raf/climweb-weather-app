@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer';
+global.Buffer = global.Buffer || Buffer;
 import { Stack } from "expo-router";
 import { store } from '@/lib/store';
 import { Provider as StoreProvider } from 'react-redux';
