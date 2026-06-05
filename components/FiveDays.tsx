@@ -35,7 +35,6 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
 
         const fiveDays = allDays.slice(startIndex, startIndex + 5)
         return <View style={{ paddingLeft: 27, paddingRight: 26, marginTop: 60, paddingBottom: 50 }}>
-            { false && <FiveDayHeader /> }
             {fiveDays.map(day =>
                 <TouchableOpacity key={day.toLocaleString()} onPress={() => props.onClick(day)}>
                     <DayRow summary={preparedForecast.atDay(day)} />
