@@ -1,2 +1,10 @@
-export { default as en } from './english.json';
-export { default as chi } from './chichewa.json';
+import enResources from './english.json';
+
+export const LANGUAGES = {
+  en: {
+    label: 'English',
+    resources: enResources,
+  },
+};
+
+export type LanguageKey = keyof typeof LANGUAGES;
