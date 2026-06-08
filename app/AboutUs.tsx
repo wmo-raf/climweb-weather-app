@@ -33,35 +33,31 @@ function AboutUsScreen(): JSX.Element {
                     <View style={styles.content}>
                       <Paragraph>
                         <Text style={styles.title}>
-                          {t('Department of Climate Change and Meteorological Services (DCCMS)')}
+                          {t('placeholder_app_title')}
                         </Text>{"\n"}
                       </Paragraph>
                       <Paragraph>
                         <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {/* {t('how.we.started.desc')} */}
-                          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.
+                          {t('placeholder_lorem_ipsum')}  
                         </Text>
                       </Paragraph>
                       <Paragraph style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {/* {t('our.mandate.desc')} */}
-                          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.
+                          {t('placeholder_lorem_ipsum')}
                         </Text>
                       </Paragraph>
                       <Paragraph style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {/* {(t('our.mission.desc'))} */}
-                          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.
+                          {t('placeholder_lorem_ipsum')}
                         </Text>
                       </Paragraph>
                       <Paragraph style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {/* {t('our.vision.desc')}{"\n"}{"\n"} */}
-                          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.
+                          {t('placeholder_lorem_ipsum')}
                         </Text>
                       </Paragraph>
                     </View>

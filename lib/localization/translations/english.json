@@ -129,5 +129,8 @@
   "Loading": "Loading",
   "Forecast unavailable": "Forecast unavailable",
   "There was an error getting the forecast": "There was an error getting the forecast",
-  "Search location": "Search location"
+  "Search location": "Search location",
+  "placeholder_lorem_ipsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
+  "placeholder_app_title": "ClimWeb Weather App",
+  "placeholder_app_description": "ClimWeb Weather App provides accurate and up-to-date weather forecasts for locations across the globe."
 }
