@@ -217,3 +217,6 @@ Before starting, ensure you have:
 Feel free to submit issues or pull requests if you find something missing or need clarification in this guide.
 
 Happy publishing! 🎉
+
+## Configuring the app
+Please go through the [CONFIGURATION.md](configuration.md) guide

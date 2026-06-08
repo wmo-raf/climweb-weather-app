@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { en, chi } from './translations';
+import { LANGUAGES } from './translations';
 
 const STORE_LANGUAGE_KEY = 'settings.lang';
 
@@ -29,14 +29,12 @@ const languageDetectorPlugin = {
         } catch (error) { }
     },
 };
-const resources = {
-    en: {
-        translation: en,
-    },
-    chi: {
-        translation: chi,
-    },
-};
+
+// Build resources object from LANGUAGES configuration
+const resources: { [key: string]: { translation: any } } = {};
+Object.entries(LANGUAGES).forEach(([key, { resources: res }]) => {
+  resources[key] = { translation: res };
+});
 
 i18n.use(initReactI18next).use(languageDetectorPlugin).init({
     resources,

@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
-import { Paragraph, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dropdown from 'react-native-input-select';
+import { useTranslation } from 'react-i18next';
 
 import Alerts from '@/components/Alerts';
 import AppBar from '@/components/AppBar';
-
 import { RootState } from '@/lib/store';
-import { useTranslation } from 'react-i18next';
+import { LANGUAGES } from '@/lib/localization/translations';
 
 const appBackground = require('@/assets/new-glass-bg.png');
 
 const SettingsScreen = () => {
   const { t, i18n } = useTranslation();
 
-  const options = [
-    { label: 'English', value: 'en' },
-    { label: 'Chichewa', value: 'chi' }
-  ];
+  const options = Object.entries(LANGUAGES).map(([key, { label }]) => ({
+    label,
+    value: key,
+  }));
 
-  const handleChangeLanguage = (lang: string) => (i18n.changeLanguage(lang), setLanguage(lang));
+  const handleChangeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setLanguage(lang);
+  };
 
-  const [language, setLanguage] = useState<string>();
+  const [, setLanguage] = useState<string>();
   const { name, lat, lon } = useSelector((state: RootState) => state.location);
 
   return (
@@ -35,11 +38,11 @@ const SettingsScreen = () => {
           <View style={styles.container}>
             <View style={styles.opacity}>
               <View style={styles.content}>
-                <Paragraph>
+                <Text variant="bodyMedium">
                   <Text style={styles.title}>
                     {t('Language')}
                   </Text>
-                </Paragraph>
+                </Text>
                 <Dropdown
                   label={t('Language')}
                   placeholder={t('select.language.placeholder')}
