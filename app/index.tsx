@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ImageBackground, StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl, useWindowDimensions } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
@@ -20,7 +20,6 @@ import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.sl
 import { getAlerts } from '@/lib/store/alert.slice';
 import { WeatherData } from '@/lib/forecast/weatherData';
 
-const appBackground = require('@/assets/new-glass-bg.png');
 
 const MainScreen = () => {
   const navigation = useNavigation();
@@ -149,7 +148,7 @@ const MainScreen = () => {
   return (
     <SafeAreaView>
       <View style={styles.wrapper}>
-        <ImageBackground style={styles.bg} source={appBackground}>
+        <View style={styles.bg}>
           <AppBar location={location} />
           <Alerts lat={lat} lon={lon} location={location} />
           <ScrollView showsVerticalScrollIndicator={false} snapToStart={false} accessible={true} accessibilityLabel='Landing page' refreshControl={
@@ -159,7 +158,7 @@ const MainScreen = () => {
               {mainContent}
             </View>
           </ScrollView>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );

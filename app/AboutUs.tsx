@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Paragraph, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -10,7 +10,6 @@ import Alerts from '@/components/Alerts';
 import { RootState } from '@/lib/store';
 import { useTranslation } from 'react-i18next';
 
-const appBackground = require('@/assets/new-glass-bg.png');
 
 function AboutUsScreen(): JSX.Element {
   const { t } = useTranslation();
@@ -19,7 +18,7 @@ function AboutUsScreen(): JSX.Element {
   return (
     <SafeAreaView>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={t("About us")} />
           <Alerts lat={lat} lon={lon} location={"About us"} />
           <View style={styles.container}>
@@ -66,7 +65,7 @@ function AboutUsScreen(): JSX.Element {
               />
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -83,19 +82,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   whiteHeader: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
     fontWeight: "600",
     fontFamily: 'OpenSans',
   },
   whiteText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     lineHeight: 22,
     fontFamily: 'OpenSans',
   },
   title: {
-    color: 'white',
+    color: 'black',
     fontSize: 22,
     lineHeight: 24,
     fontWeight: "600",

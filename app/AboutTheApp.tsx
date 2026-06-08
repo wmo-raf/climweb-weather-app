@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View, Linking, ListRenderItemInfo, Image, FlatList } from 'react-native';
+import { StyleSheet, View, Linking, ListRenderItemInfo, Image, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Paragraph, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,6 @@ import { RootState } from '@/lib/store';
 import { useTranslation } from 'react-i18next';
 
 const bulletListIcon = require('@/assets/time-period-bullet.png');
-const appBackground = require('@/assets/new-glass-bg.png');
 
 function AboutTheAppScreen(): JSX.Element {
   const { t } = useTranslation();
@@ -34,7 +33,7 @@ function AboutTheAppScreen(): JSX.Element {
   return (
     <SafeAreaView>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={t("About the app")} />
           <Alerts lat={lat} lon={lon} location={"About the app"} />
           <View style={styles.container}>
@@ -89,7 +88,7 @@ function AboutTheAppScreen(): JSX.Element {
               />
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -106,21 +105,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   whiteHeader: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     fontWeight: "bold",
     lineHeight: 24.51,
     fontFamily: 'OpenSans',
   },
   whiteText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     lineHeight: 21.79,
     fontWeight: '400',
     fontFamily: 'OpenSans',
   },
   title: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     lineHeight: 24,
     fontWeight: "bold",
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   partnerText: {
-    color: 'white',
+    color: 'black',
     fontSize: 14,
     lineHeight: 25,
     fontFamily: 'OpenSans',

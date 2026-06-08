@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useRouter, Href} from 'expo-router';
@@ -14,7 +14,6 @@ import { setLat, setLon, setName } from '@/lib/store/location.slice';
 import { SCREENS } from '@/lib/layout/constants';
 import { Forecast } from '@/lib/forecast/types';
 
-const appBackground = require('@/assets/new-glass-bg.png');
 
 const NoLocationScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +22,7 @@ const NoLocationScreen = () => {
   return (
     <SafeAreaView>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location="Zanyengo" />
           <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} snapToStart={false}>
             {
@@ -41,7 +40,7 @@ const NoLocationScreen = () => {
                 />)
             }
           </ScrollView>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
