@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Href, useNavigation } from 'expo-router';
@@ -15,7 +15,6 @@ import { setLocation } from '@/lib/store/location.slice';
 import { Place } from '@/lib/geo/places';
 import { CommonActions } from '@react-navigation/native';
 
-const appBackground = require('@/assets/new-glass-bg.png');
 
 const SearchScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,7 +25,7 @@ const SearchScreen = () => {
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={name ? name : 'Search location'} />
           <Alerts lat={lat} lon={lon} location={name} />
           <Search
@@ -44,7 +43,7 @@ const SearchScreen = () => {
               }
             }
           />
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );

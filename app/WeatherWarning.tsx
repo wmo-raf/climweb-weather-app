@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View, Image, ListRenderItemInfo, FlatList } from 'react-native';
+import { StyleSheet, View, Image, ListRenderItemInfo, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
@@ -16,7 +16,6 @@ const timePeriodBullet = require('@/assets/time-period-bullet.png');
 const urgency = require('@/assets/urgency.png');
 const severity = require('@/assets/severity.png');
 const certainity = require('@/assets/certainity.png');
-const appBackground = require('@/assets/new-glass-bg.png');
 
 function WeatherWarningScreen(): JSX.Element {
   const { location, alertID } = useLocalSearchParams<{location:string, alertID: string}>()
@@ -96,10 +95,10 @@ function WeatherWarningScreen(): JSX.Element {
   return (
     <SafeAreaView>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={location} />
           { mainContent }
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );

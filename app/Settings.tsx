@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,6 @@ import AppBar from '@/components/AppBar';
 import { RootState } from '@/lib/store';
 import { LANGUAGES } from '@/lib/localization/translations';
 
-const appBackground = require('@/assets/new-glass-bg.png');
 
 const SettingsScreen = () => {
   const { t, i18n } = useTranslation();
@@ -32,7 +31,7 @@ const SettingsScreen = () => {
   return (
     <SafeAreaView>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={t('Settings')} />
           <Alerts lat={lat} lon={lon} location={name} />
           <View style={styles.container}>
@@ -57,7 +56,7 @@ const SettingsScreen = () => {
               </View>
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
