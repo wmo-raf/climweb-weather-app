@@ -105,21 +105,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   whiteHeader: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     fontWeight: "bold",
     lineHeight: 24.51,
     fontFamily: 'OpenSans',
   },
   whiteText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     lineHeight: 21.79,
     fontWeight: '400',
     fontFamily: 'OpenSans',
   },
   title: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     lineHeight: 24,
     fontWeight: "bold",
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   partnerText: {
-    color: 'white',
+    color: 'black',
     fontSize: 14,
     lineHeight: 25,
     fontFamily: 'OpenSans',

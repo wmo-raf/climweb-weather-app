@@ -39,7 +39,7 @@ function HourlyScreen(): JSX.Element {
     )
   } else {
     mainContent = (
-      <Text style={{ color: 'white', fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
+      <Text style={{ color: 'black', fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
     )
   }
 

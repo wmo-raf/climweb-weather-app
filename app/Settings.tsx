@@ -82,19 +82,19 @@ const styles = StyleSheet.create({
     borderColor: 'white',
   },
   whiteHeader: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
     fontWeight: '600',
     fontFamily: 'OpenSans',
   },
   whiteText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     lineHeight: 22,
     fontFamily: 'OpenSans',
   },
   title: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
     lineHeight: 24,
     fontWeight: '600',
