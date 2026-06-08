@@ -33,31 +33,31 @@ function AboutUsScreen(): JSX.Element {
                     <View style={styles.content}>
                       <Paragraph>
                         <Text style={styles.title}>
-                          {t('Department of Climate Change and Meteorological Services (DCCMS)')}
+                          {t('placeholder_app_title')}
                         </Text>{"\n"}
                       </Paragraph>
                       <Paragraph>
                         <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {t('how.we.started.desc')}
+                          {t('placeholder_lorem_ipsum')}  
                         </Text>
                       </Paragraph>
                       <Paragraph style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {t('our.mandate.desc')}
+                          {t('placeholder_lorem_ipsum')}
                         </Text>
                       </Paragraph>
                       <Paragraph style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {(t('our.mission.desc'))}
+                          {t('placeholder_lorem_ipsum')}
                         </Text>
                       </Paragraph>
                       <Paragraph style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {t('our.vision.desc')}{"\n"}{"\n"}
+                          {t('placeholder_lorem_ipsum')}
                         </Text>
                       </Paragraph>
                     </View>
