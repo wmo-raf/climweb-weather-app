@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 global.Buffer = global.Buffer || Buffer;
+import * as SplashScreen from 'expo-splash-screen';
 import { Stack } from "expo-router";
 import { store } from '@/lib/store';
 import { Provider as StoreProvider } from 'react-redux';
@@ -16,6 +17,12 @@ const theme = {
     secondary: 'yellow',
   },
 };
+
+// Set the animation options. This is optional.
+SplashScreen.setOptions({
+  duration: 2000,
+  fade: true,
+});
 
 export default function RootLayout() {
   return (
