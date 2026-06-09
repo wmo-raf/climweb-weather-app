@@ -1,6 +1,6 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, Icon, Text } from 'react-native-paper';
+import React, { JSX } from 'react';
+import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Icon, Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
 
 import { useForecast } from '@/lib/hooks/current-forecast.hook';
@@ -58,7 +58,7 @@ function LocationRow(props: LocationRowProps): JSX.Element {
         <View style={styles.opacity}>
           <View style={styles.left}>
             <View>
-              <ActivityIndicator animating={true} color={'white'} size={34} />
+              <ActivityIndicator animating={true} color={'white'} size='large' />
             </View>
           </View>
         </View>
