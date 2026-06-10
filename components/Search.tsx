@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, Dialog, Paragraph, Portal, Button, Text } from 'react-native-paper';
+import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Dialog, Paragraph, Portal, Button, Text } from 'react-native-paper';
 import { isNil } from 'lodash';
 import { Icon } from 'react-native-paper';
 
@@ -101,7 +101,7 @@ const GPSFeedback = ({ status }: GPSFeedbackProps) => {
   if (status === "SEARCHING") {
     return (
       <View style={styles.loader}>
-        <ActivityIndicator animating={true} color={'white'} size={34} />
+        <ActivityIndicator animating={true} color={'white'} size='large' />
       </View>
     )
   }
