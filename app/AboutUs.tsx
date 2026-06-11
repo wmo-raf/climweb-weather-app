@@ -1,7 +1,7 @@
 import React, { JSX } from 'react';
 import { ImageBackground, StyleSheet, View, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Paragraph, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 import AppBar from '@/components/AppBar';
@@ -31,35 +31,35 @@ function AboutUsScreen(): JSX.Element {
                 renderItem={() => (
                   <>
                     <View style={styles.content}>
-                      <Paragraph>
+                      <Text variant="bodyMedium">
                         <Text style={styles.title}>
                           {t('placeholder_app_title')}
                         </Text>{"\n"}
-                      </Paragraph>
-                      <Paragraph>
+                      </Text>
+                      <Text variant="bodyMedium">
                         <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           {t('placeholder_lorem_ipsum')}  
                         </Text>
-                      </Paragraph>
-                      <Paragraph style={{ marginTop: 40 }}>
+                      </Text>
+                      <Text variant="bodyMedium" style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           {t('placeholder_lorem_ipsum')}
                         </Text>
-                      </Paragraph>
-                      <Paragraph style={{ marginTop: 40 }}>
+                      </Text>
+                      <Text variant="bodyMedium" style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           {t('placeholder_lorem_ipsum')}
                         </Text>
-                      </Paragraph>
-                      <Paragraph style={{ marginTop: 40 }}>
+                      </Text>
+                      <Text variant="bodyMedium" style={{ marginTop: 40 }}>
                         <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           {t('placeholder_lorem_ipsum')}
                         </Text>
-                      </Paragraph>
+                      </Text>
                     </View>
                   </>
                 )}

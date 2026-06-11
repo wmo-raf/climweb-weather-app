@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { Dialog, Paragraph, Portal, Button, Text } from 'react-native-paper';
+import { Dialog, Portal, Button, Text } from 'react-native-paper';
 import { isNil } from 'lodash';
 import { Icon } from 'react-native-paper';
 
@@ -81,7 +81,7 @@ export const Search = ({ setLocation }: SearchProps) => {
         <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialogStyle}>
           <Dialog.Title style={styles.whiteText}>Alert</Dialog.Title>
           <Dialog.Content>
-            <Paragraph style={styles.whiteText}>Not able to use your location to find the closest place.</Paragraph>
+            <Text variant="bodyMedium" style={styles.whiteText}>Not able to use your location to find the closest place.</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={hideDialog}><Text style={styles.whiteText}>Dismiss</Text></Button>
