@@ -10,7 +10,7 @@ import AppBar from '@/components/AppBar';
 import WeatherAlert from '@/components/WeatherAlert';
 
 import { RootState } from '@/lib/store';
-import { CAPAlert } from '@/lib/alerts/alert';
+import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
 
 const timePeriodBullet = require('@/assets/time-period-bullet.png');
 const urgency = require('@/assets/urgency.png');

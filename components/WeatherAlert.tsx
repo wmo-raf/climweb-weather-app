@@ -3,8 +3,8 @@ import { Image, ImageSourcePropType, StyleProp, StyleSheet, TouchableOpacity, Vi
 import { Text } from "react-native-paper";
 import { DateTime } from "luxon";
 
-import { CAPAlert, alertLevel } from '@/lib/alerts/alert';
-import { WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/icons";
+import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
+import { WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
 
 const warningBg = require('@/assets/warning-bg.png')
 

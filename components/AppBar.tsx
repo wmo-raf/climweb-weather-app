@@ -6,9 +6,9 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { useNavigation, useRouter, Href, usePathname } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
-import { WEATHER_WARNING_ICONS } from '@/lib/alerts/icons';
+import { WEATHER_WARNING_ICONS } from '@/lib/alerts/providers/cap-alerts/icons';
 import { RootState } from '@/lib/store';
-import { CAPAlert, CAPInfo, alertInLocation, alertLevel } from '@/lib/alerts/alert';
+import { CAPAlert, CAPInfo, alertInLocation, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useTranslation } from 'react-i18next';
 import { ParamListBase, RouteProp } from 'expo-router/react-navigation';
 
