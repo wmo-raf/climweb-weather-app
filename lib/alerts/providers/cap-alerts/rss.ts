@@ -104,9 +104,6 @@ function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]>
       let ret: CAPReference[] = [];
 
       for (const item of result.rss.channel[0].item) {
-        if (ret.length > 3) {
-          break;
-        }
         ret.push({
           title: item.title[0],
           link: item.link[0],
