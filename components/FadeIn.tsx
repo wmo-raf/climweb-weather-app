@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, JSX } from 'react';
 import { Animated } from 'react-native';
 import type { PropsWithChildren } from 'react';
 import type { ViewStyle } from 'react-native';
