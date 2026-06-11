@@ -2,7 +2,7 @@ import React from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useNavigation } from 'expo-router';
+import { useNavigation } from 'expo-router';
 
 import { Search } from '@/components/Search';
 import Alerts from '@/components/Alerts';
@@ -18,7 +18,6 @@ const appBackground = require('@/assets/new-glass-bg.png');
 const SearchScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { name, lat, lon } = useSelector((state: RootState) => state.location);
-  const router = useRouter();
   const navigation = useNavigation();
 
   return (

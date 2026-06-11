@@ -19,7 +19,6 @@ import { SCREENS } from '@/lib/layout/constants';
 import { resetError, getPreciseLocation } from '@/lib/store/location.slice';
 import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
 import { getAlerts } from '@/lib/store/alert.slice';
-import { WeatherData } from '@/lib/forecast/weatherData';
 
 const appBackground = require('@/assets/new-glass-bg.png');
 
@@ -63,7 +62,6 @@ const MainScreen = () => {
   }, []);
 
   // Update forecast and alerts each time lat/lon changes.
-  // Also update timer for refreshing forecast specified lat/lon regularly.
   useEffect(() => {
     if (!isUndefined(lat) && !isUndefined(lon)) {
       dispatch(getLocationForecast({ lat, lon }));
@@ -103,8 +101,8 @@ const MainScreen = () => {
   }
 
   if (forecast) {
-    const preparedForecast = new WeatherData(forecast)
-    const today = DateTime.now()
+    const today = DateTime.now();
+    const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
 
     const onSelectToday = () =>
       router.push({
@@ -129,9 +127,9 @@ const MainScreen = () => {
     mainContent = (
       <View style={styles.opacity}>
         <TouchableOpacity onPress={onSelectToday}>
-          <Today daySummary={preparedForecast.atDay(today)} />
+          <Today daySummary={todaySummary} />
         </TouchableOpacity>
-        <FiveDays name={location} startDate={today.plus({ days: 1 })} preparedForecast={preparedForecast} onClick={onSelectDay(location)} />
+        <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay(location)} />
       </View>
     )
   }

@@ -7,15 +7,16 @@ import {
   CircuitState,
 } from 'cockatiel';
 
-import { Forecast } from './types'
-import { PRIMARY_API_URL, FALLBACK_API_URL, APP_USER_AGENT } from '../../config';
+import { YrForecast } from '../types'
+import { PRIMARY_API_URL, FALLBACK_API_URL, APP_USER_AGENT } from '../../../config';
+import { LocationForecastInterface } from '../interfaces';
 
 /**
  * Download a weather forecast from api.met.no/weatherapi/locationforecast or a similar service.
  *
  * Ensures that a uses agent is set on each request.
  */
-export class Forecaster {
+export class YrLocationForecastProvider implements LocationForecastInterface<YrForecast> {
   private readonly userAgent: string = APP_USER_AGENT;
   private readonly apiUrl: string = PRIMARY_API_URL;
   private readonly fallbackApiUrl: string = FALLBACK_API_URL;
@@ -61,12 +62,12 @@ export class Forecaster {
     return url;
   }
 
-  async getForecast(lat: number, lon: number, alt?: number): Promise<Forecast> {
+  async getForecast(lat: number, lon: number, alt?: number): Promise<YrForecast> {
     try {
       console.log(`Querying primary API for forecast over ${lat},${lon} with breaker in state ${this.breakerPolicy.state}...`);
       const url = this.buildUrl(this.apiUrl, lat, lon, alt);
 
-      const { data } = await this.breakerPolicy.execute(() => Axios.get<Forecast>(url, this.config));
+      const { data } = await this.breakerPolicy.execute(() => Axios.get<YrForecast>(url, this.config));
       console.log('✅ Successfully got data from primary API.');
       return data;
     } catch (error) {
@@ -76,7 +77,7 @@ export class Forecaster {
       if (this.breakerPolicy.state === CircuitState.Open) {
         console.warn('🚨 Breaker is OPEN. Using fallback API.');
         const fallback = this.buildUrl(this.fallbackApiUrl, lat, lon, alt);
-        const { data } = await Axios.get<Forecast>(fallback, this.config);
+        const { data } = await Axios.get<YrForecast>(fallback, this.config);
         return data;
       }
 

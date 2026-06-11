@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react';
 import Axios from 'axios';
 
-import { Forecast } from '@/lib/forecast/types';
-import { Forecaster } from '@/lib/forecast/locationforecast';
+import { ForecastRecord } from '@/lib/forecast/types';
+import { createForecastProvider } from '@/lib/forecast/providers';
 
 type ReturnType = [
   loading: boolean,
-  forecast?: Forecast,
+  forecast?: ForecastRecord,
   error?: Error,
 ];
 
 export function useForecast(latitude: number, longitude: number): ReturnType {
-  const [forecast, setForecast] = useState<Forecast>();
+  const [forecast, setForecast] = useState<ForecastRecord>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
     const fetchData = async () => {
-      const forecaster = new Forecaster();
+      const provider = createForecastProvider();
       try {
+        setForecast(await provider.getForecast(latitude, longitude));
         setLoading(false);
-        setForecast(await forecaster.getForecast(latitude, longitude));
       } catch (error) {
         setLoading(false);
         if (Axios.isAxiosError(error)) {

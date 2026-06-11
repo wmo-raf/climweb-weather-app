@@ -1,13 +1,14 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
+import { DateTime } from "luxon";
 
 import weatherIcons from "@/lib/forecast/weathericons.constant";
-import { WeatherDataDaySummary } from "@/lib/forecast/weatherData";
+import { ForecastDayRecord } from "@/lib/forecast/types";
 import { useTranslation } from "react-i18next";
 
 type DayRowProps = {
-  summary: WeatherDataDaySummary | undefined;
+  summary: ForecastDayRecord | undefined;
 };
 const DayRow = (props: DayRowProps) => {
   const { t } = useTranslation();
@@ -30,13 +31,14 @@ const DayRow = (props: DayRowProps) => {
   const windSpeed = summary.windSpeed || 0;
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
+  const dayLabel = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
 
   return (
     <View style={styles.dayRow}>
       <View style={styles.opacity}>
         <View style={{ flex: 1 }}>
           <Text variant="bodyMedium" style={{ flex: 1 }}>
-            <Text style={styles.dayName}>{t(summary.day.toLocaleString({ weekday: "short" }))}</Text>
+            <Text style={styles.dayName}>{t(dayLabel)}</Text>
           </Text>
         </View>
         <View style={{ flex: 1, flexDirection: 'row', marginTop: 2 }}>
@@ -49,7 +51,7 @@ const DayRow = (props: DayRowProps) => {
           <View style={{ flex: 2, flexDirection: 'column' }}>
             <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Km/h")}{"\n"}<Text style={styles.whiteParameters}>{Math.round(windSpeed)}</Text></Text>
           </View>
-          <View style={{ flex: 2, margin: 0, padding: 0 }} accessible={true} accessibilityLabel={`Weather symbol on ${summary.day.toLocaleString({ weekday: "short" })} is ${icon?.split('_').join(' ')}.`}>
+          <View style={{ flex: 2, margin: 0, padding: 0 }} accessible={true} accessibilityLabel={`Weather symbol on ${dayLabel} is ${icon?.split('_').join(' ')}.`}>
             {iconSource && <Icon source={iconSource} size={55} />}
           </View>
         </View>

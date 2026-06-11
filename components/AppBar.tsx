@@ -10,6 +10,7 @@ import { WEATHER_WARNING_ICONS } from '@/lib/alerts/icons';
 import { RootState } from '@/lib/store';
 import { CAPAlert, CAPInfo, alertInLocation, alertLevel } from '@/lib/alerts/alert';
 import { useTranslation } from 'react-i18next';
+import { ParamListBase, RouteProp } from 'expo-router/react-navigation';
 
 const backArrow = require('@/assets/icons8-back-100_2.png');
 

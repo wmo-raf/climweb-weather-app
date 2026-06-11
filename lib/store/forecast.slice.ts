@@ -1,21 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Axios from 'axios';
 
-import { Forecast } from '@/lib/forecast/types';
-import { Forecaster } from '@/lib/forecast/locationforecast';
+import { ForecastRecord } from '@/lib/forecast/types';
+import { createForecastProvider } from '@/lib/forecast/providers';
 
-const forecaster = new Forecaster();
+const forecastProvider = createForecastProvider();
 
 type ForecastPayload = { lat: number, lon: number };
-export const getLocationForecast = createAsyncThunk('forecast/getLocationForecast', async ({ lat, lon }: ForecastPayload): Promise<Forecast> => {
+export const getLocationForecast = createAsyncThunk('forecast/getLocationForecast', async ({ lat, lon }: ForecastPayload): Promise<ForecastRecord> => {
   console.log('[Thunk] getLocationForecast DISPATCHED with', { lat, lon });
-  return await forecaster.getForecast(lat, lon);
+  return await forecastProvider.getForecast(lat, lon);
 });
 
 type InitialState = {
   loading: boolean;
   error?: string;
-  forecast?: Forecast;
+  forecast?: ForecastRecord;
 };
 const initialState: InitialState = {
   loading: false,
@@ -49,10 +49,8 @@ const forecastSlice = createSlice({
       state.loading = false;
       let err = ""
       if (Axios.isAxiosError(action.error)) {
-        // Handle Axios-specific errors
         err = action.error.response?.data || action.error.message;
-      } else if(action.error.message){
-        // Handle other types of errors
+      } else if (action.error.message) {
         err = action.error.message;
       }
       console.error('Loading forecast rejected: ' + err);

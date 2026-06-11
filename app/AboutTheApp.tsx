@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { ImageBackground, StyleSheet, View, Linking, ListRenderItemInfo, Image, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Paragraph, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 import AppBar from '@/components/AppBar';
@@ -46,14 +46,14 @@ function AboutTheAppScreen(): JSX.Element {
                 renderItem={() => (
                   <>
                     <View style={styles.content}>
-                      <Paragraph>
+                      <Text variant="bodyMedium">
                         <Text style={styles.title}>{t('app.and.forecasts')}</Text>
-                      </Paragraph>
-                      <Paragraph>
+                      </Text>
+                      <Text variant="bodyMedium">
                         <Text style={styles.whiteText}>
                           {t('app.and.forecasts.desc')}
                         </Text>
-                      </Paragraph>
+                      </Text>
                       <View>
                         <View>
                           <Text style={styles.whiteHeader}>
@@ -62,7 +62,7 @@ function AboutTheAppScreen(): JSX.Element {
                           <FlatList data={getPartners()} renderItem={(item: ListRenderItemInfo<string>) => renderPartner(item)} key={new Date().toISOString()} />
                         </View>
                       </View>
-                      <Paragraph>
+                      <Text variant="bodyMedium">
                         <Text style={styles.whiteHeader}>{"\n"}{t('Icons')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           <Text style={styles.whiteText}>
@@ -70,19 +70,19 @@ function AboutTheAppScreen(): JSX.Element {
                           </Text>{"\n"}{"\n"}
                           {t('warning.icons.disclaimer')}
                         </Text>
-                      </Paragraph>
-                      <Paragraph>
+                      </Text>
+                      <Text variant="bodyMedium">
                         <Text style={styles.whiteHeader}>{"\n"}{t('Geographical Data')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.
                         </Text>
-                      </Paragraph>
-                      <Paragraph>
+                      </Text>
+                      <Text variant="bodyMedium">
                         <Text style={styles.whiteHeader}>{"\n"}{t('Background photo')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
                           {t('background.photo.disclaimer')}{"\n"}{"\n"}{"\n"}
                         </Text>
-                      </Paragraph>
+                      </Text>
                     </View>
                   </>
                 )}

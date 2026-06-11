@@ -10,38 +10,42 @@ import HourlyTable from '@/components/HourlyTable';
 import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
-import { WeatherData, WeatherDataDaySummary } from '@/lib/forecast/weatherData';
+import { ForecastDayRecord } from '@/lib/forecast/types';
 
 const appBackground = require('@/assets/new-glass-bg.png');
 
 function HourlyScreen(): JSX.Element {
-  const { location: location_name, dayString, startAtCurrentTime, title } = 
+  const { location: location_name, dayString, startAtCurrentTime, title } =
           useLocalSearchParams<{location: string, dayString: string, startAtCurrentTime: string, title: string}>()
 
   const { name: store_location_name, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
   const { forecast } = useSelector((state: RootState) => state.forecast, shallowEqual);
 
-  let daySummary:WeatherDataDaySummary| undefined = undefined
-  // Make sure the stored forecast is for the same location as specified through params. This should always be the case.
-  if (forecast && dayString &&
-    location_name === store_location_name){
-    const day = DateTime.fromISO(dayString)
-    daySummary = new WeatherData(forecast).atDay(day, startAtCurrentTime === "yes"? true: false)
+  let daySummary: ForecastDayRecord | undefined = undefined;
+  if (forecast && dayString && location_name === store_location_name) {
+    const day = DateTime.fromISO(dayString);
+    const dayRecord = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(day, "day"));
+
+    if (dayRecord) {
+      if (startAtCurrentTime === "yes") {
+        const nowISO = DateTime.now().toISO()!;
+        daySummary = { ...dayRecord, steps: dayRecord.steps.filter(s => s.time > nowISO) };
+      } else {
+        daySummary = dayRecord;
+      }
+    }
   }
 
-  // empty page as default content
-  let mainContent: React.JSX.Element = (
-    <View style={styles.wrapper}>
-    </View>
-  )
-  if (daySummary){
+  let mainContent: React.JSX.Element = <View style={styles.wrapper} />;
+
+  if (daySummary) {
     mainContent = (
-      <HourlyTable daySummary={daySummary} day={daySummary.day} title={title} />
-    )
+      <HourlyTable daySummary={daySummary} day={DateTime.fromISO(daySummary.day)} title={title} />
+    );
   } else {
     mainContent = (
       <Text style={{ color: 'white', fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
-    )
+    );
   }
 
   return (
