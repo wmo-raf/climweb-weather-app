@@ -4,22 +4,23 @@ import { Text } from 'react-native-paper';
 import { DateTime } from "luxon";
 
 import DayRow from './DayRow';
-import { WeatherData } from '@/lib/forecast/weatherData';
+import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 
 type FiveDaysProps = {
     startDate: DateTime;
-    preparedForecast?: WeatherData;
+    forecast?: ForecastRecord;
     name: string;
     onClick: (day: DateTime) => void;
 }
 function FiveDays(props: FiveDaysProps): JSX.Element {
     const { t } = useTranslation();
-    const { startDate, preparedForecast } = props
+    const { startDate, forecast } = props
 
-    if (preparedForecast) {
-        const allDays = preparedForecast.days()
-        const startIndex = allDays.findIndex(day => startDate.hasSame(day, "day"))
+    if (forecast) {
+        const startIndex = forecast.days.findIndex(
+            d => DateTime.fromISO(d.day).hasSame(startDate, "day")
+        );
 
         if (startIndex == -1) {
             return (
@@ -31,11 +32,11 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
             );
         }
 
-        const fiveDays = allDays.slice(startIndex, startIndex + 5)
+        const fiveDays = forecast.days.slice(startIndex, startIndex + 5);
         return <View style={styles.fiveDaysWrapper}>
-            {fiveDays.map(day =>
-                <TouchableOpacity key={day.toLocaleString()} onPress={() => props.onClick(day)}>
-                    <DayRow summary={preparedForecast.atDay(day)} />
+            {fiveDays.map(d =>
+                <TouchableOpacity key={d.day} onPress={() => props.onClick(DateTime.fromISO(d.day))}>
+                    <DayRow summary={d} />
                 </TouchableOpacity>
             )}
         </View>

@@ -6,14 +6,13 @@ import { DateTime } from 'luxon';
 import { useForecast } from '@/lib/hooks/current-forecast.hook';
 import { District } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
-import { WeatherData } from '@/lib/forecast/weatherData';
-import { Forecast } from '@/lib/forecast/types';
+import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 
 
 type LocationRowProps = {
   district: District;
-  onPress: (forecast: Forecast) => void
+  onPress: (forecast: ForecastRecord) => void
 };
 function LocationRow(props: LocationRowProps): JSX.Element {
   const { t } = useTranslation();
@@ -26,7 +25,7 @@ function LocationRow(props: LocationRowProps): JSX.Element {
   }
 
   if (forecast) {
-    const today = new WeatherData(forecast).atDay(DateTime.now())
+    const today = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(DateTime.now(), "day"));
     if (!today) {
       return <ForecastError msg={t('Forecast unavailable.')} />
     }

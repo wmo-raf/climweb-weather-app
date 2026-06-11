@@ -1,21 +1,18 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { DataTable, Icon } from 'react-native-paper';
 import { DateTime } from "luxon";
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
-import { WeatherDataDaySummary } from '@/lib/forecast/weatherData';
+import { ForecastDayRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 
 type HourlyTableProps = {
   title: string;
-  daySummary: WeatherDataDaySummary;
+  daySummary: ForecastDayRecord;
   day: DateTime;
 };
 
-/**
- * Get today's forecast
- */
 function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
 
@@ -36,15 +33,18 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
             <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Wind')}{"\n"}km/h</Text></DataTable.Title>
           </DataTable.Header>
           <ScrollView snapToStart={false} showsVerticalScrollIndicator={false}>
-            {props.daySummary.steps.map((step) => (
-              <DataTable.Row key={step.time.toISO()}>
-                <DataTable.Cell><Text style={styles.whiteText}>{step.time.toLocaleString({ hour: '2-digit' })}</Text></DataTable.Cell>
-                <DataTable.Cell accessible={true} accessibilityLabel={`Weather symbol on ${props.day.toFormat('dd LLL')} at ${step.time.toLocaleString({ hour: '2-digit' })} is ${step.weatherSymbol().split('_').join(' ')}.`}><Icon source={weatherIcons[step.weatherSymbol()]} size={34} /></DataTable.Cell>
-                <DataTable.Cell numeric><Text style={styles.whiteText}>{step.temperature ? Math.round(step.temperature) : ""}&deg;</Text></DataTable.Cell>
-                <DataTable.Cell numeric><Text style={styles.whiteText}>{step.precipitation()}</Text></DataTable.Cell>
-                <DataTable.Cell numeric><Text style={styles.whiteText}>{Math.round(step.windSpeed || 0)}</Text></DataTable.Cell>
-              </DataTable.Row>
-            ))}
+            {props.daySummary.steps.map((step) => {
+              const stepTime = DateTime.fromISO(step.time);
+              return (
+                <DataTable.Row key={step.time}>
+                  <DataTable.Cell><Text style={styles.whiteText}>{stepTime.toLocaleString({ hour: '2-digit' })}</Text></DataTable.Cell>
+                  <DataTable.Cell accessible={true} accessibilityLabel={`Weather symbol on ${props.day.toFormat('dd LLL')} at ${stepTime.toLocaleString({ hour: '2-digit' })} is ${step.weatherSymbol.split('_').join(' ')}.`}><Icon source={weatherIcons[step.weatherSymbol]} size={34} /></DataTable.Cell>
+                  <DataTable.Cell numeric><Text style={styles.whiteText}>{step.temperature ? Math.round(step.temperature) : ""}&deg;</Text></DataTable.Cell>
+                  <DataTable.Cell numeric><Text style={styles.whiteText}>{step.precipitation}</Text></DataTable.Cell>
+                  <DataTable.Cell numeric><Text style={styles.whiteText}>{Math.round(step.windSpeed || 0)}</Text></DataTable.Cell>
+                </DataTable.Row>
+              );
+            })}
           </ScrollView>
         </DataTable>
       </View>

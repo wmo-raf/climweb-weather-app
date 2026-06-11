@@ -2,15 +2,14 @@ import React, { JSX } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 
-import { WeatherDataDaySummary } from '@/lib/forecast/weatherData';
+import { ForecastDayRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 
-const forwardArrow = require('@/assets/icons8-forward-100.png');
 const upArrow = require('@/assets/Arrow-upward.png');
 const downArrow = require('@/assets/Arrow-downward.png');
 
 type TodaysForecastProps = {
-  daySummary: WeatherDataDaySummary | undefined;
+  daySummary: ForecastDayRecord | undefined;
 };
 function Today(props: TodaysForecastProps): JSX.Element {
   const { t } = useTranslation();

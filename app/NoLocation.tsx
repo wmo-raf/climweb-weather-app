@@ -12,7 +12,7 @@ import { AppDispatch } from '@/lib/store';
 import { setForecast } from '@/lib/store/forecast.slice';
 import { setLat, setLon, setName } from '@/lib/store/location.slice';
 import { SCREENS } from '@/lib/layout/constants';
-import { Forecast } from '@/lib/forecast/types';
+import { ForecastRecord } from '@/lib/forecast/types';
 
 const appBackground = require('@/assets/new-glass-bg.png');
 
@@ -31,7 +31,7 @@ const NoLocationScreen = () => {
                 <LocationRow
                   key={idx}
                   district={district}
-                  onPress={(forecast: Forecast): void => {
+                  onPress={(forecast: ForecastRecord): void => {
                     dispatch(setForecast(forecast))
                     dispatch(setName(district.name));
                     dispatch(setLat(district.lat));
