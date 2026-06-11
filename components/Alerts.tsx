@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { shallowEqual, useSelector } from "react-redux";
 
 import { RootState } from "@/lib/store";
-import { CAPAlert, alertInLocation } from "@/lib/alerts/alert";
+import { CAPAlert, alertInLocation } from "@/lib/alerts/providers/cap-alerts/alert";
 import WeatherAlert from "./WeatherAlert";
 import { FadeIn } from "./FadeIn";
 

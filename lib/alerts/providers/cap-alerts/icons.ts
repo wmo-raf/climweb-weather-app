@@ -4,10 +4,6 @@ const warningRed = require('@/assets/warning-red.png');
 const warningOrange = require('@/assets/warning-orange.png');
 const warningYellow = require('@/assets/warning-yellow.png');
 
-// import warningRed from "@/assets/warning-red.png";
-// import warningOrange from '../../assets/warning-orange.png';
-// import warningYellow from '../../assets/warning-yellow.png';
-
 export const WEATHER_WARNING_ICONS: { [k: string]: ImageSourcePropType } = {
   red: warningRed,
   orange: warningOrange,

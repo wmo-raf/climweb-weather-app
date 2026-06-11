@@ -293,3 +293,121 @@ For a new deployment:
 
 The screens, components, and Redux store do not need to change regardless of which provider is used.
 
+---
+
+## Alerts Source Configuration
+
+Climweb Weather App supports configurable alert sources through environment variables and a provider interface. There are two deployment paths:
+
+1. **CAP-standard RSS feed** — the source publishes alerts as a CAP RSS feed. Only the URL needs to change.
+2. **Custom source** — the source uses a different format. A custom provider is implemented, registered in the factory, and selected via an environment variable.
+
+The rest of the app — screens, components, and the Redux store — is not aware of which provider is active.
+
+---
+
+### 1. Using a CAP-standard alerts feed
+
+If the alerts source publishes a CAP RSS feed (each item linking to a CAP XML document), only the URL and supporting environment variables need to be configured. No code changes are required.
+
+#### Required environment variables
+
+```env
+EXPO_PUBLIC_PRIMARY_ALERTS_URL=https://example.com/alerts/rss.xml
+EXPO_PUBLIC_FALLBACK_ALERTS_URL=https://fallback.example.com/alerts/rss.xml
+EXPO_PUBLIC_APP_ALERTS_SENDER_ID=alerts@example.com
+```
+
+`EXPO_PUBLIC_ALERTS_PROVIDER` can be omitted or explicitly set to `cap`, which is the default.
+
+#### Sender ID filtering
+
+Active alerts are filtered to only those where `alert.sender` matches `EXPO_PUBLIC_APP_ALERTS_SENDER_ID`. Set this to the sender address used in the CAP messages for the deployment region:
+
+```env
+EXPO_PUBLIC_APP_ALERTS_SENDER_ID=forecasts@meteo.go.ke
+```
+
+#### Primary and fallback feed URLs
+
+The app uses the primary URL first. A circuit breaker opens after repeated failures and routes requests to the fallback URL until the primary recovers.
+
+---
+
+### 2. Using a different alerts source
+
+If the alerts source does not publish a CAP RSS feed, a custom provider must be implemented. The custom provider is responsible for fetching alerts and converting them into `CAPAlert[]`.
+
+#### The provider interface
+
+All alerts providers — built-in and custom — implement the same interface, defined in [lib/alerts/interfaces/alerts-provider.interface.ts](lib/alerts/interfaces/alerts-provider.interface.ts):
+
+```ts
+export interface AlertsProviderInterface {
+  getAlerts(): Promise<CAPAlert[]>;
+}
+```
+
+`CAPAlert` is the app's internal alert representation. Its structure is defined in [lib/alerts/alert.ts](lib/alerts/alert.ts) and follows the CAP (Common Alerting Protocol) schema. The custom provider must fetch data from its source and return a fully populated `CAPAlert[]`.
+
+#### Example custom provider
+
+```ts
+import { AlertsProviderInterface } from '@/lib/alerts/interfaces';
+import { CAPAlert } from '@/lib/alerts/alert';
+
+export class CustomAlertsProvider implements AlertsProviderInterface {
+  async getAlerts(): Promise<CAPAlert[]> {
+    // 1. Fetch data from the custom source
+    // 2. Convert to CAPAlert[]
+    // 3. Return the result
+  }
+}
+```
+
+#### Registering the custom provider
+
+Open [lib/alerts/providers/factory.ts](lib/alerts/providers/factory.ts) and add a case for the new provider:
+
+```ts
+import { CustomAlertsProvider } from './custom-alerts.provider';
+
+export function createAlertsProvider(): AlertsProviderInterface {
+  switch (ALERTS_PROVIDER) {
+    case "my-provider": return new CustomAlertsProvider();
+    case "cap":
+    default:            return new CAPAlertsProvider();
+  }
+}
+```
+
+Then set the provider key in the environment:
+
+```env
+EXPO_PUBLIC_ALERTS_PROVIDER=my-provider
+```
+
+---
+
+### 3. Quick reference
+
+```txt
+CAP-standard feed  →  set EXPO_PUBLIC_PRIMARY_ALERTS_URL (and optionally FALLBACK),
+                      set EXPO_PUBLIC_APP_ALERTS_SENDER_ID
+Different source   →  implement AlertsProviderInterface, register in factory.ts,
+                      set EXPO_PUBLIC_ALERTS_PROVIDER
+```
+
+---
+
+### 4. Recommended setup flow
+
+For a new deployment:
+
+1. Confirm whether the alerts source publishes a CAP RSS feed.
+2. If it does, set `EXPO_PUBLIC_PRIMARY_ALERTS_URL`, `EXPO_PUBLIC_FALLBACK_ALERTS_URL`, and `EXPO_PUBLIC_APP_ALERTS_SENDER_ID`. Leave `EXPO_PUBLIC_ALERTS_PROVIDER` unset or set it to `cap`.
+3. Test alert loading and verify that relevant alerts appear for locations within the deployment region.
+4. If the source uses a different format, implement `AlertsProviderInterface`, register the provider in `factory.ts`, and set `EXPO_PUBLIC_ALERTS_PROVIDER` to the registered key.
+
+The screens, components, and Redux store do not need to change regardless of which provider is used.
+

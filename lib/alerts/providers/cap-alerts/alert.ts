@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { parseString } from 'xml2js';
-import { Feature, Polygon, booleanPointInPolygon, polygon } from '@turf/turf';
+import type { Feature, Polygon } from 'geojson';
+import { booleanPointInPolygon, polygon } from '@turf/turf';
 import * as turf from '@turf/turf';
 import { stripPrefix } from 'xml2js/lib/processors';
 

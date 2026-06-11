@@ -10,7 +10,7 @@ import {
   CircuitState,
 } from 'cockatiel';
 
-import { PRIMARY_ALERTS_URL, FALLBACK_ALERTS_URL, APP_USER_AGENT } from '../../config';
+import { PRIMARY_ALERTS_URL, FALLBACK_ALERTS_URL, APP_USER_AGENT } from '@/config';
 
 /**
  * A reference to a CAP message.

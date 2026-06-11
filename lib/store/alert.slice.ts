@@ -1,7 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { CAPAlert, alertLevel } from '@/lib/alerts/alert';
-import { CAPCollector } from '../alerts/collector';
+import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
+import { createAlertsProvider } from '@/lib/alerts/providers';
+
+const alertsProvider = createAlertsProvider();
 
 const levelYellowAndAbove = (alert: CAPAlert): boolean => {
   if (!alert.info || !alert.info.length) {
@@ -19,13 +21,8 @@ const levelYellowAndAbove = (alert: CAPAlert): boolean => {
 
 export const getAlerts = createAsyncThunk('alerts/getActiveAlerts', async (): Promise<Array<CAPAlert>> => {
   console.log('[Thunk] getAlerts DISPATCHED');
-
-  const collector = new CAPCollector();
-  await collector.update();
-
-  const filteredMessages = collector.activeMessages()
-    .filter(levelYellowAndAbove);
-  return filteredMessages;
+  const alerts = await alertsProvider.getAlerts();
+  return alerts.filter(levelYellowAndAbove);
 });
 
 type InitialState = {
