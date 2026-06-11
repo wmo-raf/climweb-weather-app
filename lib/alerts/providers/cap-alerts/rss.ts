@@ -10,7 +10,7 @@ import {
   CircuitState,
 } from 'cockatiel';
 
-import { PRIMARY_ALERTS_URL, FALLBACK_ALERTS_URL, APP_USER_AGENT } from '../../config';
+import { PRIMARY_ALERTS_URL, FALLBACK_ALERTS_URL, APP_USER_AGENT } from '@/config';
 
 /**
  * A reference to a CAP message.
@@ -104,6 +104,9 @@ function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]>
       let ret: CAPReference[] = [];
 
       for (const item of result.rss.channel[0].item) {
+        if (ret.length > 3) {
+          break;
+        }
         ret.push({
           title: item.title[0],
           link: item.link[0],

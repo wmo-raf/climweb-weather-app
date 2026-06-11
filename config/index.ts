@@ -6,3 +6,4 @@ export const APP_USER_AGENT= process.env.EXPO_PUBLIC_APP_USER_AGENT as string;
 export const APP_ALERTS_SENDER_ID= process.env.EXPO_PUBLIC_APP_ALERTS_SENDER_ID as string;
 export const APP_TIMEZONE = process.env.EXPO_PUBLIC_APP_TIMEZONE as string;
 export const FORECAST_PROVIDER = process.env.EXPO_PUBLIC_FORECAST_PROVIDER ?? 'yr';
+export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
