@@ -47,7 +47,7 @@ const AppBar = (props: AppBarProps) => {
           <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={{ paddingRight: 12 }}>
             <Icon size={28} color='white' source={backArrow} />
           </TouchableOpacity>}
-        <Text style={styles.appTitle} numberOfLines={1}>{props.location || "Zanyengo"}</Text>
+        <Text style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</Text>
         {getWarningIcons(relevantAlerts)}
       </View>
 

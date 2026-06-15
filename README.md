@@ -1,6 +1,6 @@
-# Zanyengo👋
+# Climweb Weather App👋
 
-Zanyengo is the weather app for DCCMS.
+Climweb Weather App is the weather app for Africa.
 
 ## Get started with a development build
 
@@ -210,6 +210,7 @@ Before starting, ensure you have:
   - Invalid APK/AAB: Ensure your app is signed and matches Play Store requirements.
   - Missing Privacy Policy: Include a valid URL in the **Store Listing** section.
 - Refer to the [Google Play Console Help Center](https://support.google.com/googleplay/android-developer/) for additional assistance.
+- Please also go through the [TROUBLESHOOTING.md](troubleshooting.md) guide
 
 ---
 
