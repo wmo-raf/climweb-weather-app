@@ -10,38 +10,38 @@ Reference site: [Climweb](https://climtech.africa/climweb/) · Screenshots: [ass
 
 | &nbsp; | Hex | Where it's used |
 |---|---|---|
-| <span style="display:inline-block;width:16px;height:16px;background:#0C447C;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#0C447C` | Primary — buttons, active nav links, footer background, icons, links |
-| <span style="display:inline-block;width:16px;height:16px;background:#176C9C;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#176C9C` | Hover state for anything using the primary color |
-| <span style="display:inline-block;width:16px;height:16px;background:#093766;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#093766` | Pressed / active state for buttons and interactive elements |
-| <span style="display:inline-block;width:16px;height:16px;background:#226296;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#226296` | Secondary buttons and accent elements |
-| <span style="display:inline-block;width:16px;height:16px;background:#3E8ED0;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#3E8ED0` | Informational highlights and inline links |
-| <span style="display:inline-block;width:16px;height:16px;background:#E6F1FB;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#E6F1FB` | Tinted section backgrounds and icon fill backgrounds |
-| <span style="display:inline-block;width:16px;height:16px;background:#EAF2F9;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#EAF2F9` | Very light wash — subtle alternating rows or hover fills |
-| <span style="display:inline-block;width:16px;height:16px;background:#0A2240;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#0A2240` | Dark hero overlays and dark panel backgrounds |
+| ![#0C447C](https://placehold.co/16x16/0C447C/0C447C.png) | `#0C447C` | Primary — buttons, active nav links, footer background, icons, links |
+| ![#176C9C](https://placehold.co/16x16/176C9C/176C9C.png) | `#176C9C` | Hover state for anything using the primary color |
+| ![#093766](https://placehold.co/16x16/093766/093766.png) | `#093766` | Pressed / active state for buttons and interactive elements |
+| ![#226296](https://placehold.co/16x16/226296/226296.png) | `#226296` | Secondary buttons and accent elements |
+| ![#3E8ED0](https://placehold.co/16x16/3E8ED0/3E8ED0.png) | `#3E8ED0` | Informational highlights and inline links |
+| ![#E6F1FB](https://placehold.co/16x16/E6F1FB/E6F1FB.png) | `#E6F1FB` | Tinted section backgrounds and icon fill backgrounds |
+| ![#EAF2F9](https://placehold.co/16x16/EAF2F9/EAF2F9.png) | `#EAF2F9` | Very light wash — subtle alternating rows or hover fills |
+| ![#0A2240](https://placehold.co/16x16/0A2240/0A2240.png) | `#0A2240` | Dark hero overlays and dark panel backgrounds |
 
 ### Grays
 
 | &nbsp; | Hex | Where it's used |
 |---|---|---|
-| <span style="display:inline-block;width:16px;height:16px;background:#FFFFFF;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#FFFFFF` | Default page and card background; text on dark backgrounds; footer text |
-| <span style="display:inline-block;width:16px;height:16px;background:#F8F9FB;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#F8F9FB` | Alternate section backgrounds (slightly off-white) |
-| <span style="display:inline-block;width:16px;height:16px;background:#F4F6F9;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#F4F6F9` | Dropdown and hover backgrounds |
-| <span style="display:inline-block;width:16px;height:16px;background:#E0E0E0;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#E0E0E0` | Light gray card and section backgrounds |
-| <span style="display:inline-block;width:16px;height:16px;background:#DCDCDC;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#DCDCDC` | Borders and dividers |
-| <span style="display:inline-block;width:16px;height:16px;background:#707070;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#707070` | Secondary / helper text |
-| <span style="display:inline-block;width:16px;height:16px;background:#999999;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#999999` | Muted text — timestamps, captions, placeholders |
-| <span style="display:inline-block;width:16px;height:16px;background:#363636;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#363636` | Default body text |
-| <span style="display:inline-block;width:16px;height:16px;background:#1A1A1A;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#1A1A1A` | Headings and display text |
-| <span style="display:inline-block;width:16px;height:16px;background:#262C38;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#262C38` | Top alert bar and sticky navigation background |
+| ![#FFFFFF](https://placehold.co/16x16/FFFFFF/FFFFFF.png) | `#FFFFFF` | Default page and card background; text on dark backgrounds; footer text |
+| ![#F8F9FB](https://placehold.co/16x16/F8F9FB/F8F9FB.png) | `#F8F9FB` | Alternate section backgrounds (slightly off-white) |
+| ![#F4F6F9](https://placehold.co/16x16/F4F6F9/F4F6F9.png) | `#F4F6F9` | Dropdown and hover backgrounds |
+| ![#E0E0E0](https://placehold.co/16x16/E0E0E0/E0E0E0.png) | `#E0E0E0` | Light gray card and section backgrounds |
+| ![#DCDCDC](https://placehold.co/16x16/DCDCDC/DCDCDC.png) | `#DCDCDC` | Borders and dividers |
+| ![#707070](https://placehold.co/16x16/707070/707070.png) | `#707070` | Secondary / helper text |
+| ![#999999](https://placehold.co/16x16/999999/999999.png) | `#999999` | Muted text — timestamps, captions, placeholders |
+| ![#363636](https://placehold.co/16x16/363636/363636.png) | `#363636` | Default body text |
+| ![#1A1A1A](https://placehold.co/16x16/1A1A1A/1A1A1A.png) | `#1A1A1A` | Headings and display text |
+| ![#262C38](https://placehold.co/16x16/262C38/262C38.png) | `#262C38` | Top alert bar and sticky navigation background |
 
 ### Status colors
 
 | &nbsp; | &nbsp; | Hex (background / text+icon) | Where it's used |
 |---|---|---|---|
-| <span style="display:inline-block;width:16px;height:16px;background:#D1FAE5;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | <span style="display:inline-block;width:16px;height:16px;background:#0B612D;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#D1FAE5` / `#0B612D` | Success |
-| <span style="display:inline-block;width:16px;height:16px;background:#FEF3C7;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | <span style="display:inline-block;width:16px;height:16px;background:#92400E;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#FEF3C7` / `#92400E` | Warning |
-| <span style="display:inline-block;width:16px;height:16px;background:#FEE2E2;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | <span style="display:inline-block;width:16px;height:16px;background:#B91C1C;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#FEE2E2` / `#B91C1C` | Danger / error |
-| <span style="display:inline-block;width:16px;height:16px;background:#DBEAFE;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | <span style="display:inline-block;width:16px;height:16px;background:#1E40AF;border-radius:3px;border:1px solid rgba(0,0,0,.15)"></span> | `#DBEAFE` / `#1E40AF` | Informational |
+| ![#D1FAE5](https://placehold.co/16x16/D1FAE5/D1FAE5.png) | ![#0B612D](https://placehold.co/16x16/0B612D/0B612D.png) | `#D1FAE5` / `#0B612D` | Success |
+| ![#FEF3C7](https://placehold.co/16x16/FEF3C7/FEF3C7.png) | ![#92400E](https://placehold.co/16x16/92400E/92400E.png) | `#FEF3C7` / `#92400E` | Warning |
+| ![#FEE2E2](https://placehold.co/16x16/FEE2E2/FEE2E2.png) | ![#B91C1C](https://placehold.co/16x16/B91C1C/B91C1C.png) | `#FEE2E2` / `#B91C1C` | Danger / error |
+| ![#DBEAFE](https://placehold.co/16x16/DBEAFE/DBEAFE.png) | ![#1E40AF](https://placehold.co/16x16/1E40AF/1E40AF.png) | `#DBEAFE` / `#1E40AF` | Informational |
 
 ### CSS Variables
 
