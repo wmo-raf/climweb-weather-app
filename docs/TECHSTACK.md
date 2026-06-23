@@ -6,7 +6,13 @@ This document outlines the technology stack, architectural patterns, and core li
 * **Framework**: React Native (with Expo)
 * **Language**: TypeScript
 
-## 2. State Management & Data Fetching
+## 2. Navigation Pattern
+The application uses **Expo Router** instead of using React Navigation directly. This provides several key advantages for Expo projects:
+* **File-based routing**: Automatically maps your file structure to app routes, reducing boilerplate.
+* **Better Expo integration**: Built seamlessly into the Expo ecosystem.
+* **Easier deep linking**: Simplifies universal links and deep linking configurations across platforms.
+
+## 3. State Management & Data Fetching
 We enforce a strict separation between client UI state and server-cached data to ensure high performance and maintainability.
 
 * **Client State**: **Zustand**
@@ -19,7 +25,7 @@ We enforce a strict separation between client UI state and server-cached data to
   * **TanStack Query (React Query)**: Manages the server state by orchestrating the Axios requests. It automatically handles caching, retries, refetching, loading states, stale data management, and synchronization.
   * Together, they work seamlessly with our offline storage to serve stale data immediately while fetching fresh data in the background, significantly reducing boilerplate code.
 
-## 3. Storage & Offline-First Strategy
+## 4. Storage & Offline-First Strategy
 The application employs an **Offline-First Strategy**, ensuring users can view critical weather data seamlessly even without an active network connection.
 
 * **Relational Data Cache**: **Expo SQLite**
@@ -29,11 +35,11 @@ The application employs an **Offline-First Strategy**, ensuring users can view c
   * An extremely fast, synchronous key-value storage engine natively written in C++.
   * *Use cases*: High-performance client-side storage, such as user settings, UI preferences, and persisting TanStack Query state or tokens.
 
-## 4. Localization (i18n)
+## 5. Localization (i18n)
 * **Library**: **i18next** (along with `react-i18next`)
   * Handles translations and internationalization seamlessly across the application, plugging easily into our state and UI layers.
 
-## 5. Architectural Pattern: Layered Architecture
+## 6. Architectural Pattern: Layered Architecture
 The application follows a **Layered Architecture** using the **Repository Pattern** to decouple the UI from data fetching and logic. This ensures that our UI components remain clean, testable, and strictly responsible for presentation.
 
 ### Architecture Diagram
