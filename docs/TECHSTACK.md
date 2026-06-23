@@ -25,9 +25,9 @@ The application employs an **Offline-First Strategy**, ensuring users can view c
 * **Relational Data Cache**: **Expo SQLite**
   * A robust, local SQLite database used to persistently store complex, structured weather data.
   * *Use cases*: Storing forecast history, querying cached location data, and supporting robust offline viewing of extensive meteorological datasets.
-* **Key-Value Storage**: **AsyncStorage**
-  * An asynchronous, unencrypted, persistent, key-value storage system.
-  * *Use cases*: Simple persistent client-side storage, such as user settings, UI preferences, and persisting TanStack Query state or tokens.
+* **Key-Value Storage**: **MMKV** (`react-native-mmkv`)
+  * An extremely fast, synchronous key-value storage engine natively written in C++.
+  * *Use cases*: High-performance client-side storage, such as user settings, UI preferences, and persisting TanStack Query state or tokens.
 
 ## 4. Localization (i18n)
 * **Library**: **i18next** (along with `react-i18next`)
@@ -74,7 +74,7 @@ The application follows a **Layered Architecture** using the **Repository Patter
 ┌─────────────────────────▼────────────────────────────┐
 │                    Storage Engine                    │
 │  ┌──────────────────┐  ┌──────────────────────┐      │
-│  │AsyncStorage      │  │Expo SQLite           │      │
+│  │MMKV              │  │Expo SQLite           │      │
 │  │(Settings/Keys)   │  │(Structured Data)     │      │
 │  └──────────────────┘  └──────────────────────┘      │
 └──────────────────────────────────────────────────────┘
@@ -89,5 +89,5 @@ The application follows a **Layered Architecture** using the **Repository Patter
 | **State (Server)** | TanStack Query + Axios | Axios fetches HTTP data; TanStack Query manages cache, retries, refetching, loading states, and offline syncing. |
 | **Application Logic** | Custom Hooks | Orchestrates data fetching, combines stores, prepares data for UI. |
 | **Data Abstraction** | Repository Pattern | Abstracts data sources. Prioritizes local cache (SQLite) before fetching (Axios) for an offline-first experience. |
-| **Storage Engine** | AsyncStorage & Expo SQLite | Physical persistence layer. AsyncStorage for simple keys; SQLite for robust, queryable relational weather data. |
+| **Storage Engine** | MMKV & Expo SQLite | Physical persistence layer. MMKV for simple high-performance keys; SQLite for robust, queryable relational weather data. |
 | **Localization** | i18next | Handles translations and internationalization. |
