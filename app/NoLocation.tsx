@@ -7,7 +7,8 @@ import {useRouter, Href} from 'expo-router';
 import AppBar from '@/components/AppBar';
 import LocationRow from '@/components/LocationRow';
 
-import { DISTRICTS } from '@/lib/geo/constants';
+import CITIES from '@/assets/cities.json';
+import { City } from '@/lib/geo/constants';
 import { AppDispatch } from '@/lib/store';
 import { setForecast } from '@/lib/store/forecast.slice';
 import { setLat, setLon, setName } from '@/lib/store/location.slice';
@@ -27,15 +28,15 @@ const NoLocationScreen = () => {
           <AppBar location="Climweb Weather App" />
           <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} snapToStart={false}>
             {
-              DISTRICTS.map((district, idx) =>
+              (CITIES as City[]).map((city, idx) =>
                 <LocationRow
                   key={idx}
-                  district={district}
+                  district={city}
                   onPress={(forecast: ForecastRecord): void => {
                     dispatch(setForecast(forecast))
-                    dispatch(setName(district.name));
-                    dispatch(setLat(district.lat));
-                    dispatch(setLon(district.lon));
+                    dispatch(setName(city.name));
+                    dispatch(setLat(city.lat));
+                    dispatch(setLon(city.lon));
                     router.push(SCREENS.Home.toString() as Href);
                   }}
                 />)
