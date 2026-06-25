@@ -4,14 +4,14 @@ import { Icon, Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
 
 import { useForecast } from '@/lib/hooks/current-forecast.hook';
-import { District } from '@/lib/geo/constants';
+import { City } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 
 
 type LocationRowProps = {
-  district: District;
+  district: City;
   onPress: (forecast: ForecastRecord) => void
 };
 function LocationRow(props: LocationRowProps): JSX.Element {
