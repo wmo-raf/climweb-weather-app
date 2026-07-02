@@ -4,6 +4,102 @@
 
 This document describes how to configure the ClimWeb Weather App, including language setup and available translation keys.
 
+## App Icon & Splash Screen
+
+The launcher icon and splash screen image are both configured in [app.json](app.json) and driven by image files in the `assets/` directory.
+
+### Files to replace
+
+| File | Used for |
+|------|----------|
+| `assets/ic_launcher.png` | Launcher icon (home screen, app drawer) and splash screen image |
+
+Replace `assets/ic_launcher.png` with your own image. The same file is used for both purposes; if you need them to differ, follow the steps in [Using separate images](#using-separate-images) below.
+
+### Image requirements
+
+| Property | Requirement |
+|----------|-------------|
+| Format | PNG |
+| Size | 1024 × 1024 px (Expo recommendation for the app icon) |
+| Transparency | Supported for the icon; avoid it for the splash screen |
+| Background | Ensure the icon looks correct on both light and dark backgrounds, or use a solid-colour background |
+
+### How the images are wired up
+
+Open [app.json](app.json). There are two relevant entries:
+
+```jsonc
+{
+  "expo": {
+    "icon": "./assets/ic_launcher.png",   // line 7 — launcher icon
+    ...
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/ic_launcher.png",  // line 56 — splash screen image
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ]
+  }
+}
+```
+
+Changing the file on disk is enough — the paths in `app.json` already point to it. No other code changes are needed.
+
+### Using separate images
+
+If the launcher icon and splash screen should use different images:
+
+1. Add the splash screen image to `assets/` (e.g. `assets/splash.png`).
+2. Update the `expo-splash-screen` plugin entry in [app.json](app.json):
+
+```json
+[
+  "expo-splash-screen",
+  {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  }
+]
+```
+
+The `expo.icon` value at line 7 continues to control the launcher icon independently.
+
+### Android adaptive icon (optional)
+
+Android 8.0+ supports adaptive icons, which allow the system to apply a shaped mask (circle, squircle, etc.). To use one, add an `adaptiveIcon` block inside the `android` section of [app.json](app.json):
+
+```json
+"android": {
+  "adaptiveIcon": {
+    "foregroundImage": "./assets/ic_launcher_foreground.png",
+    "backgroundColor": "#ffffff"
+  }
+}
+```
+
+- `foregroundImage` — 1024 × 1024 px PNG; the system applies a mask, so keep the logo centred within the safe zone (roughly the inner 66% of the image).
+- `backgroundColor` — fills the background layer behind the foreground image.
+
+When `adaptiveIcon` is present, Android uses it instead of the top-level `expo.icon`.
+
+### Rebuild required
+
+Icon and splash screen changes only take effect after a new native build. Run:
+
+```bash
+# Development build
+npm run android
+npm run ios
+```
+
+---
+
 ## Localization & Language Setup
 
 ### Architecture
