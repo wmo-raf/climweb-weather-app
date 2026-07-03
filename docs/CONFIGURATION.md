@@ -90,13 +90,17 @@ When `adaptiveIcon` is present, Android uses it instead of the top-level `expo.i
 
 ### Rebuild required
 
-Icon and splash screen changes only take effect after a new native build. Run:
+Icon and splash screen changes only take effect after a new native build. Since the `ios/`/`android/` native projects are generated from `app.json` and are not committed to the repo, simply replacing the image file is not enough — Expo needs to regenerate the native projects so the new icon/splash assets actually get baked in. Run a clean prebuild first, then build:
 
 ```bash
+npx expo prebuild --clean
+
 # Development build
 npm run android
 npm run ios
 ```
+
+Skipping `npx expo prebuild --clean` after changing the logo/icon is the most common reason the old icon still shows up after a rebuild — Expo may reuse the previously generated native project and not pick up the new asset otherwise.
 
 ---
 
