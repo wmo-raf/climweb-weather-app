@@ -7,10 +7,14 @@ import { Button } from 'react-native-paper';
 import { ActivityIndicator } from 'react-native';
 import { useRouter, useNavigation, Href, Redirect } from 'expo-router';
 import { isUndefined } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
 import Today from '@/components/Today';
 import Alerts from '@/components/Alerts';
+import CurrentConditionsCard from '@/components/CurrentConditionsCard';
+import DayPartsGrid from '@/components/DayPartsGrid';
+import FiveDays from '@/components/FiveDays';
 
 import type { AppDispatch, RootState } from '@/lib/store'
 import { SCREENS } from '@/lib/layout/constants';
@@ -18,14 +22,19 @@ import { resetError, getPreciseLocation } from '@/lib/store/location.slice';
 import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
 import { getAlerts } from '@/lib/store/alert.slice';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { colors, fonts, radius, space, touchTarget } from '@/lib/theme';
+import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
+import { getDayParts } from '@/lib/forecast/day-parts';
+import { colors, fonts, navRailWidth, radius, space, tempSize, touchTarget } from '@/lib/theme';
 
 const MainScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
+  const breakpoint = useBreakpoint();
+  const isXL = breakpoint === 'xl';
 
   const { name: location, lat, lon, loading: locationLoading, error: locationError } = useSelector((state: RootState) => state.location, shallowEqual);
   const { loading, forecast, error: forecastError } = useSelector((state: RootState) => state.forecast, shallowEqual);
@@ -85,6 +94,17 @@ const MainScreen = () => {
     return <Redirect href="/Welcome" />;
   }
 
+  const today = DateTime.now();
+  const onSelectDay = (day: DateTime) =>
+    router.push({
+      pathname: "/Hourly", params: {
+        location: location,
+        dayString: day.toISO(),
+        startAtCurrentTime: "no",
+        title: day.toLocaleString({ weekday: 'long' })
+      }
+    });
+
   // empty page as default content
   let mainContent: React.JSX.Element = (
     <View style={styles.opacity}>
@@ -104,14 +124,32 @@ const MainScreen = () => {
   }
 
   if (forecast) {
-    const today = DateTime.now();
     const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
+    const tomorrowSummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today.plus({ days: 1 }), "day"));
 
-    mainContent = (
-      <View style={styles.opacity}>
-        <Today daySummary={todaySummary} location={location} />
-      </View>
-    )
+    if (isXL && todaySummary) {
+      mainContent = (
+        <View style={styles.xlRow}>
+          <View style={styles.xlLeftPane}>
+            <Alerts lat={lat} lon={lon} location={location} />
+            <CurrentConditionsCard daySummary={todaySummary} location={location} tempFontSize={tempSize.xl} showWindSummary />
+          </View>
+          <View style={styles.xlRightPane}>
+            <DayPartsGrid dayParts={getDayParts(todaySummary)} columns={4} />
+            <View style={styles.xlFiveDaysSection}>
+              <Text style={styles.xlSectionHeader}>{t('Next 5 days')}</Text>
+              <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} />
+            </View>
+          </View>
+        </View>
+      )
+    } else {
+      mainContent = (
+        <View style={styles.opacity}>
+          <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} tomorrow={tomorrowSummary} compact={breakpoint === 'small'} />
+        </View>
+      )
+    }
   }
 
   if (forecastError) {
@@ -126,11 +164,11 @@ const MainScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />
-          <Alerts lat={lat} lon={lon} location={location} />
+          {!isXL && <Alerts lat={lat} lon={lon} location={location} />}
           <ScrollView showsVerticalScrollIndicator={false} snapToStart={false} accessible={true} accessibilityLabel='Landing page' refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
           }>
@@ -188,5 +226,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: fonts.semiBold,
     color: colors.textInverse,
+  },
+  xlRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: space[6],
+  },
+  xlLeftPane: {
+    flex: 1,
+  },
+  xlRightPane: {
+    flex: 1.3,
+  },
+  xlFiveDaysSection: {
+    marginTop: space[6],
+  },
+  xlSectionHeader: {
+    fontSize: 20,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+    marginBottom: space[1],
+  },
+  xlPadding: {
+    paddingLeft: navRailWidth,
   },
 });

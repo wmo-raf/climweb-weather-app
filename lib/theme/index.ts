@@ -86,3 +86,12 @@ export const shadow = {
 // `min` matches docs/STYLE.md's general 44px baseline; `nav` is the stricter
 // 48dp the handoff calls for specifically on nav items, toggles, and list rows.
 export const touchTarget = { min: 44, nav: 48 };
+
+// Today's current-temperature display size per breakpoint, per the
+// responsive viewport guide (Step 8). Large (400-599dp) is the reference
+// density this whole redesign was built against in Steps 1-7.
+export const tempSize = { small: 44, medium: 52, large: 60, xl: 60 } as const;
+
+// Left nav rail width at the XL breakpoint (>=600dp), replacing the bottom
+// tab bar used on phones.
+export const navRailWidth = 96;

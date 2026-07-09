@@ -10,11 +10,13 @@ import AppBar from '@/components/AppBar';
 import FiveDays from '@/components/FiveDays';
 
 import type { RootState } from '@/lib/store';
-import { colors, fonts, space } from '@/lib/theme';
+import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
+import { colors, fonts, navRailWidth, space } from '@/lib/theme';
 
 const FiveDaysScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const isXL = useBreakpoint() === 'xl';
 
   const { name: location } = useSelector((state: RootState) => state.location, shallowEqual);
   const { forecast } = useSelector((state: RootState) => state.forecast, shallowEqual);
@@ -32,7 +34,7 @@ const FiveDaysScreen = () => {
     });
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={t('Next 5 days')} />
@@ -68,5 +70,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: space[2],
     marginBottom: space[8],
+  },
+  xlPadding: {
+    paddingLeft: navRailWidth,
   },
 });

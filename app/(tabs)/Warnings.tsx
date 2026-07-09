@@ -11,10 +11,12 @@ import AlertLegend from '@/components/AlertLegend';
 
 import type { RootState } from '@/lib/store';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
-import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
+import { colors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
 
 const WarningsScreen = () => {
   const { t } = useTranslation();
+  const isXL = useBreakpoint() === 'xl';
 
   const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
   const { name: location, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
@@ -25,7 +27,7 @@ const WarningsScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={t('Warnings')} />
@@ -96,5 +98,8 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'center',
     marginTop: space[1],
+  },
+  xlPadding: {
+    paddingLeft: navRailWidth,
   },
 });

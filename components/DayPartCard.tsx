@@ -1,5 +1,5 @@
 import React, { JSX } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
@@ -10,16 +10,17 @@ import { colors, fonts, radius, shadow, space } from '@/lib/theme';
 type DayPartCardProps = {
   part: DayPart;
   summary: DayPartSummary;
+  style?: StyleProp<ViewStyle>;
 };
 
-function DayPartCard({ part, summary }: DayPartCardProps): JSX.Element {
+function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const { t } = useTranslation();
 
   const iconSource = summary.weatherSymbol ? weatherIcons[summary.weatherSymbol] : undefined;
   const conditionLabel = t(CONDITION_LABEL_KEYS[conditionBucket(summary.weatherSymbol)]);
 
   return (
-    <View style={styles.card} accessible={true} accessibilityLabel={`${t(DAY_PART_LABEL_KEYS[part])}: ${Math.round(summary.temperature || 0)} degrees, ${conditionLabel}`}>
+    <View style={[styles.card, style]} accessible={true} accessibilityLabel={`${t(DAY_PART_LABEL_KEYS[part])}: ${Math.round(summary.temperature || 0)} degrees, ${conditionLabel}`}>
       <Text style={styles.partLabel}>{t(DAY_PART_LABEL_KEYS[part])}</Text>
       <View style={styles.row}>
         {iconSource && <Icon source={iconSource} size={36} />}
