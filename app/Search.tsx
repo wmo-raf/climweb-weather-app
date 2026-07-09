@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
@@ -12,8 +12,7 @@ import { AppDispatch, RootState } from '@/lib/store';
 import { setLocation } from '@/lib/store/location.slice';
 import { Place } from '@/lib/geo/places';
 import { CommonActions } from "expo-router/react-navigation";
-
-const appBackground = require('@/assets/new-glass-bg.png');
+import { colors } from '@/lib/theme';
 
 const SearchScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +22,7 @@ const SearchScreen = () => {
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={name ? name : 'Search location'} />
           <Alerts lat={lat} lon={lon} location={name} />
           <Search
@@ -41,7 +40,7 @@ const SearchScreen = () => {
               }
             }
           />
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -56,8 +55,10 @@ const styles = StyleSheet.create({
     width: '100%',
     margin: 0,
     padding: 0,
+    backgroundColor: colors.bgAlt,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   }
 })

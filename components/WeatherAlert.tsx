@@ -1,12 +1,11 @@
 import React from "react";
-import { Image, ImageSourcePropType, StyleProp, StyleSheet, TouchableOpacity, View, ImageBackground } from "react-native";
+import { Image, ImageSourcePropType, StyleProp, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 import { DateTime } from "luxon";
 
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
-
-const warningBg = require('@/assets/warning-bg.png')
+import { colors, fonts, radius, space } from "@/lib/theme";
 
 type WeatherAlertProps = {
   alert: CAPAlert;
@@ -17,11 +16,11 @@ const WeatherAlert = (props: WeatherAlertProps) => {
   const { alert, onPress } = props;
 
   return (
-    <TouchableOpacity style={styles.wrapper} onPress={() => onPress({})}>
+    <TouchableOpacity style={styles.wrapper} onPress={() => onPress({})} accessibilityLabel={`${getAlertStatus(alert)}: ${getAlertEvent(alert)}, level ${getAlertLevel(alert)?.toLowerCase()}`}>
       <View style={styles.glassWrapper}>
         <View style={{ ...styles.opacity, backgroundColor: getWarningColor(getAlertLevel(alert)) }}>
           <View style={styles.warning}>
-            <ImageBackground source={warningBg} style={styles.warningIcon}><Image source={getWarningIcon(getAlertLevel(alert) as string)} style={styles.icon} /></ImageBackground>
+            <View style={styles.warningIcon}><Image source={getWarningIcon(getAlertLevel(alert) as string)} style={styles.icon} /></View>
             <View style={styles.warningText}>
               <Text style={styles.header}>
                 {getAlertStatus(alert)}: {getAlertEvent(alert)}{'\n'}Level: {getAlertLevel(alert)?.toLowerCase()}
@@ -81,43 +80,35 @@ const styles = StyleSheet.create({
   opacity: {
     width: '100%',
     zIndex: 1,
-    borderRadius: 4,
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 10,
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 10,
-    paddingRight: 17,
-    paddingLeft: 17,
-    paddingTop: 7,
-    paddingBottom: 11,
+    borderRadius: radius.lg,
+    paddingRight: space[4],
+    paddingLeft: space[4],
+    paddingTop: space[2],
+    paddingBottom: space[3],
   },
   warning: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   warningIcon: {
-    flex: 1,
-    marginRight: 12,
-    height: 50,
-    width: 50,
+    marginRight: space[3],
+    height: 44,
+    width: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
     width: 35,
     height: 30,
-    position: 'absolute',
-    top: 6,
-    bottom: 14,
-    left: 7,
-    right: 7,
   },
   warningText: {
     flex: 6,
-    paddingTop: 3,
+    paddingTop: space[1],
   },
   header: {
     fontSize: 16,
-    fontFamily: 'NotoSans-Regular',
-    color: 'white',
-    fontWeight: "400",
+    fontFamily: fonts.semiBold,
+    color: colors.textInverse,
   },
 });
 

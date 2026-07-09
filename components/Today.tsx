@@ -4,6 +4,7 @@ import { Icon, Text } from 'react-native-paper';
 
 import { ForecastDayRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
+import { colors, fonts, radius, space } from '@/lib/theme';
 
 const upArrow = require('@/assets/Arrow-upward.png');
 const downArrow = require('@/assets/Arrow-downward.png');
@@ -36,7 +37,7 @@ function Today(props: TodaysForecastProps): JSX.Element {
         <View style={styles.temps}>
           <View>
             <Text style={styles.small}>
-              <Icon size={15} color='white' source={upArrow} /> {Math.round(daySummary.maxTemperature || 0)}&deg;<View style={{ paddingRight: 24 }}></View><Icon size={15} color='white' source={downArrow} /> {Math.round(daySummary.minTemperature || 0)}&deg;
+              <Icon size={15} color={colors.text} source={upArrow} /> {Math.round(daySummary.maxTemperature || 0)}&deg;<View style={{ paddingRight: 24 }}></View><Icon size={15} color={colors.text} source={downArrow} /> {Math.round(daySummary.minTemperature || 0)}&deg;
             </Text>
           </View>
           <View>
@@ -55,59 +56,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 28,
-    marginRight: 27,
-    marginLeft: 27,
-  },
-  glassWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    borderRadius: 8,
+    marginTop: space[6],
+    marginRight: space[6],
+    marginLeft: space[6],
   },
   opacity: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     flex: 1,
-    borderRadius: 4,
-    backgroundColor: 'rgba(217, 217, 217, .5)',
-    padding: 8,
+    borderRadius: radius.lg,
+    backgroundColor: colors.bgTint,
+    padding: space[2],
   },
   today: {
     flex: 1,
-    paddingTop: 38,
-    paddingBottom: 18,
+    paddingTop: space[8],
+    paddingBottom: space[4],
     textAlign: 'center',
   },
   todayText: {
     flex: 1,
   },
   temps: {
-    margin: 8,
+    margin: space[2],
   },
   todaysHeader: {
-    fontSize: 24,
-    fontFamily: 'Rajdhani-Regular',
+    fontSize: 20,
+    fontFamily: fonts.semiBold,
     marginBottom: -15,
-    marginLeft: 8,
-    color: 'white',
+    marginLeft: space[2],
+    color: colors.textStrong,
   },
   large: {
-    fontSize: 92,
-    fontFamily: 'Rajdhani-Regular',
-    color: 'white',
+    fontSize: 60,
+    fontFamily: fonts.extraBold,
+    color: colors.textStrong,
     textAlign: 'center',
   },
   small: {
     fontSize: 16,
-    fontFamily: 'Rajdhani-Light',
-    color: 'white',
+    fontFamily: fonts.regular,
+    color: colors.text,
   },
   smallSymbol: {
     fontSize: 16,
-    fontFamily: 'Rajdhani-Light',
-    color: 'white',
+    fontFamily: fonts.regular,
+    color: colors.text,
     maxWidth: 150
   },
 });

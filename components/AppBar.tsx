@@ -11,6 +11,7 @@ import { RootState } from '@/lib/store';
 import { CAPAlert, CAPInfo, alertInLocation, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useTranslation } from 'react-i18next';
 import { ParamListBase, RouteProp } from 'expo-router/react-navigation';
+import { colors, fonts, radius, shadow, space } from '@/lib/theme';
 
 const backArrow = require('@/assets/icons8-back-100_2.png');
 
@@ -44,8 +45,8 @@ const AppBar = (props: AppBarProps) => {
     <View style={styles.appBar}>
       <View style={styles.appTitleContainer}>
         {navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={{ paddingRight: 12 }}>
-            <Icon size={28} color='white' source={backArrow} />
+          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={{ paddingRight: 12 }} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         <Text style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</Text>
         {getWarningIcons(relevantAlerts)}
@@ -54,8 +55,8 @@ const AppBar = (props: AppBarProps) => {
       <View style={styles.appNav}>
         {showSearch &&
           <TouchableOpacity style={styles.items} accessible={true} accessibilityLabel='Search'
-            onPress={() => router.push(SCREENS.Search.toString() as Href)}>
-            <Icon size={28} color='white' source="magnify" />
+            onPress={() => router.push(SCREENS.Search.toString() as Href)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Icon size={28} color={colors.primary} source="magnify" />
           </TouchableOpacity>
         }
         <View
@@ -65,9 +66,9 @@ const AppBar = (props: AppBarProps) => {
           }}>
           <Menu
             visible={visible}
-            onDismiss={closeMenu} anchor={<TouchableOpacity accessible={true} accessibilityLabel={visible ? 'Close menu' : 'Open menu'} onPress={() => openMenu()}><Icon size={28} color='white' source={visible ? "close" : "menu"} /></TouchableOpacity>}
+            onDismiss={closeMenu} anchor={<TouchableOpacity accessible={true} accessibilityLabel={visible ? 'Close menu' : 'Open menu'} onPress={() => openMenu()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}><Icon size={28} color={colors.primary} source={visible ? "close" : "menu"} /></TouchableOpacity>}
             style={{ position: 'absolute', right: 0, width: 185 }}
-            contentStyle={{ backgroundColor: 'rgba(217, 217, 217, .9)', marginTop: 25, padding: 0, shadowColor: 'rgba(217, 217, 217, .9)' }}
+            contentStyle={{ backgroundColor: colors.bg, borderRadius: radius.md, marginTop: 25, padding: 0, ...shadow.md, borderWidth: 1, borderColor: colors.border }}
           >
             <Menu.Item
               onPress={() => {
@@ -131,20 +132,15 @@ const styles = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
     alignContent: 'center',
-  },
-  blurBar: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: 0,
+    backgroundColor: colors.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   appTitleContainer: {
-    paddingRight: 13,
-    paddingLeft: 13,
-    paddingTop: 17,
-    paddingBottom: 17,
+    paddingRight: space[3],
+    paddingLeft: space[3],
+    paddingTop: space[4],
+    paddingBottom: space[4],
     flex: 7,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -153,9 +149,9 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 20,
-    fontFamily: 'NotoSans-Regular',
-    color: 'white',
-    marginRight: 19,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+    marginRight: space[4],
     flex: 1,
   },
   appNav: {
@@ -164,24 +160,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     zIndex: 1,
-    paddingRight: 20,
-    paddingLeft: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingRight: space[4],
+    paddingLeft: space[4],
+    paddingTop: space[3],
+    paddingBottom: space[3],
   },
   items: {
-    paddingRight: 15,
+    paddingRight: space[4],
   },
   menuItem: {
     paddingRight: 50,
-    paddingLeft: 20,
-    color: 'white',
+    paddingLeft: space[4],
   },
   menuItemTitle: {
-    color: 'white',
+    color: colors.text,
+    fontFamily: fonts.regular,
   },
   weatherWarning: {
-    paddingLeft: 12,
+    paddingLeft: space[3],
   },
   warningIcons: {
     flexDirection: 'row',

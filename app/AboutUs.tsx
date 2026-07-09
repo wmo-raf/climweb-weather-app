@@ -1,5 +1,5 @@
 import React, { JSX } from 'react';
-import { ImageBackground, StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -9,17 +9,16 @@ import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
 import { useTranslation } from 'react-i18next';
-
-const appBackground = require('@/assets/new-glass-bg.png');
+import { colors, fonts, space } from '@/lib/theme';
 
 function AboutUsScreen(): JSX.Element {
   const { t } = useTranslation();
   const { lat, lon } = useSelector((state: RootState) => state.location);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={t("About us")} />
           <Alerts lat={lat} lon={lon} location={"About us"} />
           <View style={styles.container}>
@@ -66,7 +65,7 @@ function AboutUsScreen(): JSX.Element {
               />
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -80,26 +79,23 @@ const styles = StyleSheet.create({
   opacity: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   whiteHeader: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 20,
-    fontWeight: "600",
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   whiteText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 16,
     lineHeight: 22,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.regular,
   },
   title: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 22,
     lineHeight: 24,
-    fontWeight: "600",
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   wrapper: {
     flexDirection: 'column',
@@ -108,12 +104,14 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     overflow: 'scroll',
+    backgroundColor: colors.bgAlt,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   },
   content: {
-    marginTop: 26,
+    marginTop: space[6],
     marginLeft: 45,
     marginRight: 45,
   },

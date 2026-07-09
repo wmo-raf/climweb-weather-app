@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
 import { useTranslation } from "react-i18next";
+import { colors, fonts, radius, shadow, space } from "@/lib/theme";
 
 type DayRowProps = {
   summary: ForecastDayRecord | undefined;
@@ -62,29 +63,35 @@ const DayRow = (props: DayRowProps) => {
 
 const styles = StyleSheet.create({
   dayRow: {
-    fontFamily: "NotoSans-Regular",
+    fontFamily: fonts.regular,
     width: "100%",
-    marginTop: 9,
+    marginTop: space[2],
   },
   opacity: {
     flexDirection: 'column',
-    backgroundColor: 'rgba(217, 217, 217, .5)',
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
     width: '100%',
-    padding: 8,
-    borderRadius: 4,
+    padding: space[2],
+    borderRadius: radius.lg,
+    ...shadow.sm,
   },
   whiteText: {
-    color: 'white',
+    color: colors.text,
+    fontFamily: fonts.regular,
     fontSize: 14,
     textAlign: 'left'
   },
   whiteParameters: {
-    color: 'white',
+    color: colors.textStrong,
+    fontFamily: fonts.semiBold,
     fontSize: 16,
     textAlign: 'left'
   },
   dayName: {
-    color: 'white',
+    color: colors.textStrong,
+    fontFamily: fonts.semiBold,
     fontSize: 16,
     textAlign: 'left'
   },

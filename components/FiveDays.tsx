@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import DayRow from './DayRow';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
+import { colors, fonts, space } from '@/lib/theme';
 
 type FiveDaysProps = {
     startDate: DateTime;
@@ -51,22 +52,24 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
 
 const styles = StyleSheet.create({
     noForecast: {
-        fontFamily: 'NotoSans-Regular',
-        paddingLeft: 12,
-        paddingRight: 12,
-        marginTop: 40,
+        fontFamily: fonts.regular,
+        color: colors.text,
+        paddingLeft: space[3],
+        paddingRight: space[3],
+        marginTop: space[10],
     },
     loading: {
-        fontFamily: 'NotoSans-Regular',
-        paddingLeft: 12,
-        paddingRight: 12,
-        marginTop: 40,
+        fontFamily: fonts.regular,
+        color: colors.text,
+        paddingLeft: space[3],
+        paddingRight: space[3],
+        marginTop: space[10],
     },
     fiveDaysWrapper: {
-        paddingLeft: 27,
-        paddingRight: 26,
-        marginTop: 60,
-        paddingBottom: 50,
+        paddingLeft: space[6],
+        paddingRight: space[6],
+        marginTop: space[10],
+        paddingBottom: space[10],
     },
 });
 

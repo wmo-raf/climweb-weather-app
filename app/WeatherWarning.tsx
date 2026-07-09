@@ -1,5 +1,5 @@
 import React, { JSX } from 'react';
-import { ImageBackground, StyleSheet, View, Image, ListRenderItemInfo, FlatList } from 'react-native';
+import { StyleSheet, View, Image, ListRenderItemInfo, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
@@ -11,12 +11,12 @@ import WeatherAlert from '@/components/WeatherAlert';
 
 import { RootState } from '@/lib/store';
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
+import { colors, fonts, radius, shadow, space } from '@/lib/theme';
 
 const timePeriodBullet = require('@/assets/time-period-bullet.png');
 const urgency = require('@/assets/urgency.png');
 const severity = require('@/assets/severity.png');
 const certainity = require('@/assets/certainity.png');
-const appBackground = require('@/assets/new-glass-bg.png');
 
 function WeatherWarningScreen(): JSX.Element {
   const { location, alertID } = useLocalSearchParams<{location:string, alertID: string}>()
@@ -42,7 +42,7 @@ function WeatherWarningScreen(): JSX.Element {
    // content for missing alert
    let mainContent: React.JSX.Element = (
     <View style={styles.contentContainer}>
-      <Text>
+      <Text style={styles.whiteText}>
         Missing alert! Please go back and try again.
       </Text>
     </View>
@@ -94,12 +94,12 @@ function WeatherWarningScreen(): JSX.Element {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={location} />
           { mainContent }
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     width: '100%',
     margin: 0,
     padding: 0,
+    backgroundColor: colors.bgAlt,
   },
   contentContainer: {
     flex: 1,
@@ -126,74 +127,66 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginTop: 20,
-    marginLeft: 19,
-    marginRight: 19,
-    paddingRight: 16,
-    paddingLeft: 16,
-    paddingTop: 18,
-    paddingBottom: 18,
-    borderRadius: 4,
-    backgroundColor: 'rgba(217, 217, 217, 0.5)',
-  },
-  blurCover: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: 4,
-    backgroundColor: 'rgba(0, 0, 0, .15)',
+    marginTop: space[6],
+    marginLeft: space[4],
+    marginRight: space[4],
+    paddingRight: space[4],
+    paddingLeft: space[4],
+    paddingTop: space[4],
+    paddingBottom: space[4],
+    borderRadius: radius.lg,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadow.sm,
   },
   whiteHeader: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 20,
-    fontWeight: "600",
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   whiteText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 14,
     lineHeight: 19,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.regular,
     flexDirection: 'row',
   },
   whiteLargeText: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 16,
     lineHeight: 21.79,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   whiteBoldText: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 14,
-    fontWeight: 'bold',
     lineHeight: 22,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.bold,
   },
   title: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 22,
     lineHeight: 24,
-    fontWeight: "600",
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   },
   icons: {
     width: 21,
     height: 21,
-    marginRight: 14,
+    marginRight: space[3],
   },
   timePeriodItem: {
     flexDirection: 'row',
   },
   timePeriodText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 14,
     lineHeight: 40,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.regular,
   },
   bulletStyle: {
     height: 7,

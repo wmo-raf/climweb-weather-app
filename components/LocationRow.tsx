@@ -8,6 +8,7 @@ import { City } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
+import { colors, fonts, radius, shadow, space } from '@/lib/theme';
 
 
 type LocationRowProps = {
@@ -57,7 +58,7 @@ function LocationRow(props: LocationRowProps): JSX.Element {
         <View style={styles.opacity}>
           <View style={styles.left}>
             <View>
-              <ActivityIndicator animating={true} color={'white'} size='large' />
+              <ActivityIndicator animating={true} color={colors.primary} size='large' />
             </View>
           </View>
         </View>
@@ -89,28 +90,32 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    marginTop: 17,
+    marginTop: space[4],
   },
   glassWrapper: {
     width: '100%',
-    borderRadius: 4,
+    borderRadius: radius.lg,
   },
   opacity: {
-    backgroundColor: 'rgba(193, 193, 193, 0.5)',
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    paddingRight: 17,
-    paddingLeft: 17,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingRight: space[4],
+    paddingLeft: space[4],
+    paddingTop: space[3],
+    paddingBottom: space[3],
     zIndex: 1,
-    borderRadius: 4,
+    borderRadius: radius.lg,
+    ...shadow.sm,
   },
   left: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   right: {
     flex: 1,
@@ -118,19 +123,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   header: {
-    fontSize: 24,
-    fontFamily: 'NotoSans-Regular',
-    color: 'white',
-    fontWeight: '400',
+    fontSize: 20,
+    fontFamily: fonts.semiBold,
+    color: colors.textStrong,
   },
   small: {
     fontSize: 16,
-    fontFamily: 'NotoSans-Regular',
-    color: 'white',
-    fontWeight: '400',
+    fontFamily: fonts.regular,
+    color: colors.text,
   },
   smallContainer: {
-    marginTop: 5,
+    marginTop: space[1],
   },
 });
 

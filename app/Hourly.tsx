@@ -1,5 +1,5 @@
 import React, { JSX } from 'react';
-import { ImageBackground, StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { shallowEqual, useSelector } from 'react-redux';
@@ -11,8 +11,7 @@ import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-
-const appBackground = require('@/assets/new-glass-bg.png');
+import { colors, fonts } from '@/lib/theme';
 
 function HourlyScreen(): JSX.Element {
   const { location: location_name, dayString, startAtCurrentTime, title } =
@@ -44,18 +43,18 @@ function HourlyScreen(): JSX.Element {
     );
   } else {
     mainContent = (
-      <Text style={{ color: 'white', fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
+      <Text style={{ color: colors.text, fontFamily: fonts.regular, fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
     );
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={location_name} />
           <Alerts lat={lat} lon={lon} location={location_name} />
           {mainContent}
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -69,9 +68,11 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     overflow: 'scroll',
+    backgroundColor: colors.bgAlt,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   },
   container: {
     flexDirection: 'column',
@@ -79,7 +80,8 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 20,
-    fontFamily: 'Rajdhani-Regular',
+    fontFamily: fonts.semiBold,
+    color: colors.textStrong,
     paddingRight: 20,
     paddingLeft: 20,
     paddingTop: 20,

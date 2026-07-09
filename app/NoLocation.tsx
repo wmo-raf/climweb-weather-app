@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useRouter, Href} from 'expo-router';
@@ -14,17 +14,16 @@ import { setForecast } from '@/lib/store/forecast.slice';
 import { setLat, setLon, setName } from '@/lib/store/location.slice';
 import { SCREENS } from '@/lib/layout/constants';
 import { ForecastRecord } from '@/lib/forecast/types';
-
-const appBackground = require('@/assets/new-glass-bg.png');
+import { colors, space } from '@/lib/theme';
 
 const NoLocationScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location="Climweb Weather App" />
           <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} snapToStart={false}>
             {
@@ -42,7 +41,7 @@ const NoLocationScreen = () => {
                 />)
             }
           </ScrollView>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -57,14 +56,16 @@ const styles = StyleSheet.create({
     width: '100%',
     margin: 0,
     padding: 0,
+    backgroundColor: colors.bgAlt,
   },
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginLeft: 18,
-    marginRight: 18,
+    marginLeft: space[4],
+    marginRight: space[4],
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   }
 })

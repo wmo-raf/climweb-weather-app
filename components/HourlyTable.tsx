@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
+import { colors, fonts, space } from '@/lib/theme';
 
 type HourlyTableProps = {
   title: string;
@@ -56,35 +57,37 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
+    backgroundColor: colors.bgAlt,
   },
   title: {
-    paddingLeft: 24,
-    paddingRight: 20,
-    paddingTop: 15,
-    marginTop: 5,
+    paddingLeft: space[6],
+    paddingRight: space[4],
+    paddingTop: space[4],
+    marginTop: space[1],
   },
   titleText: {
     fontSize: 16,
-    color: 'white',
-    fontWeight: '600',
+    color: colors.textStrong,
+    fontFamily: fonts.semiBold,
   },
   table: {
-    paddingLeft: 24,
-    paddingRight: 20,
-    paddingTop: 5,
+    paddingLeft: space[6],
+    paddingRight: space[4],
+    paddingTop: space[1],
     flex: 1,
   },
   opacity: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   whiteHeader: {
-    color: 'white',
+    color: colors.textSubtle,
+    fontFamily: fonts.semiBold,
     textAlign: 'center'
   },
   whiteText: {
-    color: 'white',
+    color: colors.text,
+    fontFamily: fonts.regular,
     fontSize: 16,
   },
 });

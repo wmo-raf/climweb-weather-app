@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,8 +10,7 @@ import Alerts from '@/components/Alerts';
 import AppBar from '@/components/AppBar';
 import { RootState } from '@/lib/store';
 import { LANGUAGES } from '@/lib/localization/translations';
-
-const appBackground = require('@/assets/new-glass-bg.png');
+import { colors, fonts, radius, space } from '@/lib/theme';
 
 const SettingsScreen = () => {
   const { t, i18n } = useTranslation();
@@ -30,9 +29,9 @@ const SettingsScreen = () => {
   const { name, lat, lon } = useSelector((state: RootState) => state.location);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={t('Settings')} />
           <Alerts lat={lat} lon={lon} location={name} />
           <View style={styles.container}>
@@ -49,15 +48,15 @@ const SettingsScreen = () => {
                   options={options}
                   selectedValue={i18n.language}
                   onValueChange={value => handleChangeLanguage(value as string)}
-                  primaryColor={'#313131'}
+                  primaryColor={colors.primary}
                   dropdownStyle={styles.dropdownStyle}
-                  placeholderStyle={{ color: 'white' }}
-                  selectedItemStyle={{ color: 'white' }}
+                  placeholderStyle={{ color: colors.textMuted }}
+                  selectedItemStyle={{ color: colors.text }}
                 />
               </View>
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -73,33 +72,31 @@ const styles = StyleSheet.create({
   opacity: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   dropdownStyle: {
     flexDirection: 'column',
     flex: 1,
     verticalAlign: 'middle',
-    backgroundColor: 'rgba(100, 100, 100, .1)',
-    borderColor: 'white',
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderRadius: radius.md,
   },
   whiteHeader: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 20,
-    fontWeight: '600',
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   whiteText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 16,
     lineHeight: 22,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.regular,
   },
   title: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 18,
     lineHeight: 24,
-    fontWeight: '600',
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.semiBold,
   },
   wrapper: {
     flexDirection: 'column',
@@ -108,13 +105,15 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     overflow: 'scroll',
+    backgroundColor: colors.bgAlt,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   },
   content: {
-    marginTop: 24,
-    marginLeft: 32,
+    marginTop: space[6],
+    marginLeft: space[8],
     marginRight: 58,
   },
 });

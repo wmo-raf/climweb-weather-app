@@ -10,10 +10,13 @@ export const WEATHER_WARNING_ICONS: { [k: string]: ImageSourcePropType } = {
   yellow: warningYellow,
 };
 
+// Flat, opaque alert-level colors (no transparency — see docs/STYLE.md "flat colors only").
+// These 5 CAP severity levels aren't all covered by STYLE.md's 4 core status colors;
+// full contrast/legend treatment is redesigned in Step 4.
 export const WARNING_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string} = {
-  Red: 'rgba(198, 0, 0, 0.60)',
-  Yellow: 'rgba(255, 230, 0, 0.6)',
-  Orange: 'rgba(255, 157, 0, 0.6)',
-  Cyan: 'rgba(57, 156, 199, 0.6)',
-  Blue: 'rgba(130, 168, 223, 0.6',
+  Red: '#C60000',
+  Yellow: '#FFE600',
+  Orange: '#FF9D00',
+  Cyan: '#399CC7',
+  Blue: '#82A8DF',
 };
