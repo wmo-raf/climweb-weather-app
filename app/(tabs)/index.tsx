@@ -168,7 +168,11 @@ const MainScreen = () => {
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />
-          {!isXL && <Alerts lat={lat} lon={lon} location={location} />}
+          {!isXL &&
+            <View style={styles.alertsWrapper}>
+              <Alerts lat={lat} lon={lon} location={location} />
+            </View>
+          }
           <ScrollView showsVerticalScrollIndicator={false} snapToStart={false} accessible={true} accessibilityLabel='Landing page' refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
           }>
@@ -202,6 +206,11 @@ const styles = StyleSheet.create({
     marginLeft: space[4],
     marginTop: space[4],
     marginBottom: space[12],
+  },
+  alertsWrapper: {
+    marginRight: space[4],
+    marginLeft: space[4],
+    marginTop: space[4],
   },
   opacity: {},
   loader: {

@@ -44,15 +44,15 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, tomorrow, 
 };
 
 const styles = StyleSheet.create({
+  // No horizontal margin here — Today is only ever rendered inside
+  // app/(tabs)/index.tsx's contentWrapper, which already provides the
+  // horizontal inset. Duplicating it here made this card narrower than
+  // the alert banner above it, which uses that same single inset.
   wrapper: {
     marginTop: space[4],
-    marginRight: space[4],
-    marginLeft: space[4],
   },
   wrapperCompact: {
     marginTop: space[3],
-    marginRight: space[3],
-    marginLeft: space[3],
   },
   todaysHeader: {
     fontSize: 20,
