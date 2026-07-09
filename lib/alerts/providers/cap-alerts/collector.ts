@@ -70,7 +70,7 @@ export class CAPCollector {
             if (this.isRelevant(msg))
                 ret.push(msg)
         }
-        return ret
+        return ret;
     }
 
     /**

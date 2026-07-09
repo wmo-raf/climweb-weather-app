@@ -36,7 +36,9 @@ const SettingsScreen = () => {
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={t('Settings')} />
-          <Alerts lat={lat} lon={lon} location={name} />
+          <View style={styles.alertsWrapper}>
+            <Alerts lat={lat} lon={lon} location={name} />
+          </View>
           <View style={styles.container}>
             <View style={styles.card}>
               <Text style={styles.title}>
@@ -88,6 +90,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     padding: space[4],
+  },
+  alertsWrapper: {
+    marginLeft: space[4],
+    marginRight: space[4],
+    marginTop: space[4],
   },
   card: {
     backgroundColor: colors.bg,

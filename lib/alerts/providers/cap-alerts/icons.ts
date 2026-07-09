@@ -31,6 +31,16 @@ export const ALERT_LEAD_WORD_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' 
   Blue: 'alert.lead.notice',
 };
 
+// Worst-first ordering used to pick which alert leads a consolidated banner
+// when more than one is active for the current location.
+export const ALERT_SEVERITY_RANK: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: number } = {
+  Red: 0,
+  Orange: 1,
+  Yellow: 2,
+  Cyan: 3,
+  Blue: 4,
+};
+
 // Text/icon color to use on top of WARNING_COLORS — Yellow and Blue are too
 // light for white text, so they get dark text instead.
 export const WARNING_BAND_TEXT_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {

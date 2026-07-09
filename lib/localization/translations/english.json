@@ -194,6 +194,8 @@
   "alert.lead.yellow": "Caution",
   "alert.lead.notice": "Notice",
   "alert.tapToSeeWhatToDo": "Tap here to see what to do",
+  "alert.moreWarningsSingular": "+{{count}} more warning · tap to see all",
+  "alert.moreWarningsPlural": "+{{count}} more warnings · tap to see all",
   "alert.band.red": "RED — act now",
   "alert.band.orange": "ORANGE — get ready",
   "alert.band.yellow": "YELLOW — be careful",

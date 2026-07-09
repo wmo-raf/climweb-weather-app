@@ -43,6 +43,8 @@ function ListenButton({ text, textColor, backgroundColor }: ListenButtonProps) {
       onDone: () => setSpeaking(false),
       onStopped: () => setSpeaking(false),
       onError: () => setSpeaking(false),
+      rate: .85,
+      pitch: 1,
     });
   };
 

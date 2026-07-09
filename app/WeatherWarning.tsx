@@ -11,6 +11,7 @@ import AlertCard from '@/components/AlertCard';
 
 import { RootState } from '@/lib/store';
 import { colors, fonts, space } from '@/lib/theme';
+import AlertLegend from '@/components/AlertLegend';
 
 function WeatherWarningScreen(): JSX.Element {
   const { t } = useTranslation();
@@ -27,6 +28,8 @@ function WeatherWarningScreen(): JSX.Element {
           {alert ? (
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
               <AlertCard alert={alert} />
+              <View style={{ marginBottom: 14 }}></View>
+              <AlertLegend />
             </ScrollView>
           ) : (
             <View style={styles.contentContainer}>

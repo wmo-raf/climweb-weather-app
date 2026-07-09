@@ -10,9 +10,13 @@ import { fonts, radius, space } from "@/lib/theme";
 type WeatherAlertProps = {
   alert: CAPAlert;
   onPress: () => void;
+  // Number of other active alerts beyond this one — when > 0, the banner
+  // becomes a consolidated "+N more warnings" summary instead of pointing
+  // at this specific alert's detail.
+  extraCount?: number;
 }
 
-const WeatherAlert = ({ alert, onPress }: WeatherAlertProps) => {
+const WeatherAlert = ({ alert, onPress, extraCount = 0 }: WeatherAlertProps) => {
   const { t } = useTranslation();
   const info = alert.info?.[0];
 
@@ -23,17 +27,20 @@ const WeatherAlert = ({ alert, onPress }: WeatherAlertProps) => {
   const backgroundColor = WARNING_COLORS[level];
   const textColor = WARNING_BAND_TEXT_COLORS[level];
   const icon = WEATHER_WARNING_ICONS[level.toLowerCase()];
+  const subtext = extraCount > 0
+    ? t(extraCount === 1 ? 'alert.moreWarningsSingular' : 'alert.moreWarningsPlural', { count: extraCount })
+    : t('alert.tapToSeeWhatToDo');
 
   return (
     <TouchableOpacity
       style={[styles.wrapper, { backgroundColor }]}
       onPress={onPress}
-      accessibilityLabel={`${leadWord}: ${info.event}. ${t('alert.tapToSeeWhatToDo')}`}
+      accessibilityLabel={`${leadWord}: ${info.event}. ${subtext}`}
     >
       {icon && <Icon source={icon} size={28} color={textColor} />}
       <View style={styles.textBlock}>
         <Text style={[styles.headline, { color: textColor }]} numberOfLines={2}>{leadWord}: {info.event}</Text>
-        <Text style={[styles.subtext, { color: textColor }]}>{t('alert.tapToSeeWhatToDo')}</Text>
+        <Text style={[styles.subtext, { color: textColor }]}>{subtext}</Text>
       </View>
       <Icon source="chevron-right" size={24} color={textColor} />
     </TouchableOpacity>

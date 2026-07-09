@@ -13,6 +13,7 @@ import type { RootState } from '@/lib/store';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { colors, fonts, navRailWidth, space } from '@/lib/theme';
+import Alerts from '@/components/Alerts';
 
 const FiveDaysScreen = () => {
   const { t } = useTranslation();
@@ -51,6 +52,9 @@ const FiveDaysScreen = () => {
         <View style={styles.bg}>
           <AppBar location={t('Next 5 days')} />
           <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.alertsWrapper}>
+              <Alerts lat={lat} lon={lon} location={location} />
+            </View>
             <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
             {forecast && <Text style={styles.footnote}>{t('fiveDays.footnote')}</Text>}
           </ScrollView>
@@ -82,6 +86,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: space[2],
     marginBottom: space[8],
+  },
+  alertsWrapper: {
+    marginLeft: space[6],
+    marginRight: space[6],
+    marginTop: space[4],
   },
   xlPadding: {
     paddingLeft: navRailWidth,

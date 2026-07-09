@@ -1,14 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 
-import { shallowEqual, useSelector } from 'react-redux';
 import { useNavigation, useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
-import { WEATHER_WARNING_ICONS } from '@/lib/alerts/providers/cap-alerts/icons';
-import { RootState } from '@/lib/store';
-import { CAPAlert, CAPInfo, alertInLocation, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useTranslation } from 'react-i18next';
 import { colors, fonts, space, touchTarget } from '@/lib/theme';
 
@@ -26,14 +22,6 @@ const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
-
-  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
-  const { lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
-
-  let relevantAlerts: CAPAlert[] = []
-  if (lat && lon) {
-    relevantAlerts = alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon }))
-  }
 
   const titleBlock = (
     <>
@@ -63,7 +51,6 @@ const AppBar = (props: AppBarProps) => {
             </TouchableOpacity>
           : <View style={styles.titleTouchable}>{titleBlock}</View>
         }
-        {getWarningIcons(relevantAlerts)}
       </View>
 
       <TouchableOpacity
@@ -78,29 +65,6 @@ const AppBar = (props: AppBarProps) => {
     </View>
   );
 }
-
-// Decorative severity badges next to the title — not tappable (the Alerts
-// banner below the header is the actual affordance for alert detail), so
-// these are plain Views, not TouchableOpacity, and carry their own a11y label
-// rather than implying a press action that does nothing.
-const getWarningIcons = (alerts: Array<CAPAlert>) => {
-  if (alerts && alerts.length) {
-    const icons: Array<React.JSX.Element> = [];
-    for (let i = 0, j = 0; i < alerts.length; i += 1, j += 20) {
-      const capInfo = alerts[i].info as Array<CAPInfo>;
-      const level = alertLevel(capInfo[0]);
-      const icon = WEATHER_WARNING_ICONS[level.toLowerCase()];
-      icons.push(
-        <View key={i} style={{ position: 'relative', top: 0, right: j, zIndex: j }} accessible={true} accessibilityLabel={`${level} alert active`}>
-          <Image style={{ width: 35, height: 30 }} source={icon} />
-        </View>
-      );
-    }
-    return <View style={styles.warningIcons}>
-      {icons}
-    </View>;
-  }
-};
 
 export default AppBar;
 

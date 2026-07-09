@@ -1,14 +1,12 @@
 import React, { JSX } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { DataTable, Icon } from 'react-native-paper';
+import { Icon } from 'react-native-paper';
 import { DateTime } from "luxon";
+import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { useTranslation } from 'react-i18next';
-import { colors, fonts, space } from '@/lib/theme';
-import { rainLevel, windLevel, RAIN_LEVEL_LABEL_KEYS, WIND_LEVEL_LABEL_KEYS } from '@/lib/forecast/plain-language';
-import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
+import { colors, fonts, radius, space } from '@/lib/theme';
 
 type HourlyTableProps = {
   title: string;
@@ -20,45 +18,44 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
 
   const isSameDay = props.day.hasSame(DateTime.local(), "day");
-  const dayName = isSameDay ? t('Today') : props.day.toFormat('ccc');
+  const dayName = isSameDay ? t('Today') : props.day.toFormat('cccc');
+  const rainWord = t('Rain').toLowerCase();
+  const windWord = t('Wind').toLowerCase();
+
   return (
     <View style={styles.container}>
-      <View style={styles.opacity}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}>{dayName} {props.day.toFormat('dd LLL')}</Text>
-        </View>
-        <DataTable style={styles.table}>
-          <DataTable.Header>
-            <DataTable.Title><Text style={styles.whiteHeader}>{t('Time')}</Text></DataTable.Title>
-            <DataTable.Title><Text></Text></DataTable.Title>
-            <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Temp')}{"\n"}C&deg;</Text></DataTable.Title>
-            <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Rain')}</Text></DataTable.Title>
-            <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Wind')}</Text></DataTable.Title>
-          </DataTable.Header>
-          <ScrollView snapToStart={false} showsVerticalScrollIndicator={false}>
-            {props.daySummary.steps.map((step) => {
-              const stepTime = DateTime.fromISO(step.time);
-              const precipMm = typeof step.precipitation === 'number' ? step.precipitation : 0;
-              const rainLabel = t(RAIN_LEVEL_LABEL_KEYS[rainLevel(precipMm)]);
-              const windLabel = t(WIND_LEVEL_LABEL_KEYS[windLevel(step.windSpeed)]);
-              return (
-                <DataTable.Row key={step.time}>
-                  <DataTable.Cell><Text style={styles.whiteText}>{stepTime.toLocaleString({ hour: '2-digit' })}</Text></DataTable.Cell>
-                  <DataTable.Cell accessible={true} accessibilityLabel={`Weather symbol on ${props.day.toFormat('dd LLL')} at ${stepTime.toLocaleString({ hour: '2-digit' })} is ${step.weatherSymbol.split('_').join(' ')}.`}>
-                    <View style={styles.conditionCell}>
-                      <Icon source={weatherIcons[step.weatherSymbol]} size={30} />
-                      <Text style={styles.conditionLabel} numberOfLines={1}>{t(CONDITION_LABEL_KEYS[conditionBucket(step.weatherSymbol)])}</Text>
-                    </View>
-                  </DataTable.Cell>
-                  <DataTable.Cell numeric><Text style={styles.whiteText}>{step.temperature ? Math.round(step.temperature) : ""}&deg;</Text></DataTable.Cell>
-                  <DataTable.Cell numeric><Text style={styles.whiteTextSmall} numberOfLines={2}>{rainLabel}{"\n"}{step.precipitation} {t('mm')}</Text></DataTable.Cell>
-                  <DataTable.Cell numeric><Text style={styles.whiteTextSmall} numberOfLines={2}>{windLabel}{"\n"}{Math.round(step.windSpeed || 0)} {t('Km/h')}</Text></DataTable.Cell>
-                </DataTable.Row>
-              );
-            })}
-          </ScrollView>
-        </DataTable>
+      <View style={styles.titleBand}>
+        <Text style={styles.titleText}>{dayName}</Text>
       </View>
+      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
+        {props.daySummary.steps.map((step) => {
+          const stepTime = DateTime.fromISO(step.time);
+          const timeLabel = stepTime.toFormat('h a').toLowerCase();
+          const precipText = typeof step.precipitation === 'number' && step.precipitation > 0
+            ? `${step.precipitation.toFixed(1)} mm`
+            : '— mm';
+          const windText = `${Math.round(step.windSpeed || 0)} km/h`;
+          const temp = step.temperature !== undefined ? Math.round(step.temperature) : undefined;
+
+          return (
+            <View
+              key={step.time}
+              style={styles.row}
+              accessible={true}
+              accessibilityLabel={`${timeLabel}: ${step.weatherSymbol.split('_').join(' ')}, ${precipText} ${rainWord}, ${windText} ${windWord}${temp !== undefined ? `, ${temp} degrees` : ''}.`}
+            >
+              <View style={styles.leftGroup}>
+                <Icon source={weatherIcons[step.weatherSymbol]} size={26} />
+                <Text style={styles.time}>{timeLabel}</Text>
+              </View>
+              <Text style={styles.description} numberOfLines={2}>
+                {precipText} {rainWord} · {windText} {windWord}
+              </Text>
+              <Text style={styles.temp}>{temp !== undefined ? `${temp}°` : ''}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };
@@ -69,52 +66,55 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.bgAlt,
   },
-  title: {
-    paddingLeft: space[6],
-    paddingRight: space[4],
-    paddingTop: space[4],
-    marginTop: space[1],
+  titleBand: {
+    marginHorizontal: space[4],
+    marginTop: space[4],
+    paddingVertical: space[3],
+    paddingHorizontal: space[4],
+    borderRadius: radius.lg,
+    backgroundColor: colors.bgTint,
   },
   titleText: {
     fontSize: 16,
-    color: colors.textStrong,
-    fontFamily: fonts.semiBold,
+    color: colors.primary,
+    fontFamily: fonts.bold,
   },
-  table: {
-    paddingLeft: space[6],
-    paddingRight: space[4],
-    paddingTop: space[1],
+  list: {
     flex: 1,
+    marginTop: space[3],
   },
-  opacity: {
-    flexDirection: 'column',
-    flex: 1,
-  },
-  whiteHeader: {
-    color: colors.textSubtle,
-    fontFamily: fonts.semiBold,
-    textAlign: 'center'
-  },
-  whiteText: {
-    color: colors.text,
-    fontFamily: fonts.regular,
-    fontSize: 16,
-  },
-  whiteTextSmall: {
-    color: colors.text,
-    fontFamily: fonts.regular,
-    fontSize: 14,
-    textAlign: 'right',
-  },
-  conditionCell: {
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
-    maxWidth: 64,
+    gap: space[3],
+    paddingVertical: space[3],
+    paddingHorizontal: space[4],
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  conditionLabel: {
-    color: colors.textSubtle,
-    fontFamily: fonts.regular,
+  leftGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
+    minWidth: 84,
+  },
+  time: {
+    fontSize: 15,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+  },
+  description: {
+    flex: 1,
     fontSize: 14,
-    textAlign: 'center',
+    fontFamily: fonts.regular,
+    color: colors.textSubtle,
+  },
+  temp: {
+    fontSize: 18,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+    minWidth: 44,
+    textAlign: 'right',
   },
 });
 

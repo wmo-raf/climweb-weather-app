@@ -11,7 +11,7 @@ import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { colors, fonts } from '@/lib/theme';
+import { colors, fonts, space } from '@/lib/theme';
 
 function HourlyScreen(): JSX.Element {
   const { location: location_name, dayString, startAtCurrentTime, title } =
@@ -52,7 +52,9 @@ function HourlyScreen(): JSX.Element {
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location_name} />
-          <Alerts lat={lat} lon={lon} location={location_name} />
+          <View style={styles.alertsWrapper}>
+            <Alerts lat={lat} lon={lon} location={location_name} />
+          </View>
           {mainContent}
         </View>
       </View>
@@ -73,6 +75,11 @@ const styles = StyleSheet.create({
   bg: {
     height: '100%',
     backgroundColor: colors.bgAlt,
+  },
+  alertsWrapper: {
+    marginLeft: space[4],
+    marginRight: space[4],
+    marginTop: space[4],
   },
   container: {
     flexDirection: 'column',

@@ -194,6 +194,8 @@
   "alert.lead.yellow": "Tahadhari",
   "alert.lead.notice": "Taarifa",
   "alert.tapToSeeWhatToDo": "Gusa hapa kuona la kufanya",
+  "alert.moreWarningsSingular": "+{{count}} tahadhari nyingine · gusa kuona zote",
+  "alert.moreWarningsPlural": "+{{count}} tahadhari nyingine · gusa kuona zote",
   "alert.band.red": "NYEKUNDU — chukua hatua sasa",
   "alert.band.orange": "CHUNGWA — jiandae",
   "alert.band.yellow": "MANJANO — kuwa mwangalifu",

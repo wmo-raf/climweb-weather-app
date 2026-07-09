@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     fiveDaysWrapper: {
         paddingLeft: space[6],
         paddingRight: space[6],
-        marginTop: space[10],
+        marginTop: space[2],
         paddingBottom: space[10],
     },
 });

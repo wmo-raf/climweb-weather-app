@@ -11,7 +11,7 @@ import AppBar from '@/components/AppBar';
 import { AppDispatch, RootState } from '@/lib/store';
 import { setLocation } from '@/lib/store/location.slice';
 import { Place } from '@/lib/geo/places';
-import { colors } from '@/lib/theme';
+import { colors, space } from '@/lib/theme';
 
 const SearchScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +23,9 @@ const SearchScreen = () => {
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={name ? name : 'Search location'} />
-          <Alerts lat={lat} lon={lon} location={name} />
+          <View style={styles.alertsWrapper}>
+            <Alerts lat={lat} lon={lon} location={name} />
+          </View>
           <Search
             location={name}
             setLocation={
@@ -53,5 +55,10 @@ const styles = StyleSheet.create({
   bg: {
     height: '100%',
     backgroundColor: colors.bgAlt,
-  }
+  },
+  alertsWrapper: {
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: space[4],
+  },
 })
