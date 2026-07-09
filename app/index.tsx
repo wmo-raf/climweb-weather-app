@@ -103,15 +103,6 @@ const MainScreen = () => {
     const today = DateTime.now();
     const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
 
-    const onSelectToday = () =>
-      router.push({
-        pathname: "/Hourly", params: {
-          location: location,
-          dayString: today.toISO(),
-          startAtCurrentTime: "yes",
-          title: 'Hourly Today'
-        }
-      })
     const onSelectDay = (location: string) =>
       (day: DateTime) =>
         router.push({
@@ -125,9 +116,7 @@ const MainScreen = () => {
 
     mainContent = (
       <View style={styles.opacity}>
-        <TouchableOpacity onPress={onSelectToday}>
-          <Today daySummary={todaySummary} />
-        </TouchableOpacity>
+        <Today daySummary={todaySummary} location={location} />
         <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay(location)} />
       </View>
     )

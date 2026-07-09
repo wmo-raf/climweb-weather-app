@@ -1,108 +1,126 @@
 import React, { JSX } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
-
-import { ForecastDayRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, radius, space } from '@/lib/theme';
 
-const upArrow = require('@/assets/Arrow-upward.png');
-const downArrow = require('@/assets/Arrow-downward.png');
+import weatherIcons from '@/lib/forecast/weathericons.constant';
+import { ForecastDayRecord } from '@/lib/forecast/types';
+import { DAY_PARTS, CONDITION_LABEL_KEYS, conditionBucket, getDayParts, buildTodaySummary } from '@/lib/forecast/day-parts';
+import DayPartCard from './DayPartCard';
+import { colors, fonts, radius, space } from '@/lib/theme';
 
 type TodaysForecastProps = {
   daySummary: ForecastDayRecord | undefined;
+  location: string;
 };
-function Today(props: TodaysForecastProps): JSX.Element {
-  const { t } = useTranslation();
 
-  const { daySummary } = props;
+function Today({ daySummary, location }: TodaysForecastProps): JSX.Element {
+  const { t } = useTranslation();
 
   if (!daySummary) {
     return (
       <View style={styles.wrapper}>
-        <View style={styles.today}>
-          <Text style={styles.todaysHeader}>Forecast unavailable</Text>
-        </View>
+        <Text style={styles.todaysHeader}>{t('Forecast unavailable')}</Text>
       </View>
     )
   }
 
+  const nowStep = daySummary.steps[0];
+  const nowTemp = Math.round(nowStep?.temperature || 0);
+  const nowIconSource = nowStep?.weatherSymbol ? weatherIcons[nowStep.weatherSymbol] : undefined;
+  const nowConditionLabel = t('condition.now', { condition: t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]) });
+
+  const dayParts = getDayParts(daySummary);
+  const partsWithData = DAY_PARTS.filter(part => dayParts[part]);
+
+  const summary = buildTodaySummary(t, location, nowStep, dayParts);
+
   return (
     <View style={styles.wrapper}>
-      <View style={styles.opacity}>
-        <View style={styles.todayText}><Text style={styles.todaysHeader}>{t('Today')} {">"}</Text></View>
-        <View style={styles.today}>
-          <View><Text style={styles.large}>{Math.round(daySummary.steps[0].temperature || 0)}&deg;</Text></View>
-        </View>
-        <View style={styles.temps}>
-          <View>
-            <Text style={styles.small}>
-              {t('Max')} <Icon size={15} color={colors.text} source={upArrow} /> {Math.round(daySummary.maxTemperature || 0)}&deg;<View style={{ paddingRight: 24 }}></View>{t('Min')} <Icon size={15} color={colors.text} source={downArrow} /> {Math.round(daySummary.minTemperature || 0)}&deg;
-            </Text>
-          </View>
-          <View>
-            <Text style={styles.smallSymbol} numberOfLines={2}>
-              {daySummary.weatherSymbol ? t(daySummary.weatherSymbol) : t('Not available')}
-            </Text>
+      <View style={styles.currentCard}>
+        <View style={styles.currentRow}>
+          {nowIconSource && <Icon source={nowIconSource} size={64} />}
+          <View style={styles.currentTempBlock}>
+            <Text style={styles.large}>{nowTemp}&deg;</Text>
+            <Text style={styles.nowCondition}>{nowConditionLabel}</Text>
           </View>
         </View>
+        <Text style={styles.summaryText}>
+          {summary.lead}{summary.predictive ? <Text style={styles.summaryBold}> {summary.predictive}</Text> : null}{summary.trailing ? ` ${summary.trailing}` : ''}
+        </Text>
       </View>
+
+      {partsWithData.length > 0 &&
+        <View style={styles.dayPartsSection}>
+          <Text style={styles.sectionHeader}>{t('Today')}</Text>
+          <View style={styles.grid}>
+            {partsWithData.map(part => (
+              <DayPartCard key={part} part={part} summary={dayParts[part]!} />
+            ))}
+          </View>
+        </View>
+      }
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: space[6],
-    marginRight: space[6],
-    marginLeft: space[6],
+    marginTop: space[4],
+    marginRight: space[4],
+    marginLeft: space[4],
   },
-  opacity: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    flex: 1,
+  currentCard: {
     borderRadius: radius.lg,
     backgroundColor: colors.bgTint,
-    padding: space[2],
+    padding: space[4],
   },
-  today: {
-    flex: 1,
-    paddingTop: space[8],
-    paddingBottom: space[4],
-    textAlign: 'center',
+  currentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[4],
   },
-  todayText: {
-    flex: 1,
-  },
-  temps: {
-    margin: space[2],
-  },
-  todaysHeader: {
-    fontSize: 20,
-    fontFamily: fonts.semiBold,
-    marginBottom: -15,
-    marginLeft: space[2],
-    color: colors.textStrong,
+  currentTempBlock: {
+    flexDirection: 'column',
   },
   large: {
     fontSize: 60,
     fontFamily: fonts.extraBold,
     color: colors.textStrong,
-    textAlign: 'center',
   },
-  small: {
+  nowCondition: {
+    fontSize: 18,
+    fontFamily: fonts.semiBold,
+    color: colors.primary,
+  },
+  summaryText: {
     fontSize: 16,
     fontFamily: fonts.regular,
     color: colors.text,
+    marginTop: space[3],
   },
-  smallSymbol: {
-    fontSize: 16,
-    fontFamily: fonts.regular,
-    color: colors.text,
-    maxWidth: 150
+  summaryBold: {
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+  },
+  dayPartsSection: {
+    marginTop: space[6],
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+    marginBottom: space[3],
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  todaysHeader: {
+    fontSize: 20,
+    fontFamily: fonts.semiBold,
+    color: colors.textStrong,
   },
 });
 
