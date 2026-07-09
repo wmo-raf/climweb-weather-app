@@ -5,13 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { Button } from 'react-native-paper';
 import { ActivityIndicator } from 'react-native';
-import { CommonActions } from "expo-router/react-navigation";
-import { useRouter, useNavigation } from 'expo-router';
+import { useRouter, useNavigation, Href } from 'expo-router';
 import { isUndefined } from 'lodash';
 
 import AppBar from '@/components/AppBar';
 import Today from '@/components/Today';
-import FiveDays from '@/components/FiveDays';
 import Alerts from '@/components/Alerts';
 
 import type { AppDispatch, RootState } from '@/lib/store'
@@ -72,12 +70,7 @@ const MainScreen = () => {
   useEffect(() => {
     if (locationError && !navigation.canGoBack()) {
       dispatch(resetError());
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: SCREENS.NoLocation }],
-        })
-      );
+      router.replace(SCREENS.NoLocation.toString() as Href);
     }
   }, [locationError]);
 
@@ -103,21 +96,9 @@ const MainScreen = () => {
     const today = DateTime.now();
     const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
 
-    const onSelectDay = (location: string) =>
-      (day: DateTime) =>
-        router.push({
-          pathname: "/Hourly", params: {
-            location: location,
-            dayString: day.toISO(),
-            startAtCurrentTime: "no",
-            title: day.toLocaleString({ weekday: 'long' })
-          }
-        });
-
     mainContent = (
       <View style={styles.opacity}>
         <Today daySummary={todaySummary} location={location} />
-        <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay(location)} />
       </View>
     )
   }
@@ -137,7 +118,7 @@ const MainScreen = () => {
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={location} />
+          <AppBar location={location} isPlace />
           <Alerts lat={lat} lon={lon} location={location} />
           <ScrollView showsVerticalScrollIndicator={false} snapToStart={false} accessible={true} accessibilityLabel='Landing page' refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />

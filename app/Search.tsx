@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 import { Search } from '@/components/Search';
 import Alerts from '@/components/Alerts';
@@ -11,13 +11,12 @@ import AppBar from '@/components/AppBar';
 import { AppDispatch, RootState } from '@/lib/store';
 import { setLocation } from '@/lib/store/location.slice';
 import { Place } from '@/lib/geo/places';
-import { CommonActions } from "expo-router/react-navigation";
 import { colors } from '@/lib/theme';
 
 const SearchScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { name, lat, lon } = useSelector((state: RootState) => state.location);
-  const navigation = useNavigation();
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -29,14 +28,8 @@ const SearchScreen = () => {
             location={name}
             setLocation={
               (place: Place) => {
-                console.log('[UI] dispatching setLocation with:', place);
                 dispatch(setLocation({ name: place.name, lat: place.latitude, lon: place.longitude }));
-                navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: 'index' }],
-                  })
-                );
+                router.replace('/');
               }
             }
           />

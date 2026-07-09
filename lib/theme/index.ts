@@ -80,4 +80,6 @@ export const shadow = {
   xl: elevation(12),
 } as const;
 
-export const touchTarget = { min: 44 };
+// `min` matches docs/STYLE.md's general 44px baseline; `nav` is the stricter
+// 48dp the handoff calls for specifically on nav items, toggles, and list rows.
+export const touchTarget = { min: 44, nav: 48 };
