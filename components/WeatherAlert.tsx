@@ -1,114 +1,73 @@
 import React from "react";
-import { Image, ImageSourcePropType, StyleProp, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text } from "react-native-paper";
-import { DateTime } from "luxon";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Icon, Text } from "react-native-paper";
+import { useTranslation } from "react-i18next";
 
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
-import { WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
-import { colors, fonts, radius, space } from "@/lib/theme";
+import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
+import { fonts, radius, space } from "@/lib/theme";
 
 type WeatherAlertProps = {
   alert: CAPAlert;
-  style?: StyleProp<{}>,
-  onPress: (alert: {}) => void
+  onPress: () => void;
 }
-const WeatherAlert = (props: WeatherAlertProps) => {
-  const { alert, onPress } = props;
+
+const LEAD_WORD_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
+  Red: 'alert.lead.red',
+  Orange: 'alert.lead.orange',
+  Yellow: 'alert.lead.yellow',
+  Cyan: 'alert.lead.notice',
+  Blue: 'alert.lead.notice',
+};
+
+const WeatherAlert = ({ alert, onPress }: WeatherAlertProps) => {
+  const { t } = useTranslation();
+  const info = alert.info?.[0];
+
+  if (!info) return null;
+
+  const level = alertLevel(info);
+  const leadWord = t(LEAD_WORD_KEYS[level]);
+  const backgroundColor = WARNING_COLORS[level];
+  const textColor = WARNING_BAND_TEXT_COLORS[level];
+  const icon = WEATHER_WARNING_ICONS[level.toLowerCase()];
 
   return (
-    <TouchableOpacity style={styles.wrapper} onPress={() => onPress({})} accessibilityLabel={`${getAlertStatus(alert)}: ${getAlertEvent(alert)}, level ${getAlertLevel(alert)?.toLowerCase()}`}>
-      <View style={styles.glassWrapper}>
-        <View style={{ ...styles.opacity, backgroundColor: getWarningColor(getAlertLevel(alert)) }}>
-          <View style={styles.warning}>
-            <View style={styles.warningIcon}><Image source={getWarningIcon(getAlertLevel(alert) as string)} style={styles.icon} /></View>
-            <View style={styles.warningText}>
-              <Text style={styles.header}>
-                {getAlertStatus(alert)}: {getAlertEvent(alert)}{'\n'}Level: {getAlertLevel(alert)?.toLowerCase()}
-              </Text>
-            </View>
-          </View>
-        </View>
+    <TouchableOpacity
+      style={[styles.wrapper, { backgroundColor }]}
+      onPress={onPress}
+      accessibilityLabel={`${leadWord}: ${info.event}. ${t('alert.tapToSeeWhatToDo')}`}
+    >
+      {icon && <Icon source={icon} size={28} color={textColor} />}
+      <View style={styles.textBlock}>
+        <Text style={[styles.headline, { color: textColor }]} numberOfLines={2}>{leadWord}: {info.event}</Text>
+        <Text style={[styles.subtext, { color: textColor }]}>{t('alert.tapToSeeWhatToDo')}</Text>
       </View>
+      <Icon source="chevron-right" size={24} color={textColor} />
     </TouchableOpacity>
   )
 };
 
-
-function getWarningIcon(level: string): ImageSourcePropType {
-  return WEATHER_WARNING_ICONS[level.toLowerCase()];
-}
-
-function getWarningColor(level?: keyof typeof WARNING_COLORS): string | undefined {
-  if (!level) {
-    return;
-  }
-  return WARNING_COLORS[level];
-}
-
-function getAlertStatus(alert: CAPAlert) {
-  if (!alert.info || !alert.info.length) {
-    return;
-  }
-
-  const { onset, effective } = alert.info[0];
-  const start = DateTime.fromISO(onset || effective || alert?.sent);
-  return start <= DateTime.now() ? 'Ongoing' : 'Expected';
-}
-
-function getAlertEvent(alert: CAPAlert) {
-  if (!alert.info || !alert.info.length || !alert.info[0].event) {
-    return;
-  }
-  return alert.info[0].event;
-}
-
-function getAlertLevel(alert: CAPAlert) {
-  if (!alert.info || !alert.info.length) {
-    return;
-  }
-  return alertLevel(alert.info[0]);
-}
-
 const styles = StyleSheet.create({
   wrapper: {
-    width: '100%',
-    marginTop: 0,
-  },
-  glassWrapper: {
-    width: '100%',
-  },
-  opacity: {
-    width: '100%',
-    zIndex: 1,
-    borderRadius: radius.lg,
-    paddingRight: space[4],
-    paddingLeft: space[4],
-    paddingTop: space[2],
-    paddingBottom: space[3],
-  },
-  warning: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
+    borderRadius: radius.lg,
+    padding: space[4],
+    gap: space[3],
   },
-  warningIcon: {
-    marginRight: space[3],
-    height: 44,
-    width: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
+  textBlock: {
+    flex: 1,
   },
-  icon: {
-    width: 35,
-    height: 30,
-  },
-  warningText: {
-    flex: 6,
-    paddingTop: space[1],
-  },
-  header: {
+  headline: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: colors.textInverse,
+    fontFamily: fonts.bold,
+  },
+  subtext: {
+    fontSize: 13,
+    fontFamily: fonts.regular,
+    marginTop: space[1],
   },
 });
 

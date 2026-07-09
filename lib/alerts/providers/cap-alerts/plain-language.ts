@@ -1,0 +1,54 @@
+import { DateTime } from 'luxon';
+
+import { CAPInfo } from './alert';
+
+type Translate = (key: string, options?: Record<string, unknown>) => string;
+
+// Splits the raw CAP `instruction` text into a checklist of short imperative
+// sentences. Returns [] (not a fabricated fallback) when there's nothing to
+// show — this is safety guidance, so it must come from the CAP feed itself.
+export function getWhatToDo(info: CAPInfo | undefined): string[] {
+  const instruction = info?.instruction?.trim();
+  if (!instruction) return [];
+
+  return instruction
+    .split(/\r?\n+|(?<=[.!?])\s+/)
+    .map(s => s.trim().replace(/[.!?]+$/, ''))
+    .filter(s => s.length > 3)
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1));
+}
+
+function timeOfDayKey(hour: number): string {
+  if (hour < 6) return 'time.night';
+  if (hour < 12) return 'time.morning';
+  if (hour < 18) return 'time.afternoon';
+  return 'time.evening';
+}
+
+function describeMoment(t: Translate, iso: string | undefined, now: DateTime): string | undefined {
+  if (!iso) return undefined;
+  const dt = DateTime.fromISO(iso);
+  if (!dt.isValid) return undefined;
+  if (dt <= now) return t('alert.when.now');
+
+  const sameDay = dt.hasSame(now, 'day');
+  const period = t(timeOfDayKey(dt.hour));
+  return sameDay ? period : `${dt.toFormat('cccc')} ${period}`;
+}
+
+// "From now until Wednesday evening." — built from onset/effective/expires,
+// falling back gracefully when only one end of the window is known.
+export function getWhenText(t: Translate, info: CAPInfo | undefined, now: DateTime = DateTime.now()): string | undefined {
+  if (!info) return undefined;
+  const start = describeMoment(t, info.onset ?? info.effective, now);
+  const end = describeMoment(t, info.expires, now);
+
+  if (start && end) return t('alert.when.range', { start, end });
+  if (start) return t('alert.when.fromOnly', { start });
+  if (end) return t('alert.when.untilOnly', { end });
+  return undefined;
+}
+
+export function getWhereText(info: CAPInfo | undefined): string | undefined {
+  return info?.area?.areaDesc;
+}
