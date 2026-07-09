@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { Button } from 'react-native-paper';
 import { ActivityIndicator } from 'react-native';
-import { useRouter, useNavigation, Href } from 'expo-router';
+import { useRouter, useNavigation, Href, Redirect } from 'expo-router';
 import { isUndefined } from 'lodash';
 
 import AppBar from '@/components/AppBar';
@@ -17,12 +17,15 @@ import { SCREENS } from '@/lib/layout/constants';
 import { resetError, getPreciseLocation } from '@/lib/store/location.slice';
 import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
 import { getAlerts } from '@/lib/store/alert.slice';
+import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { colors, fonts, radius, space } from '@/lib/theme';
 
 const MainScreen = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+
+  const [onboardingLoading, hasOnboarded] = useOnboarding();
 
   const { name: location, lat, lon, loading: locationLoading, error: locationError } = useSelector((state: RootState) => state.location, shallowEqual);
   const { loading, forecast, error: forecastError } = useSelector((state: RootState) => state.forecast, shallowEqual);
@@ -73,6 +76,14 @@ const MainScreen = () => {
       router.replace(SCREENS.NoLocation.toString() as Href);
     }
   }, [locationError]);
+
+  if (onboardingLoading) {
+    return null;
+  }
+
+  if (!hasOnboarded) {
+    return <Redirect href="/Welcome" />;
+  }
 
   // empty page as default content
   let mainContent: React.JSX.Element = (

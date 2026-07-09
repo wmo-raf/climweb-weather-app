@@ -117,6 +117,8 @@ The app uses **i18next** for internationalization (i18n) with the following stru
 
 Languages are managed through a centralized `LANGUAGES` object that defines each language's key, display label, and translation resources.
 
+Registered languages: **English** (`en`) and **Swahili** (`sw`, [swahili.json](lib/localization/translations/swahili.json)). The Swahili file is a machine-translated draft covering every key in `english.json` — it has not been checked by a native speaker and should be reviewed before relying on it for a production deployment.
+
 ### How to Add a Language
 
 Follow these steps to add a new language to the app:
@@ -226,7 +228,6 @@ Additional variants exist for:
 - **`Forecast unavailable`** - Short forecast unavailable label
 - **`There was an error getting the forecast`** - Error message for forecast retrieval
 - **`English`** - English language name
-- **`Chichewa`** - Chichewa language name (deprecated - pending removal)
 
 Here’s a clean entry you can drop into `CONFIGURATION.md`.
 

@@ -38,7 +38,7 @@ const FiveDaysScreen = () => {
           <AppBar location={t('Next 5 days')} />
           <ScrollView showsVerticalScrollIndicator={false}>
             <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} />
-            {forecast && <Text style={styles.footnote}>{t('Forecast from the Malawi weather office (DCCMS)')}</Text>}
+            {forecast && <Text style={styles.footnote}>{t('fiveDays.footnote')}</Text>}
           </ScrollView>
         </View>
       </View>
