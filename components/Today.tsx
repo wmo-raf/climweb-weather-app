@@ -37,7 +37,7 @@ function Today(props: TodaysForecastProps): JSX.Element {
         <View style={styles.temps}>
           <View>
             <Text style={styles.small}>
-              <Icon size={15} color={colors.text} source={upArrow} /> {Math.round(daySummary.maxTemperature || 0)}&deg;<View style={{ paddingRight: 24 }}></View><Icon size={15} color={colors.text} source={downArrow} /> {Math.round(daySummary.minTemperature || 0)}&deg;
+              {t('Max')} <Icon size={15} color={colors.text} source={upArrow} /> {Math.round(daySummary.maxTemperature || 0)}&deg;<View style={{ paddingRight: 24 }}></View>{t('Min')} <Icon size={15} color={colors.text} source={downArrow} /> {Math.round(daySummary.minTemperature || 0)}&deg;
             </Text>
           </View>
           <View>

@@ -7,6 +7,7 @@ import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
 import { useTranslation } from "react-i18next";
 import { colors, fonts, radius, shadow, space } from "@/lib/theme";
+import { windLevel, WIND_LEVEL_LABEL_KEYS } from "@/lib/forecast/plain-language";
 
 type DayRowProps = {
   summary: ForecastDayRecord | undefined;
@@ -30,8 +31,10 @@ const DayRow = (props: DayRowProps) => {
   const minTemp = summary.minTemperature || 0;
   const maxTemp = summary.maxTemperature || 0;
   const windSpeed = summary.windSpeed || 0;
+  const windLabel = t(WIND_LEVEL_LABEL_KEYS[windLevel(summary.windSpeed)]);
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
+  const iconLabel = icon ? t(icon) : undefined;
   const dayLabel = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
 
   return (
@@ -50,10 +53,11 @@ const DayRow = (props: DayRowProps) => {
             <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Max")}{"\n"}<Text style={styles.whiteParameters}>{Math.round(maxTemp)}&deg;</Text></Text>
           </View>
           <View style={{ flex: 2, flexDirection: 'column' }}>
-            <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Km/h")}{"\n"}<Text style={styles.whiteParameters}>{Math.round(windSpeed)}</Text></Text>
+            <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Wind")}{"\n"}<Text style={styles.whiteParameters}>{windLabel}</Text>{"\n"}{Math.round(windSpeed)} {t("Km/h")}</Text>
           </View>
-          <View style={{ flex: 2, margin: 0, padding: 0 }} accessible={true} accessibilityLabel={`Weather symbol on ${dayLabel} is ${icon?.split('_').join(' ')}.`}>
-            {iconSource && <Icon source={iconSource} size={55} />}
+          <View style={{ flex: 2, margin: 0, padding: 0, alignItems: 'center' }} accessible={true} accessibilityLabel={`Weather symbol on ${dayLabel} is ${icon?.split('_').join(' ')}.`}>
+            {iconSource && <Icon source={iconSource} size={48} />}
+            {iconLabel && <Text style={styles.iconLabel} numberOfLines={1}>{iconLabel}</Text>}
           </View>
         </View>
       </View>
@@ -94,6 +98,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
     fontSize: 16,
     textAlign: 'left'
+  },
+  iconLabel: {
+    color: colors.textSubtle,
+    fontFamily: fonts.regular,
+    fontSize: 11,
+    textAlign: 'center',
+    maxWidth: 70,
   },
 });
 
