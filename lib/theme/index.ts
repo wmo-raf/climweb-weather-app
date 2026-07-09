@@ -47,6 +47,9 @@ export const fonts = {
   extraBold: 'OpenSans_800ExtraBold',
 } as const;
 
+// bodySm/caption/label are floored at 14px, below docs/STYLE.md's web scale
+// (13/12/11px) — this app's low-literacy, possibly low-vision audience needs
+// no readable text smaller than 14px on phones (accessibility pass, Step 7).
 export const type = {
   display: { fontSize: 40, fontFamily: fonts.extraBold },
   h1: { fontSize: 32, fontFamily: fonts.bold },
@@ -56,9 +59,9 @@ export const type = {
   h5: { fontSize: 15, fontFamily: fonts.semiBold },
   bodyLg: { fontSize: 16, fontFamily: fonts.regular },
   body: { fontSize: 14, fontFamily: fonts.regular },
-  bodySm: { fontSize: 13, fontFamily: fonts.regular },
-  caption: { fontSize: 12, fontFamily: fonts.regular },
-  label: { fontSize: 11, fontFamily: fonts.semiBold },
+  bodySm: { fontSize: 14, fontFamily: fonts.regular },
+  caption: { fontSize: 14, fontFamily: fonts.regular },
+  label: { fontSize: 14, fontFamily: fonts.semiBold },
 } as const;
 
 const elevation = (elev: number) =>

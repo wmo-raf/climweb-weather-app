@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     ...shadow.sm,
   },
   partLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: fonts.semiBold,
     color: colors.textSubtle,
     marginBottom: space[2],

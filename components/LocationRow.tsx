@@ -9,6 +9,7 @@ import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
 
 
 type LocationRowProps = {
@@ -45,6 +46,7 @@ function LocationRow(props: LocationRowProps): JSX.Element {
             </View>
             <View style={styles.right}>
               <Icon source={weatherIcons[today.weatherSymbol || 'fair_day']} size={90} />
+              <Text style={styles.small}>{t(CONDITION_LABEL_KEYS[conditionBucket(today.weatherSymbol)])}</Text>
             </View>
           </View>
         </View>
@@ -119,8 +121,9 @@ const styles = StyleSheet.create({
   },
   right: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   header: {
     fontSize: 20,

@@ -18,7 +18,7 @@ import { resetError, getPreciseLocation } from '@/lib/store/location.slice';
 import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
 import { getAlerts } from '@/lib/store/alert.slice';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { colors, fonts, radius, space } from '@/lib/theme';
+import { colors, fonts, radius, space, touchTarget } from '@/lib/theme';
 
 const MainScreen = () => {
   const navigation = useNavigation();
@@ -179,6 +179,8 @@ const styles = StyleSheet.create({
   sendButton: {
     backgroundColor: colors.primary,
     width: '40%',
+    minHeight: touchTarget.nav,
+    justifyContent: 'center',
     borderRadius: radius.lg,
     padding: 1,
   },

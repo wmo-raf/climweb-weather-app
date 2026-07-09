@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
   },
   subtext: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: fonts.regular,
     marginTop: space[1],
   },

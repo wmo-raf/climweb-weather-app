@@ -8,6 +8,7 @@ import { ForecastDayRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 import { colors, fonts, space } from '@/lib/theme';
 import { rainLevel, windLevel, RAIN_LEVEL_LABEL_KEYS, WIND_LEVEL_LABEL_KEYS } from '@/lib/forecast/plain-language';
+import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
 
 type HourlyTableProps = {
   title: string;
@@ -43,7 +44,12 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
               return (
                 <DataTable.Row key={step.time}>
                   <DataTable.Cell><Text style={styles.whiteText}>{stepTime.toLocaleString({ hour: '2-digit' })}</Text></DataTable.Cell>
-                  <DataTable.Cell accessible={true} accessibilityLabel={`Weather symbol on ${props.day.toFormat('dd LLL')} at ${stepTime.toLocaleString({ hour: '2-digit' })} is ${step.weatherSymbol.split('_').join(' ')}.`}><Icon source={weatherIcons[step.weatherSymbol]} size={34} /></DataTable.Cell>
+                  <DataTable.Cell accessible={true} accessibilityLabel={`Weather symbol on ${props.day.toFormat('dd LLL')} at ${stepTime.toLocaleString({ hour: '2-digit' })} is ${step.weatherSymbol.split('_').join(' ')}.`}>
+                    <View style={styles.conditionCell}>
+                      <Icon source={weatherIcons[step.weatherSymbol]} size={30} />
+                      <Text style={styles.conditionLabel} numberOfLines={1}>{t(CONDITION_LABEL_KEYS[conditionBucket(step.weatherSymbol)])}</Text>
+                    </View>
+                  </DataTable.Cell>
                   <DataTable.Cell numeric><Text style={styles.whiteText}>{step.temperature ? Math.round(step.temperature) : ""}&deg;</Text></DataTable.Cell>
                   <DataTable.Cell numeric><Text style={styles.whiteTextSmall} numberOfLines={2}>{rainLabel}{"\n"}{step.precipitation} {t('mm')}</Text></DataTable.Cell>
                   <DataTable.Cell numeric><Text style={styles.whiteTextSmall} numberOfLines={2}>{windLabel}{"\n"}{Math.round(step.windSpeed || 0)} {t('Km/h')}</Text></DataTable.Cell>
@@ -97,8 +103,18 @@ const styles = StyleSheet.create({
   whiteTextSmall: {
     color: colors.text,
     fontFamily: fonts.regular,
-    fontSize: 12,
+    fontSize: 14,
     textAlign: 'right',
+  },
+  conditionCell: {
+    alignItems: 'center',
+    maxWidth: 64,
+  },
+  conditionLabel: {
+    color: colors.textSubtle,
+    fontFamily: fonts.regular,
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 

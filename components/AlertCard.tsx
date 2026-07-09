@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   whatToDoTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: fonts.bold,
     letterSpacing: 0.5,
     marginBottom: space[2],

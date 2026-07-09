@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     color: colors.textStrong,
   },
   description: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: fonts.regular,
     color: colors.text,
     marginTop: 2,

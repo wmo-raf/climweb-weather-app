@@ -14,7 +14,7 @@ import { Place } from '@/lib/geo/places';
 
 import geonames from '@/assets/geonames.json'
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
 const locationAnchor = require('@/assets/location-anchor.png');
 
 type SearchProps = {
@@ -68,8 +68,8 @@ export const Search = ({ setLocation }: SearchProps) => {
           debounce={100}
           showChevron={false}
           showClear={false}
-          RightIconComponent={<TouchableOpacity accessible={true} accessibilityLabel='Go to current location' onPress={handlePlaceByCurrentLocation} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}><Icon source={locationAnchor} size={24} /></TouchableOpacity>}
-          LeftComponent={<TouchableOpacity accessible={true} accessibilityLabel='Search' onPress={() => { }} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}><Icon source={'magnify'} color={colors.primary} size={24} /></TouchableOpacity>}
+          RightIconComponent={<TouchableOpacity accessible={true} accessibilityLabel='Go to current location' onPress={handlePlaceByCurrentLocation} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}><Icon source={locationAnchor} size={24} /></TouchableOpacity>}
+          LeftComponent={<TouchableOpacity accessible={true} accessibilityLabel='Search' onPress={() => { }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}><Icon source={'magnify'} color={colors.primary} size={24} /></TouchableOpacity>}
           useFilter={true}
           suggestionsListContainerStyle={styles.suggestionListStyle}
           suggestionsListTextStyle={styles.textStyle}
@@ -85,7 +85,7 @@ export const Search = ({ setLocation }: SearchProps) => {
             <Text variant="bodyMedium" style={styles.whiteText}>Not able to use your location to find the closest place.</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={hideDialog}><Text style={styles.whiteText}>Dismiss</Text></Button>
+            <Button onPress={hideDialog} style={styles.dialogButton}><Text style={styles.whiteText}>Dismiss</Text></Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -134,6 +134,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg,
     borderRadius: radius.lg,
     ...shadow.md,
+  },
+  dialogButton: {
+    minHeight: touchTarget.nav,
+    justifyContent: 'center',
   },
   whiteText: {
     color: colors.text,

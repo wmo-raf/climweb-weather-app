@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgTint,
   },
   tabLabel: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: fonts.semiBold,
     marginTop: 2,
   },

@@ -49,7 +49,7 @@ const AppBar = (props: AppBarProps) => {
     <View style={styles.appBar}>
       <View style={styles.appTitleContainer}>
         {navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={{ paddingRight: 12 }} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         {props.isPlace
@@ -79,17 +79,21 @@ const AppBar = (props: AppBarProps) => {
   );
 }
 
+// Decorative severity badges next to the title — not tappable (the Alerts
+// banner below the header is the actual affordance for alert detail), so
+// these are plain Views, not TouchableOpacity, and carry their own a11y label
+// rather than implying a press action that does nothing.
 const getWarningIcons = (alerts: Array<CAPAlert>) => {
   if (alerts && alerts.length) {
     const icons: Array<React.JSX.Element> = [];
     for (let i = 0, j = 0; i < alerts.length; i += 1, j += 20) {
       const capInfo = alerts[i].info as Array<CAPInfo>;
-      const alertColor = alertLevel(capInfo[0]).toLowerCase();
-      const icon = WEATHER_WARNING_ICONS[alertColor];
+      const level = alertLevel(capInfo[0]);
+      const icon = WEATHER_WARNING_ICONS[level.toLowerCase()];
       icons.push(
-        <TouchableOpacity key={i} style={{ position: 'relative', top: 0, right: j, zIndex: j }}>
+        <View key={i} style={{ position: 'relative', top: 0, right: j, zIndex: j }} accessible={true} accessibilityLabel={`${level} alert active`}>
           <Image style={{ width: 35, height: 30 }} source={icon} />
-        </TouchableOpacity>
+        </View>
       );
     }
     return <View style={styles.warningIcons}>
@@ -116,6 +120,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  backButton: {
+    minWidth: touchTarget.nav,
+    minHeight: touchTarget.nav,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   titleTouchable: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -134,7 +144,7 @@ const styles = StyleSheet.create({
     color: colors.textStrong,
   },
   placeSubtitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: fonts.regular,
     color: colors.primary,
   },

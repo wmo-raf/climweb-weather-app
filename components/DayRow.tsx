@@ -102,9 +102,9 @@ const styles = StyleSheet.create({
   iconLabel: {
     color: colors.textSubtle,
     fontFamily: fonts.regular,
-    fontSize: 11,
+    fontSize: 14,
     textAlign: 'center',
-    maxWidth: 70,
+    maxWidth: 90,
   },
 });
 

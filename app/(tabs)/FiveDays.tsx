@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   footnote: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: fonts.regular,
     color: colors.textMuted,
     textAlign: 'center',
