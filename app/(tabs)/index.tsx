@@ -21,6 +21,7 @@ import { SCREENS } from '@/lib/layout/constants';
 import { resetError, getPreciseLocation } from '@/lib/store/location.slice';
 import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
 import { getAlerts } from '@/lib/store/alert.slice';
+import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
@@ -38,6 +39,7 @@ const MainScreen = () => {
 
   const { name: location, lat, lon, loading: locationLoading, error: locationError } = useSelector((state: RootState) => state.location, shallowEqual);
   const { loading, forecast, error: forecastError } = useSelector((state: RootState) => state.forecast, shallowEqual);
+  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = async () => {
@@ -105,6 +107,16 @@ const MainScreen = () => {
       }
     });
 
+  const onSelectAlert = (alert: CAPAlert) =>
+    router.push({
+      pathname: "/WeatherWarning", params: { location, alertID: alert.identifier }
+    });
+
+  let relevantAlerts: CAPAlert[] = [];
+  if (lat && lon) {
+    relevantAlerts = alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon }));
+  }
+
   // empty page as default content
   let mainContent: React.JSX.Element = (
     <View style={styles.opacity}>
@@ -138,7 +150,7 @@ const MainScreen = () => {
             <DayPartsGrid dayParts={getDayParts(todaySummary)} columns={4} />
             <View style={styles.xlFiveDaysSection}>
               <Text style={styles.xlSectionHeader}>{t('Next 5 days')}</Text>
-              <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} />
+              <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
             </View>
           </View>
         </View>
@@ -173,7 +185,7 @@ const MainScreen = () => {
               <Alerts lat={lat} lon={lon} location={location} />
             </View>
           }
-          <ScrollView showsVerticalScrollIndicator={false} snapToStart={false} accessible={true} accessibilityLabel='Landing page' refreshControl={
+          <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} snapToStart={false} accessible={true} accessibilityLabel='Landing page' refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
           }>
             <View style={styles.contentWrapper}>
@@ -190,16 +202,19 @@ export default MainScreen;
 
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1,
     flexDirection: 'column',
-    height: '100%',
     width: '100%',
     margin: 0,
     padding: 0,
     backgroundColor: colors.bgAlt,
   },
   bg: {
-    height: '100%',
+    flex: 1,
     backgroundColor: colors.bgAlt,
+  },
+  scrollView: {
+    flex: 1,
   },
   contentWrapper: {
     marginRight: space[4],

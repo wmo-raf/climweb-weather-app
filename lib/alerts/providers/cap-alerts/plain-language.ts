@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { CAPInfo } from './alert';
+import { CAPAlert, CAPInfo } from './alert';
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -51,4 +51,25 @@ export function getWhenText(t: Translate, info: CAPInfo | undefined, now: DateTi
 
 export function getWhereText(info: CAPInfo | undefined): string | undefined {
   return info?.area?.areaDesc;
+}
+
+// Finds the first alert (already filtered to relevant ones by the caller)
+// whose effective window overlaps the given calendar day — used to show an
+// inline warning chip under a day in the 5-day list.
+export function getAlertForDay(alerts: CAPAlert[], day: DateTime): CAPAlert | undefined {
+  const dayStart = day.startOf('day');
+  const dayEnd = day.endOf('day');
+
+  return alerts.find(alert => {
+    const info = alert.info?.[0];
+    if (!info) return false;
+
+    const start = DateTime.fromISO(info.onset ?? info.effective ?? alert.sent);
+    if (!start.isValid) return false;
+
+    const end = info.expires ? DateTime.fromISO(info.expires) : start;
+    const effectiveEnd = end.isValid ? end : start;
+
+    return start <= dayEnd && effectiveEnd >= dayStart;
+  });
 }

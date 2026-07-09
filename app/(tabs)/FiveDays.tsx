@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView, Text } from 'react-native';
 import { useSelector, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from 'luxon';
-import { useRouter } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
@@ -11,6 +11,7 @@ import FiveDays from '@/components/FiveDays';
 
 import type { RootState } from '@/lib/store';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
+import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { colors, fonts, navRailWidth, space } from '@/lib/theme';
 
 const FiveDaysScreen = () => {
@@ -18,10 +19,16 @@ const FiveDaysScreen = () => {
   const router = useRouter();
   const isXL = useBreakpoint() === 'xl';
 
-  const { name: location } = useSelector((state: RootState) => state.location, shallowEqual);
+  const { name: location, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
   const { forecast } = useSelector((state: RootState) => state.forecast, shallowEqual);
+  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
 
   const today = DateTime.now();
+
+  let relevantAlerts: CAPAlert[] = [];
+  if (lat && lon) {
+    relevantAlerts = alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon }));
+  }
 
   const onSelectDay = (day: DateTime) =>
     router.push({
@@ -33,13 +40,18 @@ const FiveDaysScreen = () => {
       }
     });
 
+  const onSelectAlert = (alert: CAPAlert) =>
+    router.push({
+      pathname: "/WeatherWarning", params: { location, alertID: alert.identifier }
+    } as Href);
+
   return (
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={t('Next 5 days')} />
           <ScrollView showsVerticalScrollIndicator={false}>
-            <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} />
+            <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
             {forecast && <Text style={styles.footnote}>{t('fiveDays.footnote')}</Text>}
           </ScrollView>
         </View>

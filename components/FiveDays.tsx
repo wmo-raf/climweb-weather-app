@@ -2,10 +2,12 @@ import React, { JSX } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { DateTime } from "luxon";
+import { useTranslation } from 'react-i18next';
 
 import DayRow from './DayRow';
 import { ForecastRecord } from '@/lib/forecast/types';
-import { useTranslation } from 'react-i18next';
+import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
+import { getAlertForDay } from '@/lib/alerts/providers/cap-alerts/plain-language';
 import { colors, fonts, space } from '@/lib/theme';
 
 type FiveDaysProps = {
@@ -13,10 +15,14 @@ type FiveDaysProps = {
     forecast?: ForecastRecord;
     name: string;
     onClick: (day: DateTime) => void;
+    // Alerts already filtered to the current location — each day checks
+    // whether one overlaps its date and shows an inline chip if so.
+    alerts?: CAPAlert[];
+    onSelectAlert?: (alert: CAPAlert) => void;
 }
 function FiveDays(props: FiveDaysProps): JSX.Element {
     const { t } = useTranslation();
-    const { startDate, forecast } = props
+    const { startDate, forecast, alerts, onSelectAlert } = props
 
     if (forecast) {
         const startIndex = forecast.days.findIndex(
@@ -35,11 +41,21 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
 
         const fiveDays = forecast.days.slice(startIndex, startIndex + 5);
         return <View style={styles.fiveDaysWrapper}>
-            {fiveDays.map(d =>
-                <TouchableOpacity key={d.day} onPress={() => props.onClick(DateTime.fromISO(d.day))}>
-                    <DayRow summary={d} />
-                </TouchableOpacity>
-            )}
+            {fiveDays.map((d, idx) => {
+                const day = DateTime.fromISO(d.day);
+                const dayAlert = alerts ? getAlertForDay(alerts, day) : undefined;
+
+                return (
+                    <TouchableOpacity key={d.day} onPress={() => props.onClick(day)}>
+                        <DayRow
+                            summary={d}
+                            isTomorrow={idx === 0}
+                            alert={dayAlert}
+                            onSelectAlert={dayAlert ? () => onSelectAlert?.(dayAlert) : undefined}
+                        />
+                    </TouchableOpacity>
+                );
+            })}
         </View>
     }
 

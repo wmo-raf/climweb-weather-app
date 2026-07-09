@@ -1,66 +1,83 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { DateTime } from "luxon";
+import { useTranslation } from "react-i18next";
 
 import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
-import { useTranslation } from "react-i18next";
-import { colors, fonts, radius, shadow, space } from "@/lib/theme";
-import { windLevel, WIND_LEVEL_LABEL_KEYS } from "@/lib/forecast/plain-language";
+import { describeDaySummary } from "@/lib/forecast/day-parts";
+import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
+import { ALERT_LEAD_WORD_KEYS, WARNING_TINT_COLORS } from "@/lib/alerts/providers/cap-alerts/icons";
+import { colors, fonts, radius, shadow, space, touchTarget } from "@/lib/theme";
 
 type DayRowProps = {
   summary: ForecastDayRecord | undefined;
+  // True only for the first row ("Tomorrow — Wednesday" instead of just "Wednesday").
+  isTomorrow?: boolean;
+  // A relevant alert whose window overlaps this day, if any — renders as an
+  // inline chip below the row (e.g. "Warning: Strong Wind Warning").
+  alert?: CAPAlert;
+  onSelectAlert?: () => void;
 };
-const DayRow = (props: DayRowProps) => {
+
+const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const { t } = useTranslation();
-  const { summary } = props;
 
   if (!summary) {
     return (
       <View style={styles.dayRow}>
-        <View style={styles.opacity}>
-          <Text variant="bodyMedium" style={{ flex: 2 }}>
-            <Text style={styles.whiteText}>{t('Forecast unavailable')}.</Text>
-          </Text>
+        <View style={styles.card}>
+          <Text style={styles.whiteText}>{t('Forecast unavailable')}.</Text>
         </View>
       </View>
     );
   }
 
-  const minTemp = summary.minTemperature || 0;
-  const maxTemp = summary.maxTemperature || 0;
-  const windSpeed = summary.windSpeed || 0;
-  const windLabel = t(WIND_LEVEL_LABEL_KEYS[windLevel(summary.windSpeed)]);
+  const minTemp = Math.round(summary.minTemperature || 0);
+  const maxTemp = Math.round(summary.maxTemperature || 0);
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
-  const iconLabel = icon ? t(icon) : undefined;
-  const dayLabel = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
+  const dayAbbrev = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
+  const weekday = t(dayAbbrev);
+  const dayLabel = isTomorrow ? `${t('today.tomorrow')} — ${weekday}` : weekday;
+  const description = describeDaySummary(t, summary);
+
+  const alertInfo = alert?.info?.[0];
+  const level = alertInfo ? alertLevel(alertInfo) : undefined;
+  const tint = level ? WARNING_TINT_COLORS[level] : undefined;
 
   return (
     <View style={styles.dayRow}>
-      <View style={styles.opacity}>
-        <View style={{ flex: 1 }}>
-          <Text variant="bodyMedium" style={{ flex: 1 }}>
-            <Text style={styles.dayName}>{t(dayLabel)}</Text>
-          </Text>
+      <View
+        style={[styles.card, alertInfo && styles.cardWithChip]}
+        accessible={true}
+        accessibilityLabel={`${dayLabel}: ${description} ${minTemp} to ${maxTemp} degrees.`}
+      >
+        {iconSource && <Icon source={iconSource} size={40} />}
+        <View style={styles.textBlock}>
+          <Text style={styles.dayName}>{dayLabel}</Text>
+          <Text style={styles.description}>{description}</Text>
         </View>
-        <View style={{ flex: 1, flexDirection: 'row', marginTop: 2 }}>
-          <View style={{ flex: 3, flexDirection: 'column' }}>
-            <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Min")}{"\n"}<Text style={styles.whiteParameters}>{Math.round(minTemp)}&deg;</Text></Text>
-          </View>
-          <View style={{ flex: 3, flexDirection: 'column' }}>
-            <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Max")}{"\n"}<Text style={styles.whiteParameters}>{Math.round(maxTemp)}&deg;</Text></Text>
-          </View>
-          <View style={{ flex: 2, flexDirection: 'column' }}>
-            <Text style={{ ...styles.whiteText, flex: 1 }}>{t("Wind")}{"\n"}<Text style={styles.whiteParameters}>{windLabel}</Text>{"\n"}{Math.round(windSpeed)} {t("Km/h")}</Text>
-          </View>
-          <View style={{ flex: 2, margin: 0, padding: 0, alignItems: 'center' }} accessible={true} accessibilityLabel={`Weather symbol on ${dayLabel} is ${icon?.split('_').join(' ')}.`}>
-            {iconSource && <Icon source={iconSource} size={48} />}
-            {iconLabel && <Text style={styles.iconLabel} numberOfLines={1}>{iconLabel}</Text>}
-          </View>
+        <View style={styles.rightBlock}>
+          <Text style={styles.tempRange}>{minTemp}&deg; – {maxTemp}&deg;</Text>
+          <Icon source="chevron-right" size={20} color={colors.textSubtle} />
         </View>
       </View>
+
+      {alertInfo && level && tint &&
+        <TouchableOpacity
+          style={[styles.alertChip, { backgroundColor: tint.bg }]}
+          onPress={onSelectAlert}
+          accessibilityLabel={`${t(ALERT_LEAD_WORD_KEYS[level])}: ${alertInfo.event}`}
+        >
+          <Icon source="alert" size={18} color={tint.text} />
+          <Text style={[styles.alertChipText, { color: tint.text }]} numberOfLines={1}>
+            {t(ALERT_LEAD_WORD_KEYS[level])}: {alertInfo.event}
+          </Text>
+          <Icon source="chevron-right" size={18} color={tint.text} />
+        </TouchableOpacity>
+      }
     </View>
   );
 };
@@ -71,15 +88,31 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: space[2],
   },
-  opacity: {
-    flexDirection: 'column',
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[3],
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
     width: '100%',
-    padding: space[2],
+    padding: space[4],
     borderRadius: radius.lg,
+    minHeight: touchTarget.nav,
     ...shadow.sm,
+  },
+  cardWithChip: {
+    borderBottomWidth: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  textBlock: {
+    flex: 1,
+  },
+  rightBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[1],
   },
   whiteText: {
     color: colors.text,
@@ -87,24 +120,39 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'left'
   },
-  whiteParameters: {
-    color: colors.textStrong,
-    fontFamily: fonts.semiBold,
-    fontSize: 16,
-    textAlign: 'left'
-  },
   dayName: {
     color: colors.textStrong,
-    fontFamily: fonts.semiBold,
+    fontFamily: fonts.bold,
     fontSize: 16,
     textAlign: 'left'
   },
-  iconLabel: {
-    color: colors.textSubtle,
+  description: {
+    color: colors.text,
     fontFamily: fonts.regular,
     fontSize: 14,
-    textAlign: 'center',
-    maxWidth: 90,
+    marginTop: space[1],
+  },
+  tempRange: {
+    color: colors.textStrong,
+    fontFamily: fonts.bold,
+    fontSize: 16,
+  },
+  alertChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
+    padding: space[3],
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: colors.border,
+    borderBottomLeftRadius: radius.lg,
+    borderBottomRightRadius: radius.lg,
+    minHeight: touchTarget.nav,
+  },
+  alertChipText: {
+    flex: 1,
+    fontFamily: fonts.semiBold,
+    fontSize: 14,
   },
 });
 

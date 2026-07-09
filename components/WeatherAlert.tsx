@@ -4,21 +4,13 @@ import { Icon, Text } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
-import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
+import { ALERT_LEAD_WORD_KEYS, WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
 import { fonts, radius, space } from "@/lib/theme";
 
 type WeatherAlertProps = {
   alert: CAPAlert;
   onPress: () => void;
 }
-
-const LEAD_WORD_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
-  Red: 'alert.lead.red',
-  Orange: 'alert.lead.orange',
-  Yellow: 'alert.lead.yellow',
-  Cyan: 'alert.lead.notice',
-  Blue: 'alert.lead.notice',
-};
 
 const WeatherAlert = ({ alert, onPress }: WeatherAlertProps) => {
   const { t } = useTranslation();
@@ -27,7 +19,7 @@ const WeatherAlert = ({ alert, onPress }: WeatherAlertProps) => {
   if (!info) return null;
 
   const level = alertLevel(info);
-  const leadWord = t(LEAD_WORD_KEYS[level]);
+  const leadWord = t(ALERT_LEAD_WORD_KEYS[level]);
   const backgroundColor = WARNING_COLORS[level];
   const textColor = WARNING_BAND_TEXT_COLORS[level];
   const icon = WEATHER_WARNING_ICONS[level.toLowerCase()];

@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
 import { ForecastDayRecord, ForecastStepRecord } from './types';
-import { rainLevel } from './plain-language';
+import { rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
 
 export type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 
@@ -171,4 +171,38 @@ export function buildTodaySummary(
   }
 
   return { lead, predictive, trailing };
+}
+
+// Condition buckets that already say "rain" (or worse) on their own — a
+// day-summary sentence for these shouldn't also append a separate rain
+// clause, since that would just repeat itself.
+const RAIN_FAMILY: ConditionBucket[] = [
+  'lightrain', 'rain', 'heavyrain', 'thunder',
+  'lightsleet', 'sleet', 'heavysleet',
+  'lightsnow', 'snow', 'heavysnow',
+];
+
+export function dayRainLevel(daySummary: ForecastDayRecord) {
+  const maxPrecipitation = Math.max(
+    0,
+    ...daySummary.steps.map(s => (typeof s.precipitation === 'number' ? s.precipitation : 0))
+  );
+  return rainLevel(maxPrecipitation);
+}
+
+// One-sentence plain-language description of a whole day, for the 5-day
+// list ("Cloudy. Light rain expected." / "Cloudy and very windy.").
+export function describeDaySummary(t: Translate, daySummary: ForecastDayRecord): string {
+  const bucket = conditionBucket(daySummary.weatherSymbol);
+  const condition = t(CONDITION_LABEL_KEYS[bucket]);
+  const isWindy = ['breezy', 'strong', 'severe'].includes(windLevel(daySummary.windSpeed));
+
+  const lead = isWindy ? t('day.conditionWindy', { condition }) : `${condition}.`;
+
+  if (RAIN_FAMILY.includes(bucket)) {
+    return lead;
+  }
+
+  const rainSentence = t(RAIN_LEVEL_SENTENCE_KEYS[dayRainLevel(daySummary)]);
+  return `${lead} ${rainSentence}`;
 }

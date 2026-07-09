@@ -16,6 +16,7 @@
   "today.warmer": "warmer",
   "today.cooler": "cooler",
   "today.tapToSeeFiveDays": "Tap to see the next 5 days",
+  "day.conditionWindy": "{{condition}} and very windy.",
   "Min": "Min",
   "Max": "Max",
   "Km/h": "Km/h",

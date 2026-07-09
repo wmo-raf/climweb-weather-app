@@ -21,6 +21,16 @@ export const WARNING_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blu
   Blue: '#82A8DF',
 };
 
+// Short severity lead word ("Danger"/"Warning"/"Caution"/"Notice") used by
+// compact banner/chip contexts (WeatherAlert.tsx, DayRow.tsx's per-day chip).
+export const ALERT_LEAD_WORD_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
+  Red: 'alert.lead.red',
+  Orange: 'alert.lead.orange',
+  Yellow: 'alert.lead.yellow',
+  Cyan: 'alert.lead.notice',
+  Blue: 'alert.lead.notice',
+};
+
 // Text/icon color to use on top of WARNING_COLORS — Yellow and Blue are too
 // light for white text, so they get dark text instead.
 export const WARNING_BAND_TEXT_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
