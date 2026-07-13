@@ -137,7 +137,6 @@ const MainScreen = () => {
 
   if (forecast) {
     const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
-    const tomorrowSummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today.plus({ days: 1 }), "day"));
 
     if (isXL && todaySummary) {
       mainContent = (
@@ -158,7 +157,7 @@ const MainScreen = () => {
     } else {
       mainContent = (
         <View style={styles.opacity}>
-          <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} tomorrow={tomorrowSummary} compact={breakpoint === 'small'} />
+          <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} forecast={forecast} today={today} compact={breakpoint === 'small'} />
         </View>
       )
     }

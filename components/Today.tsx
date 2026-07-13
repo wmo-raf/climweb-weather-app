@@ -1,20 +1,22 @@
 import React, { JSX } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 
-import { ForecastDayRecord } from '@/lib/forecast/types';
+import { ForecastDayRecord, ForecastRecord } from '@/lib/forecast/types';
 import { getDayParts } from '@/lib/forecast/day-parts';
 import CurrentConditionsCard from './CurrentConditionsCard';
 import DayPartsGrid from './DayPartsGrid';
-import TomorrowTeaser from './TomorrowTeaser';
+import FiveDaySummary from './FiveDaySummary';
 import { colors, fonts, space, tempSize } from '@/lib/theme';
 
 type TodaysForecastProps = {
   daySummary: ForecastDayRecord | undefined;
   location: string;
   tempFontSize?: number;
-  tomorrow?: ForecastDayRecord;
+  forecast?: ForecastRecord;
+  today?: DateTime;
   // Small breakpoint (<360dp) — tighter margins to fit entry-level phones.
   compact?: boolean;
 };
@@ -23,7 +25,7 @@ type TodaysForecastProps = {
 // two-pane layout is assembled directly in app/(tabs)/index.tsx from the
 // same CurrentConditionsCard/DayPartsGrid pieces, since it needs different
 // grouping (conditions+wind on the left, day-parts+5-day list on the right).
-function Today({ daySummary, location, tempFontSize = tempSize.large, tomorrow, compact }: TodaysForecastProps): JSX.Element {
+function Today({ daySummary, location, tempFontSize = tempSize.large, forecast, today, compact }: TodaysForecastProps): JSX.Element {
   const { t } = useTranslation();
 
   if (!daySummary) {
@@ -38,7 +40,7 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, tomorrow, 
     <View style={[styles.wrapper, compact && styles.wrapperCompact]}>
       <CurrentConditionsCard daySummary={daySummary} location={location} tempFontSize={tempFontSize} compact={compact} />
       <DayPartsGrid dayParts={getDayParts(daySummary)} columns={2} />
-      {tomorrow && <TomorrowTeaser today={daySummary} tomorrow={tomorrow} />}
+      {forecast && today && <FiveDaySummary forecast={forecast} startDate={today.plus({ days: 1 })} />}
     </View>
   );
 };

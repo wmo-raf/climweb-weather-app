@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import DayRow from './DayRow';
 import { ForecastRecord } from '@/lib/forecast/types';
+import { getFiveDayWindow } from '@/lib/forecast/day-parts';
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
 import { getAlertForDay } from '@/lib/alerts/providers/cap-alerts/plain-language';
 import { colors, fonts, space } from '@/lib/theme';
@@ -25,11 +26,9 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
     const { startDate, forecast, alerts, onSelectAlert } = props
 
     if (forecast) {
-        const startIndex = forecast.days.findIndex(
-            d => DateTime.fromISO(d.day).hasSame(startDate, "day")
-        );
+        const fiveDays = getFiveDayWindow(forecast, startDate);
 
-        if (startIndex == -1) {
+        if (fiveDays.length === 0) {
             return (
                 <View style={styles.noForecast}>
                     <Text>
@@ -39,7 +38,6 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
             );
         }
 
-        const fiveDays = forecast.days.slice(startIndex, startIndex + 5);
         return <View style={styles.fiveDaysWrapper}>
             {fiveDays.map((d, idx) => {
                 const day = DateTime.fromISO(d.day);

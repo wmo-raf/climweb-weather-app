@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { ForecastDayRecord, ForecastStepRecord } from './types';
+import { ForecastDayRecord, ForecastRecord, ForecastStepRecord } from './types';
 import { rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
 
 export type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
@@ -205,4 +205,12 @@ export function describeDaySummary(t: Translate, daySummary: ForecastDayRecord):
 
   const rainSentence = t(RAIN_LEVEL_SENTENCE_KEYS[dayRainLevel(daySummary)]);
   return `${lead} ${rainSentence}`;
+}
+
+// Slices a forecast to the 5-day window starting at startDate (inclusive),
+// shared by the FiveDays list and the Today screen's summary card.
+export function getFiveDayWindow(forecast: ForecastRecord, startDate: DateTime): ForecastDayRecord[] {
+  const startIndex = forecast.days.findIndex(d => DateTime.fromISO(d.day).hasSame(startDate, 'day'));
+  if (startIndex === -1) return [];
+  return forecast.days.slice(startIndex, startIndex + 5);
 }
