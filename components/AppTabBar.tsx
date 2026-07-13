@@ -26,7 +26,7 @@ const ICONS: Record<string, string> = {
 const LABEL_KEYS: Record<string, string> = {
   index: 'Today',
   FiveDays: '5 days',
-  Warnings: 'Warnings',
+  Warnings: 'Alerts',
   Places: 'Places',
 };
 
