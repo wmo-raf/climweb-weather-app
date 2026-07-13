@@ -1,6 +1,7 @@
 import React, { JSX, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { Icon, Text } from 'react-native-paper';
 import { useRouter, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +33,9 @@ function WelcomeScreen(): JSX.Element {
 
   return (
     <SafeAreaView style={styles.wrapper}>
+      {/* Dark navy background needs light status/nav bar icons, overriding
+          the app-wide "dark" default pushed in the root layout. */}
+      <SystemBars style="light" />
       <View style={styles.content}>
         <View style={styles.iconBadge}>
           <Icon source="weather-partly-cloudy" size={44} color={colors.bgOverlay} />

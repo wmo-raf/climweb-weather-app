@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +29,7 @@ function OnboardingPlacesScreen() {
 
   return (
     <SafeAreaView style={styles.wrapper}>
+      <SystemBars style="light" />
       <View style={styles.header}>
         <Text style={styles.title}>{t('places.pickerTitle')}</Text>
       </View>

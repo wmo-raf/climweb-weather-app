@@ -1,6 +1,8 @@
 import { Buffer } from 'buffer';
 import * as SplashScreen from 'expo-splash-screen';
 import { Stack } from "expo-router";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { store } from '@/lib/store';
 import { Provider as StoreProvider } from 'react-redux';
 import { MD3LightTheme as DefaultTheme, PaperProvider, configureFonts } from 'react-native-paper';
@@ -57,15 +59,20 @@ export default function RootLayout() {
   SplashScreen.hideAsync();
 
   return (
-    <StoreProvider store={store}>
-      <PaperProvider theme={theme}>
-        <AutocompleteDropdownContextProvider>
-          <Stack screenOptions={{
-            // Hide the default expo header
-            headerShown: false,
-          }} />
-        </AutocompleteDropdownContextProvider>
-      </PaperProvider>
-    </StoreProvider>
+    <SafeAreaProvider>
+      <StoreProvider store={store}>
+        <PaperProvider theme={theme}>
+          <AutocompleteDropdownContextProvider>
+            {/* Default for the app's mostly-light screens; Welcome/OnboardingPlaces
+                (dark background) push their own "light" override while mounted. */}
+            <SystemBars style="dark" />
+            <Stack screenOptions={{
+              // Hide the default expo header
+              headerShown: false,
+            }} />
+          </AutocompleteDropdownContextProvider>
+        </PaperProvider>
+      </StoreProvider>
+    </SafeAreaProvider>
   );
 }
