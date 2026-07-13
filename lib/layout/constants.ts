@@ -8,5 +8,7 @@
     AboutUs = "AboutUs",
     AboutTheApp = "AboutTheApp",
     WeatherWarning = "WeatherWarning",
-    Settings = "Settings"
+    Settings = "Settings",
+    OnboardingPlaces = "OnboardingPlaces",
+    EditFavourites = "EditFavourites"
   };

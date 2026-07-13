@@ -1,0 +1,239 @@
+import React, { JSX, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Icon, Text } from 'react-native-paper';
+import { isNil } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
+import {
+  AutocompleteDropdown,
+  AutocompleteDropdownRef,
+  TAutocompleteDropdownItem,
+} from '@/lib/autocomplete';
+
+import geonames from '@/assets/geonames.json';
+import { Place } from '@/lib/geo/places';
+import { MAX_FAVOURITE_PLACES } from '@/lib/hooks/favourites.hook';
+import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+
+type FavouritePlacesPickerProps = {
+  initialSelected?: Place[];
+  finishLabel: string;
+  onFinish: (places: Place[]) => void;
+  // 'dark' matches Welcome's language-selection screen (onboarding); the
+  // default 'light' matches the rest of the app (editing favourites later).
+  theme?: 'light' | 'dark';
+};
+
+function isSamePlace(a: Place, b: Place): boolean {
+  return a.name === b.name && a.latitude === b.latitude && a.longitude === b.longitude;
+}
+
+function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, theme = 'light' }: FavouritePlacesPickerProps): JSX.Element {
+  const isDark = theme === 'dark';
+  const { t } = useTranslation();
+  const [selected, setSelected] = useState<Place[]>(initialSelected);
+  const controllerRef = useRef<AutocompleteDropdownRef | null>(null);
+
+  const atMax = selected.length >= MAX_FAVOURITE_PLACES;
+
+  const handleSelect = (item: TAutocompleteDropdownItem) => {
+    if (!item) return;
+    const place: Place = geonames[item.id];
+
+    setSelected(prev => {
+      if (prev.some(p => isSamePlace(p, place)) || prev.length >= MAX_FAVOURITE_PLACES) {
+        return prev;
+      }
+      return [...prev, place];
+    });
+    controllerRef.current?.clear();
+  };
+
+  const removePlace = (place: Place) => {
+    setSelected(prev => prev.filter(p => !isSamePlace(p, place)));
+  };
+
+  return (
+    <ScrollView style={styles.wrapper} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <Text style={[styles.subtitle, isDark && styles.subtitleDark]}>{t('places.pickerSubtitle')}</Text>
+
+      {atMax ? (
+        <Text style={styles.maxReachedText}>{t('places.maxReached')}</Text>
+      ) : (
+        <View style={styles.searchContainer}>
+          <AutocompleteDropdown
+            controller={c => (controllerRef.current = c)}
+            clearOnFocus={true}
+            closeOnBlur={false}
+            closeOnSubmit={true}
+            textInputProps={{ placeholder: t('Search location'), placeholderTextColor: colors.textMuted, style: styles.textStyle }}
+            onSelectItem={handleSelect}
+            inputContainerStyle={styles.searchBar}
+            debounce={100}
+            showChevron={false}
+            showClear={false}
+            LeftComponent={<Icon source="magnify" color={colors.primary} size={24} />}
+            useFilter={true}
+            suggestionsListContainerStyle={styles.suggestionListStyle}
+            suggestionsListTextStyle={styles.textStyle}
+            containerStyle={{ zIndex: 1 }}
+            inputHeight={48}
+            renderItem={(item: any) => (
+              <Text style={styles.itemText}>{isNil(item.region) ? item.title : `${item.title}, ${item.region}`}</Text>
+            )}
+          />
+        </View>
+      )}
+
+      <Text style={[styles.countText, isDark && styles.countTextDark]}>{t('places.selectedCount', { count: selected.length })}</Text>
+
+      {selected.length > 0 && (
+        <View style={styles.chipRow}>
+          {selected.map(place => (
+            <View key={`${place.name}-${place.latitude}-${place.longitude}`} style={styles.chip}>
+              <Text style={styles.chipText} numberOfLines={1}>{place.name}</Text>
+              <TouchableOpacity
+                onPress={() => removePlace(place)}
+                accessibilityLabel={t('places.removeChip', { name: place.name })}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Icon source="close" size={16} color={colors.primary} />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <TouchableOpacity
+        style={[styles.finishButton, isDark && styles.finishButtonDark]}
+        onPress={() => onFinish(selected)}
+        accessibilityLabel={finishLabel}
+      >
+        <Text style={[styles.finishButtonText, isDark && styles.finishButtonTextDark]}>{finishLabel}</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+}
+
+export default FavouritePlacesPicker;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  content: {
+    padding: space[4],
+    paddingBottom: space[10],
+  },
+  subtitle: {
+    fontSize: 14,
+    fontFamily: fonts.regular,
+    color: colors.text,
+    marginBottom: space[4],
+  },
+  subtitleDark: {
+    color: colors.textInverse,
+  },
+  searchContainer: {
+    zIndex: 1,
+  },
+  searchBar: {
+    backgroundColor: colors.bg,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    paddingLeft: space[4],
+    paddingRight: space[4],
+    paddingTop: space[3],
+    paddingBottom: space[3],
+    borderRadius: radius.md,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    color: colors.text,
+  },
+  textStyle: {
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    color: colors.text,
+  },
+  itemText: {
+    color: colors.text,
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    padding: 15,
+    width: '100%',
+    flexGrow: 1,
+    flexShrink: 0,
+  },
+  suggestionListStyle: {
+    marginTop: -2,
+    padding: 0,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    ...shadow.sm,
+  },
+  maxReachedText: {
+    fontSize: 14,
+    fontFamily: fonts.semiBold,
+    color: colors.textSubtle,
+    padding: space[3],
+    textAlign: 'center',
+    backgroundColor: colors.bgTint,
+    borderRadius: radius.md,
+  },
+  countText: {
+    fontSize: 14,
+    fontFamily: fonts.semiBold,
+    color: colors.textSubtle,
+    marginTop: space[4],
+  },
+  countTextDark: {
+    color: colors.textInverse,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: space[2],
+    marginTop: space[3],
+  },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
+    backgroundColor: colors.bgTint,
+    borderRadius: radius.full,
+    paddingVertical: space[2],
+    paddingLeft: space[3],
+    paddingRight: space[2],
+    maxWidth: '100%',
+  },
+  chipText: {
+    fontSize: 14,
+    fontFamily: fonts.semiBold,
+    color: colors.primary,
+    maxWidth: 200,
+  },
+  finishButton: {
+    marginTop: space[6],
+    minHeight: touchTarget.nav,
+    borderRadius: radius.lg,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  finishButtonDark: {
+    backgroundColor: colors.bg,
+  },
+  finishButtonText: {
+    fontSize: 16,
+    fontFamily: fonts.bold,
+    color: colors.textInverse,
+  },
+  finishButtonTextDark: {
+    color: colors.primary,
+  },
+});

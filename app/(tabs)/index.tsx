@@ -23,6 +23,7 @@ import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.sl
 import { getAlerts } from '@/lib/store/alert.slice';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
+import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
 import { colors, fonts, navRailWidth, radius, space, tempSize, touchTarget } from '@/lib/theme';
@@ -34,6 +35,7 @@ const MainScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
+  const [favouritesLoading, favourites] = useFavourites();
   const breakpoint = useBreakpoint();
   const isXL = breakpoint === 'xl';
 
@@ -80,13 +82,14 @@ const MainScreen = () => {
     }
   }, [lat, lon]);
 
-  // Reset navigation and go to list of cities if GPS location results in locationError.
+  // If GPS/location resolution fails, send the user to their saved
+  // favourite places instead of the generic city list, when they have any.
   useEffect(() => {
-    if (locationError && !navigation.canGoBack()) {
+    if (locationError && !navigation.canGoBack() && !favouritesLoading) {
       dispatch(resetError());
-      router.replace(SCREENS.NoLocation.toString() as Href);
+      router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }
-  }, [locationError]);
+  }, [locationError, favouritesLoading, favourites]);
 
   if (onboardingLoading) {
     return null;

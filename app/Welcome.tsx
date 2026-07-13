@@ -2,12 +2,12 @@ import React, { JSX, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, Text } from 'react-native-paper';
-import { useRouter } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 
-import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { LANGUAGES, LanguageKey } from '@/lib/localization/translations';
+import { SCREENS } from '@/lib/layout/constants';
 import { colors, fonts, radius, space, touchTarget } from '@/lib/theme';
 
 const appName = Constants.expoConfig?.name ?? 'Weather App';
@@ -15,7 +15,6 @@ const appName = Constants.expoConfig?.name ?? 'Weather App';
 function WelcomeScreen(): JSX.Element {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const [, , markOnboarded] = useOnboarding();
 
   const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
 
@@ -24,9 +23,11 @@ function WelcomeScreen(): JSX.Element {
     i18n.changeLanguage(lang);
   };
 
-  const onGetStarted = async () => {
-    await markOnboarded();
-    router.replace('/');
+  // Language is chosen here; favourite places are chosen on the next
+  // onboarding step (OnboardingPlaces), which is the one that actually
+  // marks onboarding complete.
+  const onNext = () => {
+    router.push(SCREENS.OnboardingPlaces.toString() as Href);
   };
 
   return (
@@ -61,8 +62,8 @@ function WelcomeScreen(): JSX.Element {
           })}
         </View>
 
-        <TouchableOpacity style={styles.getStartedButton} onPress={onGetStarted} accessibilityLabel={t('welcome.getStarted')}>
-          <Text style={styles.getStartedText}>{t('welcome.getStarted')}</Text>
+        <TouchableOpacity style={styles.getStartedButton} onPress={onNext} accessibilityLabel={t('welcome.next')}>
+          <Text style={styles.getStartedText}>{t('welcome.next')}</Text>
           <Icon source="arrow-right" size={20} color={colors.primary} />
         </TouchableOpacity>
       </View>

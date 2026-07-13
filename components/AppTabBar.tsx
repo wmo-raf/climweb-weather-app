@@ -20,12 +20,14 @@ const ICONS: Record<string, string> = {
   index: 'weather-sunny',
   FiveDays: 'calendar-month',
   Warnings: 'alert',
+  Places: 'map-marker-multiple',
 };
 
 const LABEL_KEYS: Record<string, string> = {
   index: 'Today',
   FiveDays: '5 days',
   Warnings: 'Warnings',
+  Places: 'Places',
 };
 
 // Renders as a bottom bar on phones and a left nav rail at the XL
@@ -60,7 +62,7 @@ function AppTabBar({ state, navigation }: TabBarProps) {
         style={[styles.item, isRail && styles.itemRail, focused && styles.itemFocused]}
       >
         <Icon source={ICONS[route.name] ?? 'circle'} size={22} color={focused ? colors.primary : colors.textSubtle} />
-        <Text style={[styles.label, { color: focused ? colors.primary : colors.textSubtle }]}>{label}</Text>
+        <Text style={[styles.label, { color: focused ? colors.primary : colors.textSubtle }]} numberOfLines={1}>{label}</Text>
       </TouchableOpacity>
     );
   });
@@ -117,8 +119,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: space[2],
-    paddingHorizontal: space[4],
-    marginHorizontal: space[2],
+    paddingHorizontal: space[1],
+    marginHorizontal: space[1],
     borderRadius: radius.lg,
     minHeight: touchTarget.nav,
   },
