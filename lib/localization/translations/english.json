@@ -1,5 +1,7 @@
 {
   "Settings": "Settings",
+  "settings.alwaysShowStartPage": "Always Show Start Page",
+  "settings.alwaysShowStartPage.description": "Show the welcome screen every time you open the app.",
   "Retry": "Retry",
   "forecast.error.title": "Couldn't load the forecast",
   "warnings.error.title": "Couldn't load alerts",

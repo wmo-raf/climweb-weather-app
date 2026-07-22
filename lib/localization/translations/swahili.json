@@ -1,5 +1,7 @@
 {
   "Settings": "Mipangilio",
+  "settings.alwaysShowStartPage": "Onyesha Ukurasa wa Kuanza Kila Wakati",
+  "settings.alwaysShowStartPage.description": "Onyesha skrini ya karibu kila unapofungua programu.",
   "Retry": "Jaribu tena",
   "forecast.error.title": "Imeshindwa kupakia utabiri",
   "warnings.error.title": "Imeshindwa kupakia tahadhari",

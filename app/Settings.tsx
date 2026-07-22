@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon, Text } from 'react-native-paper';
+import { Icon, Switch, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dropdown from 'react-native-input-select';
@@ -12,6 +12,7 @@ import AppBar from '@/components/AppBar';
 import { RootState } from '@/lib/store';
 import { LANGUAGES } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
+import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
 import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
 
 const SettingsScreen = () => {
@@ -30,6 +31,7 @@ const SettingsScreen = () => {
 
   const [, setLanguage] = useState<string>();
   const { name, lat, lon } = useSelector((state: RootState) => state.location);
+  const [, alwaysShowStartPage, setAlwaysShowStartPage] = useAlwaysShowStartPage();
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -55,6 +57,20 @@ const SettingsScreen = () => {
                 placeholderStyle={{ color: colors.textMuted }}
                 selectedItemStyle={{ color: colors.text }}
               />
+            </View>
+
+            <View style={styles.card}>
+              <View style={styles.switchRow}>
+                <View style={styles.switchTextBlock}>
+                  <Text style={styles.rowText}>{t('settings.alwaysShowStartPage')}</Text>
+                  <Text style={styles.switchDescription}>{t('settings.alwaysShowStartPage.description')}</Text>
+                </View>
+                <Switch
+                  value={alwaysShowStartPage}
+                  onValueChange={setAlwaysShowStartPage}
+                  color={colors.primary}
+                />
+              </View>
             </View>
 
             <View style={styles.card}>
@@ -134,6 +150,22 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: colors.border,
+  },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space[3],
+    minHeight: touchTarget.nav,
+  },
+  switchTextBlock: {
+    flex: 1,
+  },
+  switchDescription: {
+    fontSize: 14,
+    fontFamily: fonts.regular,
+    color: colors.textSubtle,
+    marginTop: space[1],
   },
   wrapper: {
     flexDirection: 'column',

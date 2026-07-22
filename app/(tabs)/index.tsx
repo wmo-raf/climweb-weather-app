@@ -24,10 +24,18 @@ import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.sl
 import { getAlerts } from '@/lib/store/alert.slice';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
+import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
 import { colors, fonts, navRailWidth, space, tempSize } from '@/lib/theme';
+
+// Module-level, not component state — persists only for the lifetime of
+// the JS process. Resets on a real app relaunch (cold start), but not
+// when the user navigates away from and back to Home within the same
+// session, which is what makes "always show start page" mean "once per
+// launch" rather than "every time you land on Home."
+let hasShownStartPageThisLaunch = false;
 
 const MainScreen = () => {
   const { t } = useTranslation();
@@ -36,6 +44,7 @@ const MainScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
+  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
   const [favouritesLoading, favourites] = useFavourites();
   const breakpoint = useBreakpoint();
   const isXL = breakpoint === 'xl';
@@ -44,6 +53,29 @@ const MainScreen = () => {
   const { loading, forecast, error: forecastError } = useSelector((state: RootState) => state.forecast, shallowEqual);
   const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
   const [refreshing, setRefreshing] = React.useState(false);
+
+  // Whether to force Welcome, decided ONCE per mount as real state rather
+  // than re-derived every render from onboarding/alwaysShow — GPS
+  // permission can reject faster than those two AsyncStorage reads
+  // resolve, and re-deriving "should show welcome" fresh on every render
+  // meant the locationError-triggered re-render that follows could see a
+  // freshly-mutated hasShownStartPageThisLaunch and flip the decision to
+  // false before the Redirect ever actually took hold — silently
+  // cancelling it. Storing the decision in state makes it stick for the
+  // lifetime of this mount once made.
+  const [welcomeDecision, setWelcomeDecision] = React.useState<'pending' | 'show' | 'skip'>('pending');
+
+  useEffect(() => {
+    if (onboardingLoading || alwaysShowLoading) return;
+    if (!hasOnboarded) {
+      setWelcomeDecision('show');
+    } else if (alwaysShowStartPage && !hasShownStartPageThisLaunch) {
+      hasShownStartPageThisLaunch = true;
+      setWelcomeDecision('show');
+    } else {
+      setWelcomeDecision('skip');
+    }
+  }, [onboardingLoading, alwaysShowLoading, hasOnboarded, alwaysShowStartPage]);
 
   const onRefresh = async () => {
     if (isUndefined(lat) || isUndefined(lon)) {
@@ -85,18 +117,22 @@ const MainScreen = () => {
 
   // If GPS/location resolution fails, send the user to their saved
   // favourite places instead of the generic city list, when they have any.
+  // Waits until welcomeDecision has settled, and skips entirely when it's
+  // 'show', so this can't race a forced Welcome redirect for the same
+  // navigation.
   useEffect(() => {
+    if (welcomeDecision !== 'skip') return;
     if (locationError && !navigation.canGoBack() && !favouritesLoading) {
       dispatch(resetError());
       router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }
-  }, [locationError, favouritesLoading, favourites]);
+  }, [locationError, favouritesLoading, favourites, welcomeDecision]);
 
-  if (onboardingLoading) {
+  if (welcomeDecision === 'pending') {
     return null;
   }
 
-  if (!hasOnboarded) {
+  if (welcomeDecision === 'show') {
     return <Redirect href="/Welcome" />;
   }
 
