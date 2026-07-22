@@ -91,6 +91,15 @@ const SettingsScreen = () => {
                 <Text style={styles.rowText}>{t('About the app')}</Text>
                 <Icon source="chevron-right" size={22} color={colors.textSubtle} />
               </TouchableOpacity>
+              <View style={styles.divider} />
+              <TouchableOpacity
+                style={styles.row}
+                accessibilityLabel={t('Privacy Policy')}
+                onPress={() => router.push(SCREENS.PrivacyPolicy.toString() as Href)}
+              >
+                <Text style={styles.rowText}>{t('Privacy Policy')}</Text>
+                <Icon source="chevron-right" size={22} color={colors.textSubtle} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>

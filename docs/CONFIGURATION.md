@@ -179,6 +179,28 @@ Follow these steps to add a new language to the app:
 - **`warning.icons.disclaimer`** - Attribution for weather warning icons
 - **`Geographical Data`** - Section title for geographical data
 - **`geographical.data.disclaimer`** - Attribution for geographical data source
+
+#### Privacy Policy
+- **`Privacy Policy`** - Privacy Policy page title, and the Settings row that links to it
+- **`privacy.intro`** - Opening statement naming who develops the app and its privacy commitment
+- **`privacy.dataCollected.title`** - "Information We Collect" section title
+- **`privacy.dataCollected.text`** - Statement that no personal data is collected or required to use the app
+- **`privacy.location.title`** - "Use of Location Data" section title
+- **`privacy.location.text`** - Explanation of how device location is used to fetch forecasts/alerts
+- **`privacy.favourites.title`** - "Your Favourite Places" section title
+- **`privacy.favourites.text`** - Explanation that saved favourite places are stored on-device only
+- **`privacy.security.title`** - "Data Security" section title
+- **`privacy.security.text`** - Statement on data security practices
+- **`privacy.children.title`** - "Children's Privacy" section title
+- **`privacy.children.text`** - Statement that no personal data is collected from children or any user
+- **`privacy.thirdParty.title`** - "Third-Party Services" section title
+- **`privacy.thirdParty.text`** - Disclaimer about links to third-party sites
+- **`privacy.changes.title`** - "Changes to This Policy" section title
+- **`privacy.changes.text`** - Statement on how policy updates are communicated
+- **`privacy.contact.title`** - "Contact Us" section title
+- **`privacy.contact.text`** - Who to contact with privacy questions
+
+When adapting this page for a different deployment, update the organization name(s) in `privacy.intro` and `privacy.contact.text` (see [app/PrivacyPolicy.tsx](app/PrivacyPolicy.tsx)) to match whoever operates that deployment — these currently name WMO-RAF and Norway MET, mirroring the same attribution used in `app.and.forecasts.desc` on the About the App page.
 - **`Background photo`** - Background image title
 - **`background.photo.disclaimer`** - Credit for background photo
 
@@ -228,8 +250,6 @@ Additional variants exist for:
 - **`Forecast unavailable`** - Short forecast unavailable label
 - **`There was an error getting the forecast`** - Error message for forecast retrieval
 - **`English`** - English language name
-
-Here’s a clean entry you can drop into `CONFIGURATION.md`.
 
 ## Forecast Source Configuration
 

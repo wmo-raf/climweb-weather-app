@@ -7,6 +7,7 @@
     Feedback = "Feedback",
     AboutUs = "AboutUs",
     AboutTheApp = "AboutTheApp",
+    PrivacyPolicy = "PrivacyPolicy",
     WeatherWarning = "WeatherWarning",
     Settings = "Settings",
     OnboardingPlaces = "OnboardingPlaces",
