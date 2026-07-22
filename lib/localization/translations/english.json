@@ -10,6 +10,7 @@
   "Next 5 days": "Next 5 days",
   "Tap to change place": "Tap to change place",
   "fiveDays.footnote": "Forecast data provided by your national weather service.",
+  "forecast.lastUpdated": "Forecast last updated at {{time}}",
   "welcome.subtitle": "Weather forecasts and warnings, in plain words.",
   "welcome.getStarted": "Get started",
   "welcome.next": "Next",

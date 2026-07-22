@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import AppBar from '@/components/AppBar';
 import AlertCard from '@/components/AlertCard';
 import AlertLegend from '@/components/AlertLegend';
+import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 
 import type { RootState } from '@/lib/store';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
@@ -47,6 +48,7 @@ const WarningsScreen = () => {
             ))}
 
             <AlertLegend />
+            <LastUpdatedFooter />
           </ScrollView>
         </View>
       </View>

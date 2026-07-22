@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
 import FiveDays from '@/components/FiveDays';
+import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 
 import type { RootState } from '@/lib/store';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
@@ -57,6 +58,7 @@ const FiveDaysScreen = () => {
             </View>
             <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
             {forecast && <Text style={styles.footnote}>{t('fiveDays.footnote')}</Text>}
+            <LastUpdatedFooter />
           </ScrollView>
         </View>
       </View>

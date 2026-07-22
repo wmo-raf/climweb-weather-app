@@ -15,6 +15,7 @@ import Alerts from '@/components/Alerts';
 import CurrentConditionsCard from '@/components/CurrentConditionsCard';
 import DayPartsGrid from '@/components/DayPartsGrid';
 import FiveDays from '@/components/FiveDays';
+import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 
 import type { AppDispatch, RootState } from '@/lib/store'
 import { SCREENS } from '@/lib/layout/constants';
@@ -192,6 +193,7 @@ const MainScreen = () => {
           }>
             <View style={styles.contentWrapper}>
               {mainContent}
+              <LastUpdatedFooter />
             </View>
           </ScrollView>
         </View>

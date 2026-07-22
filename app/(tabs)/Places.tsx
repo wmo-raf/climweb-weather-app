@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
 import LocationRow from '@/components/LocationRow';
+import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
@@ -75,6 +76,7 @@ const PlacesScreen = () => {
                 ))}
               </>
             )}
+            <LastUpdatedFooter />
           </ScrollView>
         </View>
       </View>

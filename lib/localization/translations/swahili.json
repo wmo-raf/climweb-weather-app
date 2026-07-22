@@ -10,6 +10,7 @@
   "Next 5 days": "Siku 5 zijazo",
   "Tap to change place": "Gusa kubadilisha mahali",
   "fiveDays.footnote": "Data ya utabiri inatolewa na huduma yako ya kitaifa ya hali ya hewa.",
+  "forecast.lastUpdated": "Utabiri ulisasishwa mara ya mwisho saa {{time}}",
   "welcome.subtitle": "Utabiri wa hali ya hewa na tahadhari, kwa maneno rahisi.",
   "welcome.getStarted": "Anza",
   "welcome.next": "Endelea",
