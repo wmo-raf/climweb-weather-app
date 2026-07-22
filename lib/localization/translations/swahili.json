@@ -1,5 +1,11 @@
 {
   "Settings": "Mipangilio",
+  "Retry": "Jaribu tena",
+  "forecast.error.title": "Imeshindwa kupakia utabiri",
+  "warnings.error.title": "Imeshindwa kupakia tahadhari",
+  "location.notSet.title": "Hakuna mahali palipowekwa",
+  "location.notSet.text": "Chagua mahali ili kuona utabiri na tahadhari zake.",
+  "location.notSet.action": "Chagua mahali",
   "About us": "Kuhusu sisi",
   "About the app": "Kuhusu programu",
   "Today": "Leo",

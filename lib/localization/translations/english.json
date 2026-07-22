@@ -1,5 +1,11 @@
 {
   "Settings": "Settings",
+  "Retry": "Retry",
+  "forecast.error.title": "Couldn't load the forecast",
+  "warnings.error.title": "Couldn't load alerts",
+  "location.notSet.title": "No location set",
+  "location.notSet.text": "Choose a place to see its forecast and alerts.",
+  "location.notSet.action": "Choose a place",
   "About us": "About us",
   "About the app": "About the app",
   "Today": "Today",

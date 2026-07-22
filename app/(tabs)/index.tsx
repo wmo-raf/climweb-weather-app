@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl } 
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
-import { Button } from 'react-native-paper';
 import { ActivityIndicator } from 'react-native';
 import { useRouter, useNavigation, Href, Redirect } from 'expo-router';
 import { isUndefined } from 'lodash';
@@ -16,6 +15,7 @@ import CurrentConditionsCard from '@/components/CurrentConditionsCard';
 import DayPartsGrid from '@/components/DayPartsGrid';
 import FiveDays from '@/components/FiveDays';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
+import StatusCard from '@/components/StatusCard';
 
 import type { AppDispatch, RootState } from '@/lib/store'
 import { SCREENS } from '@/lib/layout/constants';
@@ -27,7 +27,7 @@ import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
-import { colors, fonts, navRailWidth, radius, space, tempSize, touchTarget } from '@/lib/theme';
+import { colors, fonts, navRailWidth, space, tempSize } from '@/lib/theme';
 
 const MainScreen = () => {
   const { t } = useTranslation();
@@ -139,6 +139,21 @@ const MainScreen = () => {
     )
   }
 
+  // Reachable whenever this screen renders with no coordinates and nothing
+  // in flight — e.g. GPS was denied and the user tab-navigated here
+  // directly instead of picking a place on NoLocation/Places.
+  if (!loading && !locationLoading && (isUndefined(lat) || isUndefined(lon))) {
+    mainContent = (
+      <StatusCard
+        icon="map-marker-off-outline"
+        title={t('location.notSet.title')}
+        text={t('location.notSet.text')}
+        actionLabel={t('location.notSet.action')}
+        onRetry={() => router.push(SCREENS.Search.toString() as Href)}
+      />
+    )
+  }
+
   if (forecast) {
     const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
 
@@ -169,12 +184,13 @@ const MainScreen = () => {
 
   if (forecastError) {
     mainContent = (
-      <View style={styles.opacity}>
-        <View style={styles.errorLoader}>
-          <Text style={{ color: colors.text, fontSize: 16, textAlign: 'center', padding: 10, fontFamily: fonts.regular }}>{forecastError}</Text>
-          <Button onPress={() => onTryAgain()} style={styles.sendButton} textColor={colors.textInverse}><Text style={styles.buttonText}>Try again</Text></Button>
-        </View>
-      </View>
+      <StatusCard
+        icon="cloud-off-outline"
+        iconColor={colors.danger}
+        title={t('forecast.error.title')}
+        text={forecastError}
+        onRetry={onTryAgain}
+      />
     )
   }
 
@@ -235,25 +251,6 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: space[16],
     marginBottom: space[16],
-  },
-  errorLoader: {
-    marginTop: space[16],
-    marginBottom: space[16],
-    textAlign: 'center',
-    alignItems: 'center',
-  },
-  sendButton: {
-    backgroundColor: colors.primary,
-    width: '40%',
-    minHeight: touchTarget.nav,
-    justifyContent: 'center',
-    borderRadius: radius.lg,
-    padding: 1,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-    color: colors.textInverse,
   },
   xlRow: {
     flexDirection: 'row',

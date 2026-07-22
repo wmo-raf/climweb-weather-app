@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         paddingLeft: space[6],
         paddingRight: space[6],
         marginTop: space[2],
-        paddingBottom: space[10],
+        paddingBottom: space[2],
     },
 });
 

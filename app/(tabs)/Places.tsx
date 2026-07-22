@@ -9,9 +9,11 @@ import { useTranslation } from 'react-i18next';
 import AppBar from '@/components/AppBar';
 import LocationRow from '@/components/LocationRow';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
+import StatusCard from '@/components/StatusCard';
 
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
+import { useLocationRowErrors } from '@/lib/hooks/location-row-errors.hook';
 import { AppDispatch } from '@/lib/store';
 import { setForecast } from '@/lib/store/forecast.slice';
 import { setLat, setLon, setName } from '@/lib/store/location.slice';
@@ -27,6 +29,7 @@ const PlacesScreen = () => {
   const isXL = useBreakpoint() === 'xl';
 
   const [, favourites] = useFavourites();
+  const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
 
   const onSelectPlace = (place: Place, forecast: ForecastRecord) => {
     dispatch(setForecast(forecast));
@@ -67,11 +70,22 @@ const PlacesScreen = () => {
                     <Icon source="pencil-outline" size={22} color={colors.primary} />
                   </TouchableOpacity>
                 </View>
+                {hasErrors && (
+                  <StatusCard
+                    icon="cloud-off-outline"
+                    iconColor={colors.danger}
+                    title={t('forecast.error.title')}
+                    text={t('There was an error getting the forecast') + '.'}
+                    onRetry={retryAll}
+                  />
+                )}
                 {favourites.map((place, idx) => (
                   <LocationRow
                     key={`${place.name}-${place.latitude}-${place.longitude}-${idx}`}
+                    id={String(idx)}
                     district={{ name: place.name, lat: place.latitude, lon: place.longitude }}
                     onPress={(forecast: ForecastRecord) => onSelectPlace(place, forecast)}
+                    onErrorChange={onErrorChange}
                   />
                 ))}
               </>

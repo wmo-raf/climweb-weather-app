@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
@@ -14,24 +14,36 @@ import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts'
 
 type LocationRowProps = {
   district: City;
-  onPress: (forecast: ForecastRecord) => void
+  onPress: (forecast: ForecastRecord) => void;
+  // Identifies this row within the parent's list. When this row's fetch
+  // fails, it renders nothing and instead reports itself (and how to
+  // retry it) via onErrorChange, so the parent can show ONE consolidated
+  // error card instead of one per failing row.
+  id: string;
+  onErrorChange?: (id: string, retry: (() => void) | undefined) => void;
 };
-function LocationRow(props: LocationRowProps): JSX.Element {
+function LocationRow(props: LocationRowProps): JSX.Element | null {
   const { t } = useTranslation();
+  const { district, onPress, id, onErrorChange } = props;
+  const [, forecast, error, retry] = useForecast(district.lat, district.lon);
 
-  const { district, onPress } = props;
-  const [, forecast, error] = useForecast(district.lat, district.lon);
+  const today = forecast?.days.find(d => DateTime.fromISO(d.day).hasSame(DateTime.now(), "day"));
+  const isError = !!error || (!!forecast && !today);
 
-  if (error) {
-    return <ForecastError msg={t('There was an error getting the forecast') + '.'} />
+  useEffect(() => {
+    onErrorChange?.(id, isError ? retry : undefined);
+    // Only the error/OK transition should re-notify the parent — retry
+    // and onErrorChange are stable enough in practice (same closure
+    // shape every render) that re-running this on every render would
+    // just be noise.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError, id]);
+
+  if (isError) {
+    return null;
   }
 
-  if (forecast) {
-    const today = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(DateTime.now(), "day"));
-    if (!today) {
-      return <ForecastError msg={t('Forecast unavailable.')} />
-    }
-
+  if (forecast && today) {
     return (
       <TouchableOpacity style={styles.wrapper} onPress={() => onPress(forecast)}>
         <View style={styles.glassWrapper}>
@@ -61,23 +73,6 @@ function LocationRow(props: LocationRowProps): JSX.Element {
           <View style={styles.left}>
             <View>
               <ActivityIndicator animating={true} color={colors.primary} size='large' />
-            </View>
-          </View>
-        </View>
-      </View>
-    </View>
-  )
-}
-
-
-function ForecastError(props: { msg: string }): JSX.Element {
-  return (
-    <View style={styles.wrapper}>
-      <View style={styles.glassWrapper}>
-        <View style={styles.opacity}>
-          <View style={styles.left}>
-            <View>
-              <Text style={styles.small}>{props.msg}</Text>
             </View>
           </View>
         </View>

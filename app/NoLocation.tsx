@@ -3,9 +3,11 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useRouter, Href} from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
 import LocationRow from '@/components/LocationRow';
+import StatusCard from '@/components/StatusCard';
 
 import CITIES from '@/assets/cities.json';
 import { City } from '@/lib/geo/constants';
@@ -14,11 +16,14 @@ import { setForecast } from '@/lib/store/forecast.slice';
 import { setLat, setLon, setName } from '@/lib/store/location.slice';
 import { SCREENS } from '@/lib/layout/constants';
 import { ForecastRecord } from '@/lib/forecast/types';
+import { useLocationRowErrors } from '@/lib/hooks/location-row-errors.hook';
 import { colors, space } from '@/lib/theme';
 
 const NoLocationScreen = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -26,10 +31,20 @@ const NoLocationScreen = () => {
         <View style={styles.bg}>
           <AppBar location="Climweb Weather App" />
           <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} snapToStart={false}>
+            {hasErrors && (
+              <StatusCard
+                icon="cloud-off-outline"
+                iconColor={colors.danger}
+                title={t('forecast.error.title')}
+                text={t('There was an error getting the forecast') + '.'}
+                onRetry={retryAll}
+              />
+            )}
             {
               (CITIES as City[]).map((city, idx) =>
                 <LocationRow
                   key={idx}
+                  id={String(idx)}
                   district={city}
                   onPress={(forecast: ForecastRecord): void => {
                     dispatch(setForecast(forecast))
@@ -38,6 +53,7 @@ const NoLocationScreen = () => {
                     dispatch(setLon(city.lon));
                     router.push(SCREENS.Home.toString() as Href);
                   }}
+                  onErrorChange={onErrorChange}
                 />)
             }
           </ScrollView>
