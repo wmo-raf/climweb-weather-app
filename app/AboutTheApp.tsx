@@ -74,13 +74,7 @@ function AboutTheAppScreen(): JSX.Element {
                       <Text variant="bodyMedium">
                         <Text style={styles.whiteHeader}>{"\n"}{t('Geographical Data')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.
-                        </Text>
-                      </Text>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.whiteHeader}>{"\n"}{t('Background photo')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('background.photo.disclaimer')}{"\n"}{"\n"}{"\n"}
+                          {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.{"\n"}{"\n"}{"\n"}
                         </Text>
                       </Text>
                     </View>

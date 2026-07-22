@@ -201,8 +201,6 @@ Follow these steps to add a new language to the app:
 - **`privacy.contact.text`** - Who to contact with privacy questions
 
 When adapting this page for a different deployment, update the organization name(s) in `privacy.intro` and `privacy.contact.text` (see [app/PrivacyPolicy.tsx](app/PrivacyPolicy.tsx)) to match whoever operates that deployment — these currently name WMO-RAF and Norway MET, mirroring the same attribution used in `app.and.forecasts.desc` on the About the App page.
-- **`Background photo`** - Background image title
-- **`background.photo.disclaimer`** - Credit for background photo
 
 #### Weather Information
 - **`Today`** - Today's weather section
