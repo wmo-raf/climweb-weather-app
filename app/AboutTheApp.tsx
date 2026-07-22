@@ -107,13 +107,12 @@ const styles = StyleSheet.create({
   whiteHeader: {
     color: colors.textStrong,
     fontSize: 18,
-    lineHeight: 24.51,
     fontFamily: fonts.bold,
   },
   whiteText: {
     color: colors.text,
     fontSize: 16,
-    lineHeight: 21.79,
+    lineHeight: 22,
     fontFamily: fonts.regular,
   },
   title: {
@@ -137,8 +136,8 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: space[6],
-    marginLeft: 45,
-    marginRight: 45,
+    marginLeft: space[6],
+    marginRight: space[6],
   },
   ln: {
     textDecorationLine: 'underline',

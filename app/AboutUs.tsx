@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
   },
   whiteHeader: {
     color: colors.textStrong,
-    fontSize: 20,
-    fontFamily: fonts.semiBold,
+    fontSize: 18,
+    fontFamily: fonts.bold,
   },
   whiteText: {
     color: colors.text,
@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.textStrong,
-    fontSize: 22,
+    fontSize: 18,
     lineHeight: 24,
-    fontFamily: fonts.semiBold,
+    fontFamily: fonts.bold,
   },
   wrapper: {
     flexDirection: 'column',
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: space[6],
-    marginLeft: 45,
-    marginRight: 45,
+    marginLeft: space[6],
+    marginRight: space[6],
   },
 });
 
