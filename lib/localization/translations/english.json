@@ -30,6 +30,8 @@
   "today.warmer": "warmer",
   "today.cooler": "cooler",
   "today.tapToSeeFiveDays": "Tap to see the next 5 days",
+  "today.hourByHour": "Today, hour by hour",
+  "today.tapToSeeHourly": "Tap to see the hourly forecast",
   "day.conditionWindy": "{{condition}} and very windy.",
   "Min": "Min",
   "Max": "Max",

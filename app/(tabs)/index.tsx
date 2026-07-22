@@ -160,7 +160,7 @@ const MainScreen = () => {
     } else {
       mainContent = (
         <View style={styles.opacity}>
-          <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} forecast={forecast} today={today} compact={breakpoint === 'small'} />
+          <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} compact={breakpoint === 'small'} />
         </View>
       )
     }

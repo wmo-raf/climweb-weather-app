@@ -6,52 +6,64 @@ import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
-import { ForecastRecord } from '@/lib/forecast/types';
-import { getFiveDayWindow } from '@/lib/forecast/day-parts';
+import { ForecastDayRecord } from '@/lib/forecast/types';
 import { colors, fonts, radius, shadow, space } from '@/lib/theme';
 
-type FiveDaySummaryProps = {
-  forecast: ForecastRecord;
-  startDate: DateTime;
+type FiveHourSummaryProps = {
+  daySummary: ForecastDayRecord;
+  location: string;
 };
 
-// Compact "Next 5 days" card shown on Today, one row per day. Tapping
-// anywhere on the card opens the full Five Days page.
-function FiveDaySummary({ forecast, startDate }: FiveDaySummaryProps): JSX.Element | null {
+const HOURS_SHOWN = 5;
+
+// Compact "Today, hour by hour" card shown on Today, one row per upcoming
+// hour. Tapping anywhere on the card opens today's full hourly breakdown,
+// starting from the current time.
+function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.Element | null {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const days = getFiveDayWindow(forecast, startDate);
-  if (days.length === 0) {
+  const nowISO = DateTime.now().toISO()!;
+  const upcomingSteps = daySummary.steps.filter(s => s.time > nowISO).slice(0, HOURS_SHOWN);
+  if (upcomingSteps.length === 0) {
     return null;
   }
+
+  const onPress = () => router.push({
+    pathname: '/Hourly',
+    params: {
+      location,
+      dayString: daySummary.day,
+      startAtCurrentTime: 'yes',
+      title: t('Today'),
+    },
+  } as Href);
 
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => router.push('/FiveDays' as Href)}
-      accessibilityLabel={`${t('Next 5 days')}. ${t('today.tapToSeeFiveDays')}`}
+      onPress={onPress}
+      accessibilityLabel={`${t('today.hourByHour')}. ${t('today.tapToSeeHourly')}`}
     >
       <View style={styles.header}>
-        <Text style={styles.headerText}>{t('Next 5 days')}</Text>
+        <Text style={styles.headerText}>{t('today.hourByHour')}</Text>
         <Icon source="chevron-right" size={20} color={colors.textSubtle} />
       </View>
 
-      {days.map((d, idx) => {
-        const iconSource = d.weatherSymbol ? weatherIcons[d.weatherSymbol] : undefined;
-        const dayAbbrev = t(DateTime.fromISO(d.day).toLocaleString({ weekday: 'short' }));
-        const minTemp = Math.round(d.minTemperature || 0);
-        const maxTemp = Math.round(d.maxTemperature || 0);
+      {upcomingSteps.map((step, idx) => {
+        const iconSource = step.weatherSymbol ? weatherIcons[step.weatherSymbol] : undefined;
+        const timeLabel = DateTime.fromISO(step.time).toFormat('h a').toLowerCase();
+        const temp = step.temperature !== undefined ? Math.round(step.temperature) : undefined;
 
         return (
           <View
-            key={d.day}
-            style={[styles.row, idx === days.length - 1 && styles.rowLast]}
-            accessibilityLabel={`${dayAbbrev}: ${minTemp} to ${maxTemp} degrees.`}
+            key={step.time}
+            style={[styles.row, idx === upcomingSteps.length - 1 && styles.rowLast]}
+            accessibilityLabel={`${timeLabel}${temp !== undefined ? `: ${temp} degrees` : ''}.`}
           >
-            <Text style={styles.dayName}>{dayAbbrev}</Text>
+            <Text style={styles.time}>{timeLabel}</Text>
             {iconSource && <Icon source={iconSource} size={24} />}
-            <Text style={styles.tempRange}>{minTemp}&deg; – {maxTemp}&deg;</Text>
+            <Text style={styles.temp}>{temp !== undefined ? `${temp}°` : ''}</Text>
           </View>
         );
       })}
@@ -91,19 +103,19 @@ const styles = StyleSheet.create({
   rowLast: {
     borderBottomWidth: 0,
   },
-  dayName: {
+  time: {
     flex: 1,
     fontSize: 14,
     fontFamily: fonts.semiBold,
     color: colors.textStrong,
   },
-  tempRange: {
+  temp: {
     fontSize: 14,
     fontFamily: fonts.bold,
     color: colors.textStrong,
-    minWidth: 84,
+    minWidth: 44,
     textAlign: 'right',
   },
 });
 
-export default FiveDaySummary;
+export default FiveHourSummary;

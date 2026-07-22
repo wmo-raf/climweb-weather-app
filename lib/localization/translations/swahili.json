@@ -30,6 +30,8 @@
   "today.warmer": "joto zaidi",
   "today.cooler": "baridi zaidi",
   "today.tapToSeeFiveDays": "Gusa kuona siku 5 zijazo",
+  "today.hourByHour": "Leo, saa kwa saa",
+  "today.tapToSeeHourly": "Gusa kuona utabiri wa saa kwa saa",
   "day.conditionWindy": "{{condition}} na upepo mkali sana.",
   "Min": "Chini",
   "Max": "Juu",
