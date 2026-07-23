@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, Text } from 'react-native-paper';
@@ -31,7 +31,7 @@ const PlacesScreen = () => {
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
-  const [, favourites] = useFavourites();
+  const [favouritesLoading, favourites] = useFavourites();
   const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
 
   const onSelectPlace = (place: Place, forecast: ForecastRecord) => {
@@ -52,7 +52,11 @@ const PlacesScreen = () => {
         <View style={styles.bg}>
           <AppBar location={t('Places')} />
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-            {favourites.length === 0 ? (
+            {favouritesLoading ? (
+              <View style={styles.loader}>
+                <ActivityIndicator animating={true} color={colors.primary} size='large' />
+              </View>
+            ) : favourites.length === 0 ? (
               <View style={styles.emptyState}>
                 <Icon source="map-marker-off-outline" size={32} color={colors.textSubtle} />
                 <Text style={styles.emptyTitle}>{t('places.empty.title')}</Text>
@@ -119,6 +123,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   content: {
     padding: space[4],
     paddingBottom: space[8],
+  },
+  // Matches the Today tab's whole-page loading spinner (plain, no card
+  // chrome) — shown while useFavourites() reads from AsyncStorage, so this
+  // screen doesn't flash the "no places set" empty state first.
+  loader: {
+    marginTop: space[16],
+    marginBottom: space[16],
+    alignItems: 'center',
   },
   header: {
     flexDirection: 'row',

@@ -70,16 +70,8 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
   }
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.glassWrapper}>
-        <View style={styles.opacity}>
-          <View style={styles.left}>
-            <View>
-              <ActivityIndicator animating={true} color={colors.primary} size='large' />
-            </View>
-          </View>
-        </View>
-      </View>
+    <View style={styles.loadingWrapper}>
+      <ActivityIndicator animating={true} color={colors.primary} size='large' />
     </View>
   )
 }
@@ -91,6 +83,17 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginTop: space[4],
+  },
+  // Deliberately no card chrome (border/shadow/background) here, unlike
+  // the loaded-row wrapper above — matches the plain floating spinner used
+  // for the whole-page loading state on the Today tab, since this is the
+  // spinner shown while Places/NoLocation's rows are individually loading.
+  loadingWrapper: {
+    width: '100%',
+    marginTop: space[4],
+    paddingVertical: space[6],
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   glassWrapper: {
     width: '100%',
