@@ -41,7 +41,7 @@
   "welcome.getStarted": "Anza",
   "welcome.next": "Endelea",
   "warnings.empty.title": "Hakuna tahadhari kwa sasa",
-  "warnings.empty.text": "Tutakujulisha ikiwa kuna tahadhari ya hatari kwa {{location}}.",
+  "warnings.empty.text": "Hakuna tahadhari za hali ya hewa zinazoendelea kwa sasa.",
   "places.pickerTitle": "Chagua maeneo unayoyapenda",
   "places.pickerSubtitle": "Tafuta na uchague hadi maeneo 5 unayojali.",
   "places.selectedCount": "{{count}}/5 zimechaguliwa",

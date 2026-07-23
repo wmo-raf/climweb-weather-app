@@ -41,7 +41,7 @@
   "welcome.getStarted": "Get started",
   "welcome.next": "Next",
   "warnings.empty.title": "No warnings right now",
-  "warnings.empty.text": "We'll let you know if there's a danger warning for {{location}}.",
+  "warnings.empty.text": "There are no active weather warnings right now.",
   "places.pickerTitle": "Choose your favourite places",
   "places.pickerSubtitle": "Search and select up to 5 places you care about.",
   "places.selectedCount": "{{count}}/5 selected",
