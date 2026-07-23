@@ -261,6 +261,7 @@
   "time.night": "usiku",
   "alert.listen": "Sikiliza",
   "alert.stop": "Simamisha",
+  "alert.listen.unavailable": "Usomaji wa sauti hapatikani kwenye kifaa hiki.",
   "alert.missing": "Tahadhari haipatikani! Tafadhali rudi nyuma na ujaribu tena.",
   "alert.share": "Shiriki",
   "alert.share.dialogTitle": "Shiriki tahadhari hii",

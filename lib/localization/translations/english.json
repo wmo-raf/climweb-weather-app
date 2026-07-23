@@ -261,6 +261,7 @@
   "time.night": "night",
   "alert.listen": "Listen",
   "alert.stop": "Stop",
+  "alert.listen.unavailable": "Voice reading isn't available on this device.",
   "alert.missing": "Missing alert! Please go back and try again.",
   "alert.share": "Share",
   "alert.share.dialogTitle": "Share this warning",
