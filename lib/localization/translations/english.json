@@ -47,6 +47,8 @@
   "welcome.next": "Next",
   "warnings.empty.title": "No warnings right now",
   "warnings.empty.text": "There are no active weather warnings right now.",
+  "warnings.group.yourArea": "Your area",
+  "warnings.group.elsewhere": "Elsewhere in the country",
   "places.pickerTitle": "Choose your favourite places",
   "places.pickerSubtitle": "Search and select up to 5 places you care about.",
   "places.selectedCount": "{{count}}/5 selected",

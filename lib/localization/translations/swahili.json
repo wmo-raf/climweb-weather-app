@@ -47,6 +47,8 @@
   "welcome.next": "Endelea",
   "warnings.empty.title": "Hakuna tahadhari kwa sasa",
   "warnings.empty.text": "Hakuna tahadhari za hali ya hewa zinazoendelea kwa sasa.",
+  "warnings.group.yourArea": "Eneo lako",
+  "warnings.group.elsewhere": "Sehemu nyingine nchini",
   "places.pickerTitle": "Chagua maeneo unayoyapenda",
   "places.pickerSubtitle": "Tafuta na uchague hadi maeneo 5 unayojali.",
   "places.selectedCount": "{{count}}/5 zimechaguliwa",

@@ -4,6 +4,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import { isUndefined } from 'lodash';
 
 import AppBar from '@/components/AppBar';
 import AlertCard from '@/components/AlertCard';
@@ -13,13 +14,17 @@ import StatusCard from '@/components/StatusCard';
 
 import type { AppDispatch, RootState } from '@/lib/store';
 import { getAlerts } from '@/lib/store/alert.slice';
+import { alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Unlike the small Alerts banner (shown on Today/5 Days/etc., which stays
 // location-sensitive), this tab is the canonical list of every valid
-// alert the configured feed currently has — no location filtering.
+// alert the configured feed currently has — no location filtering. It's
+// grouped into "Your area" vs "Elsewhere in the country" (when a location
+// is set) so a long nationwide list doesn't bury what's actually relevant
+// to the user behind everything else.
 const WarningsScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
@@ -28,6 +33,11 @@ const WarningsScreen = () => {
   const isXL = useBreakpoint() === 'xl';
 
   const { alerts, error: alertsError } = useSelector((state: RootState) => state.alerts, shallowEqual);
+  const { lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
+  const hasLocation = !isUndefined(lat) && !isUndefined(lon);
+
+  const yourAreaAlerts = hasLocation ? alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon })) : [];
+  const elsewhereAlerts = hasLocation ? alerts.filter(alert => !alertInLocation(alert, { latitude: lat, longitude: lon })) : alerts;
 
   return (
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
@@ -51,11 +61,36 @@ const WarningsScreen = () => {
               </View>
             ) : null}
 
-            {alerts.map((alert, idx) => (
-              <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
-                <AlertCard alert={alert} />
-              </View>
-            ))}
+            {hasLocation ? (
+              <>
+                {yourAreaAlerts.length > 0 && (
+                  <View style={styles.group}>
+                    <Text style={styles.groupHeader}>{t('warnings.group.yourArea')}</Text>
+                    {yourAreaAlerts.map((alert, idx) => (
+                      <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
+                        <AlertCard alert={alert} />
+                      </View>
+                    ))}
+                  </View>
+                )}
+                {elsewhereAlerts.length > 0 && (
+                  <View style={styles.group}>
+                    <Text style={styles.groupHeader}>{t('warnings.group.elsewhere')}</Text>
+                    {elsewhereAlerts.map((alert, idx) => (
+                      <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
+                        <AlertCard alert={alert} />
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </>
+            ) : (
+              alerts.map((alert, idx) => (
+                <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
+                  <AlertCard alert={alert} />
+                </View>
+              ))
+            )}
 
             <AlertLegend />
             <LastUpdatedFooter />
@@ -87,6 +122,17 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   cardWrapper: {
     marginBottom: space[4],
+  },
+  group: {
+    marginBottom: space[2],
+  },
+  groupHeader: {
+    fontSize: 14,
+    fontFamily: fonts.bold,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: colors.textSubtle,
+    marginBottom: space[3],
   },
   emptyState: {
     alignItems: 'center',
