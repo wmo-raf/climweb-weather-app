@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon, Text } from 'react-native-paper';
+import { Icon } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 
 import AlertShareCard from './AlertShareCard';
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
-import { fonts, radius, space } from '@/lib/theme';
+import { radius } from '@/lib/theme';
 
 type AlertShareButtonProps = {
   alert: CAPAlert;
@@ -48,8 +48,7 @@ function AlertShareButton({ alert, textColor, backgroundColor }: AlertShareButto
         accessibilityLabel={t('alert.share')}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
-        {sharing ? <ActivityIndicator size="small" color={textColor} /> : <Icon source="share-variant" size={18} color={textColor} />}
-        <Text style={[styles.label, { color: textColor }]}>{t('alert.share')}</Text>
+        {sharing ? <ActivityIndicator size="small" color={textColor} /> : <Icon source="share-variant" size={20} color={textColor} />}
       </TouchableOpacity>
 
       <View style={styles.offscreen} pointerEvents="none">
@@ -61,16 +60,11 @@ function AlertShareButton({ alert, textColor, backgroundColor }: AlertShareButto
 
 const styles = StyleSheet.create({
   button: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: space[1],
-    paddingVertical: space[2],
-    paddingHorizontal: space[3],
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
     borderRadius: radius.full,
-  },
-  label: {
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
   },
   offscreen: {
     position: 'absolute',
