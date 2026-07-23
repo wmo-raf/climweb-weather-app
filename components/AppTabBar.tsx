@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon, Text } from 'react-native-paper';
+import { Badge, Icon, Text } from 'react-native-paper';
+import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { RootState } from '@/lib/store';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { colors, fonts, navRailWidth, radius, space, touchTarget } from '@/lib/theme';
 
@@ -41,9 +43,12 @@ function AppTabBar({ state, navigation }: TabBarProps) {
   const breakpoint = useBreakpoint();
   const isRail = breakpoint === 'xl';
 
+  const { alerts } = useSelector((s: RootState) => s.alerts, shallowEqual);
+
   const items = state.routes.map((route: { key: string; name: string }, index: number) => {
     const focused = state.index === index;
     const label = t(LABEL_KEYS[route.name] ?? route.name);
+    const showAlertBadge = route.name === 'Warnings' && alerts.length > 0;
 
     const onPress = () => {
       const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
@@ -58,10 +63,17 @@ function AppTabBar({ state, navigation }: TabBarProps) {
         onPress={onPress}
         accessibilityRole="button"
         accessibilityState={focused ? { selected: true } : {}}
-        accessibilityLabel={label}
+        accessibilityLabel={showAlertBadge ? `${label} (${alerts.length})` : label}
         style={[styles.item, isRail && styles.itemRail, focused && styles.itemFocused]}
       >
-        <Icon source={ICONS[route.name] ?? 'circle'} size={22} color={focused ? colors.primary : colors.textSubtle} />
+        <View style={styles.iconWrapper}>
+          <Icon source={ICONS[route.name] ?? 'circle'} size={22} color={focused ? colors.primary : colors.textSubtle} />
+          {showAlertBadge && (
+            <Badge size={16} style={styles.badge}>
+              {alerts.length > 9 ? '9+' : alerts.length}
+            </Badge>
+          )}
+        </View>
         <Text style={[styles.label, { color: focused ? colors.primary : colors.textSubtle }]} numberOfLines={1}>{label}</Text>
       </TouchableOpacity>
     );
@@ -132,6 +144,16 @@ const styles = StyleSheet.create({
   },
   itemFocused: {
     backgroundColor: colors.bgTint,
+  },
+  iconWrapper: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -8,
+    backgroundColor: colors.danger,
+    color: colors.textInverse,
   },
   label: {
     fontSize: 14,
