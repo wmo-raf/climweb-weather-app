@@ -1,4 +1,4 @@
-import React, { JSX, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SystemBars } from 'react-native-edge-to-edge';
@@ -23,6 +23,14 @@ function WelcomeScreen(): JSX.Element {
   const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
 
   const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
+
+  // i18n's own language detection resolves from AsyncStorage asynchronously
+  // and can finish after this screen's first render — re-sync once it does
+  // so a previously chosen language shows as selected instead of getting
+  // stuck on whatever i18n.language happened to be at mount time.
+  useEffect(() => {
+    setSelectedLang((i18n.language as LanguageKey) ?? 'en');
+  }, [i18n.language]);
 
   const onSelectLanguage = (lang: LanguageKey) => {
     setSelectedLang(lang);

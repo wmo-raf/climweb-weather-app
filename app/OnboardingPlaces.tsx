@@ -21,7 +21,9 @@ function OnboardingPlacesScreen() {
   const router = useRouter();
   const [onboardingLoading, hasOnboarded, markOnboarded] = useOnboarding();
   const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
-  const [, , saveFavourites] = useFavourites();
+  const [favouritesLoading, favourites, saveFavourites] = useFavourites();
+
+  const loading = onboardingLoading || alwaysShowLoading || favouritesLoading;
 
   const onFinish = async (places: Place[]) => {
     await saveFavourites(places);
@@ -30,8 +32,15 @@ function OnboardingPlacesScreen() {
   };
 
   // Same stale-navigation/deep-link guard as Welcome — see its comment.
-  if (!onboardingLoading && !alwaysShowLoading && hasOnboarded && !alwaysShowStartPage) {
+  if (!loading && hasOnboarded && !alwaysShowStartPage) {
     return <Redirect href="/" />;
+  }
+
+  // Wait for existing favourites to load before rendering the picker, so
+  // a re-shown onboarding (via "Always Show Start Page") starts from the
+  // user's current picks instead of a flash of an empty list.
+  if (loading) {
+    return <SafeAreaView style={styles.wrapper}><SystemBars style="light" /></SafeAreaView>;
   }
 
   return (
@@ -40,7 +49,7 @@ function OnboardingPlacesScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>{t('places.pickerTitle')}</Text>
       </View>
-      <FavouritePlacesPicker finishLabel={t('welcome.getStarted')} onFinish={onFinish} theme="dark" />
+      <FavouritePlacesPicker initialSelected={favourites} finishLabel={t('welcome.getStarted')} onFinish={onFinish} theme="dark" />
     </SafeAreaView>
   );
 }
