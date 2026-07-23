@@ -1,4 +1,4 @@
-import React, { JSX, useEffect } from 'react';
+import React, { JSX, useEffect, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
@@ -8,7 +8,8 @@ import { City } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { ThemeColors, fonts, radius, shadow, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
 
 
@@ -24,6 +25,8 @@ type LocationRowProps = {
 };
 function LocationRow(props: LocationRowProps): JSX.Element | null {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { district, onPress, id, onErrorChange } = props;
   const [, forecast, error, retry] = useForecast(district.lat, district.lon);
 
@@ -82,7 +85,7 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
 }
 
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flex: 1,
     flexDirection: 'row',

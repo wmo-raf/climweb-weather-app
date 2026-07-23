@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,12 +20,15 @@ import { setLat, setLon, setName } from '@/lib/store/location.slice';
 import { SCREENS } from '@/lib/layout/constants';
 import { Place } from '@/lib/geo/places';
 import { ForecastRecord } from '@/lib/forecast/types';
-import { colors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
+import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const PlacesScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
   const [, favourites] = useFavourites();
@@ -100,7 +103,7 @@ const PlacesScreen = () => {
 
 export default PlacesScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',

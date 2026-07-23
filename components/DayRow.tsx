@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { DateTime } from "luxon";
@@ -8,8 +8,9 @@ import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
 import { describeDaySummary } from "@/lib/forecast/day-parts";
 import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
-import { ALERT_LEAD_WORD_KEYS, WARNING_TINT_COLORS } from "@/lib/alerts/providers/cap-alerts/icons";
-import { colors, fonts, radius, shadow, space, touchTarget } from "@/lib/theme";
+import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
+import { ThemeColors, fonts, radius, shadow, space, touchTarget } from "@/lib/theme";
+import { useThemeColors } from "@/lib/theme/ThemeContext";
 
 type DayRowProps = {
   summary: ForecastDayRecord | undefined;
@@ -23,6 +24,8 @@ type DayRowProps = {
 
 const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (!summary) {
     return (
@@ -45,7 +48,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
 
   const alertInfo = alert?.info?.[0];
   const level = alertInfo ? alertLevel(alertInfo) : undefined;
-  const tint = level ? WARNING_TINT_COLORS[level] : undefined;
+  const tint = level ? getWarningTintColors(colors)[level] : undefined;
 
   return (
     <View style={styles.dayRow}>
@@ -82,7 +85,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   dayRow: {
     fontFamily: fonts.regular,
     width: "100%",

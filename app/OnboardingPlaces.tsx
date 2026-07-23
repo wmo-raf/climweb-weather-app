@@ -11,7 +11,9 @@ import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { Place } from '@/lib/geo/places';
-import { colors, fonts, space } from '@/lib/theme';
+// Fixed to the light palette — same reasoning as Welcome.tsx: this screen's
+// dark-navy hero doesn't retint with the app's dark-mode setting.
+import { fonts, lightColors as colors, space } from '@/lib/theme';
 
 // Second and final onboarding step, reached from Welcome's language
 // screen. Selecting places is optional — finishing with none selected

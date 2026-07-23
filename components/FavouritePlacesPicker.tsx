@@ -1,4 +1,4 @@
-import React, { JSX, useRef, useState } from 'react';
+import React, { JSX, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { isNil } from 'lodash';
@@ -13,7 +13,8 @@ import {
 import geonames from '@/assets/geonames.json';
 import { Place } from '@/lib/geo/places';
 import { MAX_FAVOURITE_PLACES } from '@/lib/hooks/favourites.hook';
-import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { ThemeColors, fonts, lightColors, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type FavouritePlacesPickerProps = {
   initialSelected?: Place[];
@@ -31,6 +32,15 @@ function isSamePlace(a: Place, b: Place): boolean {
 function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, theme = 'light' }: FavouritePlacesPickerProps): JSX.Element {
   const isDark = theme === 'dark';
   const { t } = useTranslation();
+  const themeColors = useThemeColors();
+  // theme='dark' means "onboarding's colored hero", not the app's dark-mode
+  // setting — that variant always renders against a fixed dark hero
+  // (Welcome.tsx), so its base (non -Dark-suffixed) styles stay pinned to
+  // the light palette regardless of the user's theme choice. theme='light'
+  // (the default, used by EditFavourites) is a normal screen and follows
+  // the active theme like everything else.
+  const colors = isDark ? lightColors : themeColors;
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [selected, setSelected] = useState<Place[]>(initialSelected);
   const controllerRef = useRef<AutocompleteDropdownRef | null>(null);
 
@@ -117,7 +127,7 @@ function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, th
 
 export default FavouritePlacesPicker;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flex: 1,
   },

@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
@@ -9,10 +9,13 @@ import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, space } from '@/lib/theme';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 function AboutUsScreen(): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { lat, lon } = useSelector((state: RootState) => state.location);
 
   return (
@@ -71,7 +74,7 @@ function AboutUsScreen(): JSX.Element {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,

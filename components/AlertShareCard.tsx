@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getShareSourceLine, getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { colors, fonts, radius, space } from '@/lib/theme';
+import { ThemeColors, fonts, radius, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
   Red: 'alert.band.red',
@@ -29,6 +30,8 @@ type AlertShareCardProps = {
 // several times down a chain with no surrounding app context.
 const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert }, ref) => {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const info = alert.info?.[0];
 
   if (!info) return null;
@@ -70,7 +73,7 @@ const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert }, ref) =>
 
 AlertShareCard.displayName = 'AlertShareCard';
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     width: CARD_WIDTH,
     backgroundColor: colors.bg,

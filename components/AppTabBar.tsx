@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge, Icon, Text } from 'react-native-paper';
 import { useSelector, shallowEqual } from 'react-redux';
@@ -7,7 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { RootState } from '@/lib/store';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { colors, fonts, navRailWidth, radius, space, touchTarget } from '@/lib/theme';
+import { ThemeColors, fonts, navRailWidth, radius, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Loosely typed on purpose: this is assigned the real BottomTabBarProps at
 // the call site (app/(tabs)/_layout.tsx), whose exact shape isn't reliably
@@ -40,6 +41,8 @@ const LABEL_KEYS: Record<string, string> = {
 function AppTabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const breakpoint = useBreakpoint();
   const isRail = breakpoint === 'xl';
 
@@ -97,7 +100,7 @@ function AppTabBar({ state, navigation }: TabBarProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   bar: {
     flexDirection: 'row',
     backgroundColor: colors.bg,

@@ -11,7 +11,11 @@ import { LANGUAGES, LanguageKey } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
-import { colors, fonts, radius, space, touchTarget } from '@/lib/theme';
+// Fixed to the light palette, not the active theme: Welcome always renders
+// its own dark-navy hero (see SystemBars override below) regardless of the
+// user's in-app dark-mode setting — the design brief keeps this colored
+// hero screen as-is in both themes.
+import { fonts, lightColors as colors, radius, space, touchTarget } from '@/lib/theme';
 
 const appName = Constants.expoConfig?.name ?? 'Weather App';
 
@@ -56,8 +60,8 @@ function WelcomeScreen(): JSX.Element {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      {/* Dark navy background needs light status/nav bar icons, overriding
-          the app-wide "dark" default pushed in the root layout. */}
+      {/* Always-dark navy background needs light status/nav bar icons,
+          overriding the root layout's theme-driven default. */}
       <SystemBars style="light" />
       <View style={styles.content}>
         <View style={styles.iconBadge}>

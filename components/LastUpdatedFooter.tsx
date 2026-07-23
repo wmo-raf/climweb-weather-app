@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useSelector, shallowEqual } from 'react-redux';
@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { RootState } from '@/lib/store';
 import { APP_TIMEZONE } from '@/config';
-import { colors, fonts, space } from '@/lib/theme';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Shown at the bottom of Today, 5 Days, Places and Alerts — a single,
 // app-wide "how fresh is this data" indicator tied to the last time the
@@ -16,6 +17,8 @@ import { colors, fonts, space } from '@/lib/theme';
 // first successful fetch.
 function LastUpdatedFooter(): JSX.Element | null {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { lastFetchedAt } = useSelector((state: RootState) => state.forecast, shallowEqual);
 
   if (!lastFetchedAt) {
@@ -29,7 +32,7 @@ function LastUpdatedFooter(): JSX.Element | null {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   footer: {
     fontSize: 14,
     fontFamily: fonts.regular,

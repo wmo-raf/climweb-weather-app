@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
@@ -10,12 +10,15 @@ import AppBar from '@/components/AppBar';
 import AlertCard from '@/components/AlertCard';
 
 import { RootState } from '@/lib/store';
-import { colors, fonts, space } from '@/lib/theme';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 import AlertLegend from '@/components/AlertLegend';
 
 function WeatherWarningScreen(): JSX.Element {
   const { t } = useTranslation();
   const { location, alertID } = useLocalSearchParams<{ location: string, alertID: string }>()
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const { alerts } = useSelector((state: RootState) => state.alerts);
   const alert = alerts.find(alert => alert.identifier === alertID)
@@ -42,7 +45,7 @@ function WeatherWarningScreen(): JSX.Element {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',

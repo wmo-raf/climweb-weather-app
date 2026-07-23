@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Dialog, Portal, Button, Text } from 'react-native-paper';
 import { isNil } from 'lodash';
@@ -14,7 +14,8 @@ import { Place } from '@/lib/geo/places';
 
 import geonames from '@/assets/geonames.json'
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { ThemeColors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 const locationAnchor = require('@/assets/location-anchor.png');
 
 type SearchProps = {
@@ -26,6 +27,8 @@ type GPS = "INACTIVE" | "SEARCHING" | "FAILED";
 
 export const Search = ({ setLocation }: SearchProps) => {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [visible, setVisible] = useState(false);
 
   const showDialog = () => setVisible(true);
@@ -99,6 +102,9 @@ type GPSFeedbackProps = {
 }
 
 const GPSFeedback = ({ status }: GPSFeedbackProps) => {
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   if (status === "SEARCHING") {
     return (
       <View style={styles.loader}>
@@ -113,7 +119,7 @@ const GPSFeedback = ({ status }: GPSFeedbackProps) => {
   )
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   searchBar: {
     backgroundColor: colors.bg,
     borderWidth: 1.5,

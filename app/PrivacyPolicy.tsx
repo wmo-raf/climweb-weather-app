@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
@@ -8,10 +8,13 @@ import { useTranslation } from 'react-i18next';
 import AppBar from '@/components/AppBar';
 import Alerts from '@/components/Alerts';
 import { RootState } from '@/lib/store';
-import { colors, fonts, space } from '@/lib/theme';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 function PrivacyPolicyScreen(): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { lat, lon } = useSelector((state: RootState) => state.location);
 
   return (
@@ -55,7 +58,7 @@ function PrivacyPolicyScreen(): JSX.Element {
 
 export default PrivacyPolicyScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',

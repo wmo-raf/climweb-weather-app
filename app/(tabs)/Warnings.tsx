@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,7 +14,8 @@ import StatusCard from '@/components/StatusCard';
 import type { AppDispatch, RootState } from '@/lib/store';
 import { getAlerts } from '@/lib/store/alert.slice';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { colors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
+import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Unlike the small Alerts banner (shown on Today/5 Days/etc., which stays
 // location-sensitive), this tab is the canonical list of every valid
@@ -22,6 +23,8 @@ import { colors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme'
 const WarningsScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
   const { alerts, error: alertsError } = useSelector((state: RootState) => state.alerts, shallowEqual);
@@ -65,7 +68,7 @@ const WarningsScreen = () => {
 
 export default WarningsScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 
@@ -6,7 +6,8 @@ import { useNavigation, useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
 import { useTranslation } from 'react-i18next';
-import { colors, fonts, space, touchTarget } from '@/lib/theme';
+import { ThemeColors, fonts, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const backArrow = require('@/assets/icons8-back-100_2.png');
 
@@ -22,6 +23,8 @@ const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const titleBlock = (
     <>
@@ -68,7 +71,7 @@ const AppBar = (props: AppBarProps) => {
 
 export default AppBar;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   appBar: {
     flexDirection: 'row',
     alignItems: 'center',

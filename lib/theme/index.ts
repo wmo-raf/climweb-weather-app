@@ -1,7 +1,13 @@
 import { Platform } from 'react-native';
 
 // Design tokens mirrored from docs/STYLE.md — do not invent new colors, always pull from here.
-export const colors = {
+// Light is the reference palette; dark is a token-for-token retint (Zanyengo
+// Redesign reference, "Turn 5 — dark mode"). Severity accent colors
+// (danger/warning/success) and anything meant to pop as a white pill against
+// a colored hero stay identical in both themes — only surfaces/text/tints
+// shift. Consume via `useThemeColors()` (lib/theme/ThemeContext), never
+// import a fixed palette directly in component code.
+export const lightColors = {
   primary: '#0C447C',
   primaryHov: '#176C9C',
   primaryPrs: '#093766',
@@ -34,6 +40,49 @@ export const colors = {
   infoText: '#1E40AF',
   infoBg: '#DBEAFE',
 } as const;
+
+export type ThemeColors = { [K in keyof typeof lightColors]: string };
+
+export const darkColors: ThemeColors = {
+  primary: '#6FB3EA',
+  primaryHov: '#8AC4EA',
+  primaryPrs: '#5A9FD9',
+  accent: '#8AC4EA',
+  info: '#6FB3EA',
+  bgTint: '#152C40',
+  bgTintLight: '#152C40',
+  bgOverlay: '#0B0F14',
+  bgFooter: '#152C40',
+
+  bg: '#17202A',
+  bgAlt: '#0B0F14',
+  bgHover: '#202A34',
+  bgMuted: '#2A3540',
+  border: '#2A3540',
+
+  text: '#C7D0DA',
+  textStrong: '#F2F4F7',
+  textSubtle: '#93A0AC',
+  textMuted: '#7C8792',
+  textInverse: '#FFFFFF',
+  focus: '#8AC4EA',
+
+  success: '#0B612D',
+  successBg: '#D1FAE5',
+  warning: '#FBBF24',
+  warningBg: '#2E230A',
+  danger: '#B91C1C',
+  dangerBg: '#2A1414',
+  infoText: '#1E40AF',
+  infoBg: '#DBEAFE',
+};
+
+// Big current-temperature numerals: #0A2240 on light, pure white on dark —
+// distinct from any text.* token, so it gets its own key.
+export const tempTextColor: { light: string; dark: string } = {
+  light: '#0A2240',
+  dark: '#FFFFFF',
+};
 
 export const space = { 1: 4, 2: 8, 3: 12, 4: 16, 6: 24, 8: 32, 10: 40, 12: 48, 16: 64 } as const;
 

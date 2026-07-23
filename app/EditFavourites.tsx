@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -8,7 +8,8 @@ import AppBar from '@/components/AppBar';
 import FavouritePlacesPicker from '@/components/FavouritePlacesPicker';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { Place } from '@/lib/geo/places';
-import { colors } from '@/lib/theme';
+import { ThemeColors } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Reached from the Places tab (empty state or edit action) to add/remove
 // favourites after onboarding — same picker as OnboardingPlaces, but the
@@ -16,6 +17,8 @@ import { colors } from '@/lib/theme';
 function EditFavouritesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [loading, favourites, saveFavourites] = useFavourites();
 
   const onFinish = async (places: Place[]) => {
@@ -39,7 +42,7 @@ function EditFavouritesScreen() {
 
 export default EditFavouritesScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: colors.bgAlt,

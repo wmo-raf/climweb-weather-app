@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,7 +28,8 @@ import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook'
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
-import { colors, fonts, navRailWidth, space, tempSize } from '@/lib/theme';
+import { ThemeColors, fonts, navRailWidth, space, tempSize } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Module-level, not component state — persists only for the lifetime of
 // the JS process. Resets on a real app relaunch (cold start), but not
@@ -42,6 +43,8 @@ const MainScreen = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
   const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
@@ -256,7 +259,7 @@ const MainScreen = () => {
 
 export default MainScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flex: 1,
     flexDirection: 'column',

@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { DateTime } from "luxon";
@@ -9,7 +9,8 @@ import { ForecastRecord } from '@/lib/forecast/types';
 import { getFiveDayWindow } from '@/lib/forecast/day-parts';
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
 import { getAlertForDay } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { colors, fonts, space } from '@/lib/theme';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type FiveDaysProps = {
     startDate: DateTime;
@@ -23,6 +24,8 @@ type FiveDaysProps = {
 }
 function FiveDays(props: FiveDaysProps): JSX.Element {
     const { t } = useTranslation();
+    const colors = useThemeColors();
+    const styles = useMemo(() => makeStyles(colors), [colors]);
     const { startDate, forecast, alerts, onSelectAlert } = props
 
     if (forecast) {
@@ -64,7 +67,7 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
     );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     noForecast: {
         fontFamily: fonts.regular,
         color: colors.text,

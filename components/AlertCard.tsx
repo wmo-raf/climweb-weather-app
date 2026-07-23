@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import ListenButton from './ListenButton';
 import AlertShareButton from './AlertShareButton';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
-import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WARNING_TINT_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
+import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, getWarningTintColors } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { ThemeColors, fonts, lightColors, radius, shadow, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
   Red: 'alert.band.red',
@@ -27,6 +28,8 @@ type AlertCardProps = {
 // link (WeatherWarning.tsx) and repeated in the Warnings tab's list.
 function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const info = alert.info?.[0];
 
   if (!info) return null;
@@ -34,7 +37,11 @@ function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
   const level = alertLevel(info);
   const bandColor = WARNING_COLORS[level];
   const bandTextColor = WARNING_BAND_TEXT_COLORS[level];
-  const tint = WARNING_TINT_COLORS[level];
+  const tint = getWarningTintColors(colors)[level];
+  // The Listen/Share pills always sit on a solid-white circle regardless of
+  // theme (design brief: white pills stay white with colored icon in both
+  // themes) — use the light-mode tint fixed, not the retinted one.
+  const pillTint = getWarningTintColors(lightColors)[level];
   const headline = info.headline || info.event;
   const whatToDo = getWhatToDo(info);
   const whenText = getWhenText(t, info);
@@ -56,8 +63,8 @@ function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
           <Text style={[styles.bandLabel, { color: bandTextColor }]}>{t(BAND_LABEL_KEYS[level])}</Text>
         </View>
         <View style={styles.bandActions}>
-          <ListenButton text={speechText} textColor={tint.text} backgroundColor={colors.bg} />
-          <AlertShareButton alert={alert} textColor={tint.text} backgroundColor={colors.bg} />
+          <ListenButton text={speechText} textColor={pillTint.text} backgroundColor="#FFFFFF" />
+          <AlertShareButton alert={alert} textColor={pillTint.text} backgroundColor="#FFFFFF" />
         </View>
       </View>
 
@@ -87,7 +94,7 @@ function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   band: {
     flexDirection: 'row',
     alignItems: 'center',

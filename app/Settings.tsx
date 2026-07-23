@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon, Switch, Text } from 'react-native-paper';
+import React, { useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Icon, SegmentedButtons, Switch, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dropdown from 'react-native-input-select';
@@ -13,11 +13,20 @@ import { RootState } from '@/lib/store';
 import { LANGUAGES } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
 import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
-import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { ThemeColors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { ThemeMode, useAppTheme } from '@/lib/theme/ThemeContext';
 
 const SettingsScreen = () => {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const { mode, colors, setMode } = useAppTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
+  const themeModeOptions = [
+    { value: 'system', label: t('settings.appearance.system') },
+    { value: 'light', label: t('settings.appearance.light') },
+    { value: 'dark', label: t('settings.appearance.dark') },
+  ];
 
   const options = Object.entries(LANGUAGES).map(([key, { label }]) => ({
     label,
@@ -41,7 +50,7 @@ const SettingsScreen = () => {
           <View style={styles.alertsWrapper}>
             <Alerts lat={lat} lon={lon} location={name} />
           </View>
-          <View style={styles.container}>
+          <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
             <View style={styles.card}>
               <Text style={styles.title}>
                 {t('Language')}
@@ -56,6 +65,17 @@ const SettingsScreen = () => {
                 dropdownStyle={styles.dropdownStyle}
                 placeholderStyle={{ color: colors.textMuted }}
                 selectedItemStyle={{ color: colors.text }}
+              />
+            </View>
+
+            <View style={styles.card}>
+              <Text style={styles.title}>{t('settings.appearance')}</Text>
+              <Text style={styles.switchDescription}>{t('settings.appearance.description')}</Text>
+              <SegmentedButtons
+                value={mode}
+                onValueChange={value => setMode(value as ThemeMode)}
+                buttons={themeModeOptions}
+                style={styles.segmentedButtons}
               />
             </View>
 
@@ -101,7 +121,7 @@ const SettingsScreen = () => {
                 <Icon source="chevron-right" size={22} color={colors.textSubtle} />
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </SafeAreaView>
@@ -110,10 +130,12 @@ const SettingsScreen = () => {
 
 export default SettingsScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
-    flexDirection: 'column',
     flex: 1,
+  },
+  content: {
+    flexDirection: 'column',
     padding: space[4],
   },
   alertsWrapper: {
@@ -175,6 +197,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     color: colors.textSubtle,
     marginTop: space[1],
+  },
+  segmentedButtons: {
+    marginTop: space[3],
   },
   wrapper: {
     flexDirection: 'column',

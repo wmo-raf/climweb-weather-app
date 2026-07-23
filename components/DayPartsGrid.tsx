@@ -1,11 +1,12 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import DayPartCard from './DayPartCard';
 import { DAY_PARTS, DayPart, DayPartSummary } from '@/lib/forecast/day-parts';
-import { colors, fonts, space } from '@/lib/theme';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type DayPartsGridProps = {
   dayParts: Partial<Record<DayPart, DayPartSummary>>;
@@ -15,6 +16,8 @@ type DayPartsGridProps = {
 
 function DayPartsGrid({ dayParts, columns = 2 }: DayPartsGridProps): JSX.Element | null {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const partsWithData = DAY_PARTS.filter(part => dayParts[part]);
 
   if (partsWithData.length === 0) {
@@ -35,7 +38,7 @@ function DayPartsGrid({ dayParts, columns = 2 }: DayPartsGridProps): JSX.Element
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   section: {
     marginTop: space[6],
   },

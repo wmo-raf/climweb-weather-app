@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { Icon } from 'react-native-paper';
 import { DateTime } from "luxon";
@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { colors, fonts, radius, space } from '@/lib/theme';
+import { ThemeColors, fonts, radius, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type HourlyTableProps = {
   title: string;
@@ -16,6 +17,8 @@ type HourlyTableProps = {
 
 function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const isSameDay = props.day.hasSame(DateTime.local(), "day");
   const dayName = isSameDay ? t('Today') : props.day.toFormat('cccc');
@@ -60,7 +63,7 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,

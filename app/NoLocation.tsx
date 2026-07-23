@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,12 +17,15 @@ import { setLat, setLon, setName } from '@/lib/store/location.slice';
 import { SCREENS } from '@/lib/layout/constants';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useLocationRowErrors } from '@/lib/hooks/location-row-errors.hook';
-import { colors, space } from '@/lib/theme';
+import { ThemeColors, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const NoLocationScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
 
   return (
@@ -65,7 +68,7 @@ const NoLocationScreen = () => {
 
 export default NoLocationScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',

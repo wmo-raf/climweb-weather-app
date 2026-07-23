@@ -1,9 +1,10 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
-import { colors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { ThemeColors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type StatusCardProps = {
   icon: string;
@@ -22,13 +23,15 @@ type StatusCardProps = {
 // visual pattern already used for Warnings' empty state, with an optional
 // action button for error/unknown-state cases (Today, Places, Alerts,
 // NoLocation, 5 Days).
-function StatusCard({ icon, iconColor = colors.textSubtle, title, text, onRetry, actionLabel }: StatusCardProps): JSX.Element {
+function StatusCard({ icon, iconColor, title, text, onRetry, actionLabel }: StatusCardProps): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const label = actionLabel ?? t('Retry');
 
   return (
     <View style={styles.card}>
-      <Icon source={icon} size={32} color={iconColor} />
+      <Icon source={icon} size={32} color={iconColor ?? colors.textSubtle} />
       <Text style={styles.title}>{title}</Text>
       {text && <Text style={styles.text}>{text}</Text>}
       {onRetry && (
@@ -40,7 +43,7 @@ function StatusCard({ icon, iconColor = colors.textSubtle, title, text, onRetry,
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     width: '100%',
     alignItems: 'center',

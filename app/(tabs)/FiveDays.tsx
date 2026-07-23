@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView, Text } from 'react-native';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,13 +18,16 @@ import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.sl
 import { getAlerts } from '@/lib/store/alert.slice';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
-import { colors, fonts, navRailWidth, space } from '@/lib/theme';
+import { ThemeColors, fonts, navRailWidth, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 import Alerts from '@/components/Alerts';
 
 const FiveDaysScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
   const { name: location, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
@@ -105,7 +108,7 @@ const FiveDaysScreen = () => {
 
 export default FiveDaysScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',

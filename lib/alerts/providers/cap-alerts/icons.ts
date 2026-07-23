@@ -1,6 +1,6 @@
 import { ImageSourcePropType } from 'react-native';
 
-import { colors } from '@/lib/theme';
+import { ThemeColors } from '@/lib/theme';
 
 const warningRed = require('@/assets/warning-red.png');
 const warningOrange = require('@/assets/warning-orange.png');
@@ -42,22 +42,28 @@ export const ALERT_SEVERITY_RANK: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' |
 };
 
 // Text/icon color to use on top of WARNING_COLORS — Yellow and Blue are too
-// light for white text, so they get dark text instead.
+// light for white text, so they get dark text instead. WARNING_COLORS bands
+// themselves don't retint for dark mode (see docs on that map), so this
+// pairing is fixed rather than sourced from theme tokens.
 export const WARNING_BAND_TEXT_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
-  Red: colors.textInverse,
-  Orange: colors.textInverse,
-  Yellow: colors.textStrong,
-  Cyan: colors.textInverse,
-  Blue: colors.textStrong,
+  Red: '#FFFFFF',
+  Orange: '#FFFFFF',
+  Yellow: '#1A1A1A',
+  Cyan: '#FFFFFF',
+  Blue: '#1A1A1A',
 };
 
-// Light tint + dark text pairs for "What to do" boxes, sourced from
-// docs/STYLE.md's status colors (danger/warning/info) since the 5 CAP levels
-// map onto fewer visually-distinct tints than raw severities.
-export const WARNING_TINT_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: { bg: string; text: string } } = {
-  Red: { bg: colors.dangerBg, text: colors.danger },
-  Orange: { bg: colors.warningBg, text: colors.warning },
-  Yellow: { bg: colors.warningBg, text: colors.warning },
-  Cyan: { bg: colors.infoBg, text: colors.infoText },
-  Blue: { bg: colors.infoBg, text: colors.infoText },
-};
+// Light tint + dark text pairs for "What to do" boxes, sourced from the
+// active theme's status colors (danger/warning/info) since the 5 CAP levels
+// map onto fewer visually-distinct tints than raw severities. Unlike
+// WARNING_COLORS/WARNING_BAND_TEXT_COLORS, these DO retint for dark mode —
+// call with the current `useThemeColors()` result.
+export function getWarningTintColors(colors: ThemeColors): { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: { bg: string; text: string } } {
+  return {
+    Red: { bg: colors.dangerBg, text: colors.danger },
+    Orange: { bg: colors.warningBg, text: colors.warning },
+    Yellow: { bg: colors.warningBg, text: colors.warning },
+    Cyan: { bg: colors.infoBg, text: colors.infoText },
+    Blue: { bg: colors.infoBg, text: colors.infoText },
+  };
+}

@@ -1,11 +1,12 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { DayPart, DayPartSummary, DAY_PART_LABEL_KEYS, CONDITION_LABEL_KEYS, conditionBucket } from '@/lib/forecast/day-parts';
-import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { ThemeColors, fonts, radius, shadow, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type DayPartCardProps = {
   part: DayPart;
@@ -15,6 +16,8 @@ type DayPartCardProps = {
 
 function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const iconSource = summary.weatherSymbol ? weatherIcons[summary.weatherSymbol] : undefined;
   const conditionLabel = t(CONDITION_LABEL_KEYS[conditionBucket(summary.weatherSymbol)]);
@@ -31,7 +34,7 @@ function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     width: '48%',
     backgroundColor: colors.bg,

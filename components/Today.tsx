@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,8 @@ import { getDayParts } from '@/lib/forecast/day-parts';
 import CurrentConditionsCard from './CurrentConditionsCard';
 import DayPartsGrid from './DayPartsGrid';
 import FiveHourSummary from './FiveHourSummary';
-import { colors, fonts, space, tempSize } from '@/lib/theme';
+import { ThemeColors, fonts, space, tempSize } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type TodaysForecastProps = {
   daySummary: ForecastDayRecord | undefined;
@@ -24,6 +25,8 @@ type TodaysForecastProps = {
 // grouping (conditions+wind on the left, day-parts+5-day list on the right).
 function Today({ daySummary, location, tempFontSize = tempSize.large, compact }: TodaysForecastProps): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (!daySummary) {
     return (
@@ -42,7 +45,7 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, compact }:
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // No horizontal margin here — Today is only ever rendered inside
   // app/(tabs)/index.tsx's contentWrapper, which already provides the
   // horizontal inset. Duplicating it here made this card narrower than

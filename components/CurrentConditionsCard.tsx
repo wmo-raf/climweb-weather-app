@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,8 @@ import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
 import { CONDITION_LABEL_KEYS, conditionBucket, getDayParts, buildTodaySummary } from '@/lib/forecast/day-parts';
 import { windLevel, WIND_LEVEL_SENTENCE_KEYS } from '@/lib/forecast/plain-language';
-import { colors, fonts, radius, space } from '@/lib/theme';
+import { ThemeColors, fonts, radius, space, tempTextColor } from '@/lib/theme';
+import { useAppTheme } from '@/lib/theme/ThemeContext';
 
 type CurrentConditionsCardProps = {
   daySummary: ForecastDayRecord;
@@ -22,6 +23,8 @@ type CurrentConditionsCardProps = {
 
 function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSummary, compact }: CurrentConditionsCardProps): JSX.Element {
   const { t } = useTranslation();
+  const { colors, scheme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(colors, tempTextColor[scheme]), [colors, scheme]);
 
   const nowStep = daySummary.steps[0];
   const nowTemp = Math.round(nowStep?.temperature || 0);
@@ -57,7 +60,7 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors, tempColor: string) => StyleSheet.create({
   currentCard: {
     borderRadius: radius.lg,
     backgroundColor: colors.bgTint,
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
   },
   large: {
     fontFamily: fonts.extraBold,
-    color: colors.textStrong,
+    color: tempColor,
   },
   nowCondition: {
     fontSize: 18,

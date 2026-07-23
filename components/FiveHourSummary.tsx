@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useRouter, Href } from 'expo-router';
@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { colors, fonts, radius, shadow, space } from '@/lib/theme';
+import { ThemeColors, fonts, radius, shadow, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type FiveHourSummaryProps = {
   daySummary: ForecastDayRecord;
@@ -22,6 +23,8 @@ const HOURS_SHOWN = 5;
 function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.Element | null {
   const { t } = useTranslation();
   const router = useRouter();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const nowISO = DateTime.now().toISO()!;
   const upcomingSteps = daySummary.steps.filter(s => s.time > nowISO).slice(0, HOURS_SHOWN);
@@ -71,7 +74,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     marginTop: space[4],
     padding: space[4],
