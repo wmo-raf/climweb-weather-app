@@ -4,6 +4,7 @@ import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import ListenButton from './ListenButton';
+import AlertShareButton from './AlertShareButton';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WARNING_TINT_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
@@ -54,7 +55,10 @@ function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
           <Icon source="alert" size={22} color={bandTextColor} />
           <Text style={[styles.bandLabel, { color: bandTextColor }]}>{t(BAND_LABEL_KEYS[level])}</Text>
         </View>
-        <ListenButton text={speechText} textColor={tint.text} backgroundColor={colors.bg} />
+        <View style={styles.bandActions}>
+          <ListenButton text={speechText} textColor={tint.text} backgroundColor={colors.bg} />
+          <AlertShareButton alert={alert} textColor={tint.text} backgroundColor={colors.bg} />
+        </View>
       </View>
 
       <View style={styles.body}>
@@ -101,6 +105,11 @@ const styles = StyleSheet.create({
   bandLabel: {
     fontSize: 15,
     fontFamily: fonts.bold,
+  },
+  bandActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
   },
   body: {
     marginTop: space[4],

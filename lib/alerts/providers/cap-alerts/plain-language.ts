@@ -53,6 +53,20 @@ export function getWhereText(info: CAPInfo | undefined): string | undefined {
   return info?.area?.areaDesc;
 }
 
+// "Ethiopian Meteorology and Hydrology Institute · ethiomet.gov.et" — built
+// from the CAP feed's own data (senderName, sender address) rather than a
+// hardcoded org name, since this app is deployed per-country against
+// whichever feed EXPO_PUBLIC_APP_ALERTS_SENDER_ID points to (see
+// docs/CONFIGURATION.md).
+export function getShareSourceLine(alert: CAPAlert, info: CAPInfo | undefined): string | undefined {
+  const name = info?.senderName?.trim() || undefined;
+  const atIndex = alert.sender?.indexOf('@') ?? -1;
+  const domain = atIndex > -1 ? alert.sender.slice(atIndex + 1).trim() : undefined;
+
+  if (name && domain) return `${name} · ${domain}`;
+  return name ?? domain;
+}
+
 // Finds the first alert (already filtered to relevant ones by the caller)
 // whose effective window overlaps the given calendar day — used to show an
 // inline warning chip under a day in the 5-day list.

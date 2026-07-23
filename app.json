@@ -67,7 +67,8 @@
             "enforceNavigationBarContrast": false
           }
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true
