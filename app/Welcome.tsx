@@ -3,12 +3,14 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { Icon, Text } from 'react-native-paper';
-import { useRouter, Href } from 'expo-router';
+import { useRouter, Redirect, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 
 import { LANGUAGES, LanguageKey } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
+import { useOnboarding } from '@/lib/hooks/onboarding.hook';
+import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
 import { colors, fonts, radius, space, touchTarget } from '@/lib/theme';
 
 const appName = Constants.expoConfig?.name ?? 'Weather App';
@@ -16,6 +18,9 @@ const appName = Constants.expoConfig?.name ?? 'Weather App';
 function WelcomeScreen(): JSX.Element {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+
+  const [onboardingLoading, hasOnboarded] = useOnboarding();
+  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
 
   const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
 
@@ -26,10 +31,20 @@ function WelcomeScreen(): JSX.Element {
 
   // Language is chosen here; favourite places are chosen on the next
   // onboarding step (OnboardingPlaces), which is the one that actually
-  // marks onboarding complete.
+  // marks onboarding complete. Uses replace (not push) so this screen
+  // doesn't linger in history underneath Home once onboarding finishes.
   const onNext = () => {
-    router.push(SCREENS.OnboardingPlaces.toString() as Href);
+    router.replace(SCREENS.OnboardingPlaces.toString() as Href);
   };
+
+  // Guards against reaching this screen once onboarding is already done —
+  // e.g. a stale back-navigation entry, or a direct/deep link to /Welcome.
+  // Only index.tsx is allowed to legitimately land a fully-onboarded user
+  // here, and only when "Always Show Start Page" is on; that case must
+  // still render normally, so it's explicitly excluded.
+  if (!onboardingLoading && !alwaysShowLoading && hasOnboarded && !alwaysShowStartPage) {
+    return <Redirect href="/" />;
+  }
 
   return (
     <SafeAreaView style={styles.wrapper}>

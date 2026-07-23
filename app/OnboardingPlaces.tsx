@@ -3,11 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { Text } from 'react-native-paper';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import FavouritePlacesPicker from '@/components/FavouritePlacesPicker';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
+import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { Place } from '@/lib/geo/places';
 import { colors, fonts, space } from '@/lib/theme';
@@ -18,7 +19,8 @@ import { colors, fonts, space } from '@/lib/theme';
 function OnboardingPlacesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [, , markOnboarded] = useOnboarding();
+  const [onboardingLoading, hasOnboarded, markOnboarded] = useOnboarding();
+  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
   const [, , saveFavourites] = useFavourites();
 
   const onFinish = async (places: Place[]) => {
@@ -26,6 +28,11 @@ function OnboardingPlacesScreen() {
     await markOnboarded();
     router.replace('/');
   };
+
+  // Same stale-navigation/deep-link guard as Welcome — see its comment.
+  if (!onboardingLoading && !alwaysShowLoading && hasOnboarded && !alwaysShowStartPage) {
+    return <Redirect href="/" />;
+  }
 
   return (
     <SafeAreaView style={styles.wrapper}>
