@@ -1,5 +1,5 @@
-import React, { JSX } from 'react';
-import { ImageBackground, StyleSheet, View, Text } from 'react-native';
+import React, { JSX, useMemo } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { shallowEqual, useSelector } from 'react-redux';
@@ -11,13 +11,15 @@ import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-
-const appBackground = require('@/assets/new-glass-bg.png');
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 function HourlyScreen(): JSX.Element {
   const { location: location_name, dayString, startAtCurrentTime, title } =
           useLocalSearchParams<{location: string, dayString: string, startAtCurrentTime: string, title: string}>()
 
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { name: store_location_name, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
   const { forecast } = useSelector((state: RootState) => state.forecast, shallowEqual);
 
@@ -44,24 +46,26 @@ function HourlyScreen(): JSX.Element {
     );
   } else {
     mainContent = (
-      <Text style={{ color: 'white', fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
+      <Text style={{ color: colors.text, fontFamily: fonts.regular, fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
     );
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={location_name} />
-          <Alerts lat={lat} lon={lon} location={location_name} />
+          <View style={styles.alertsWrapper}>
+            <Alerts lat={lat} lon={lon} location={location_name} />
+          </View>
           {mainContent}
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     height: '100%',
@@ -69,9 +73,16 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     overflow: 'scroll',
+    backgroundColor: colors.bgAlt,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
+  },
+  alertsWrapper: {
+    marginLeft: space[4],
+    marginRight: space[4],
+    marginTop: space[4],
   },
   container: {
     flexDirection: 'column',
@@ -79,7 +90,8 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 20,
-    fontFamily: 'Rajdhani-Regular',
+    fontFamily: fonts.semiBold,
+    color: colors.textStrong,
     paddingRight: 20,
     paddingLeft: 20,
     paddingTop: 20,

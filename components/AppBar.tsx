@@ -1,187 +1,126 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { Icon, Menu } from 'react-native-paper';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Icon } from 'react-native-paper';
 
-import { shallowEqual, useSelector } from 'react-redux';
-import { useNavigation, useRouter, Href, usePathname } from 'expo-router';
+import { useNavigation, useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
-import { WEATHER_WARNING_ICONS } from '@/lib/alerts/providers/cap-alerts/icons';
-import { RootState } from '@/lib/store';
-import { CAPAlert, CAPInfo, alertInLocation, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useTranslation } from 'react-i18next';
-import { ParamListBase, RouteProp } from 'expo-router/react-navigation';
+import { ThemeColors, fonts, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const backArrow = require('@/assets/icons8-back-100_2.png');
 
 type AppBarProps = {
   location: string,
-  route?: RouteProp<ParamListBase>
+  // True only on the Today screen, where the title IS the place name and
+  // should be tappable to switch location — other screens use `location`
+  // as a plain screen title (e.g. "Settings", "Warnings").
+  isPlace?: boolean,
 };
 
 const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
-  const pathname = usePathname();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
-  const { lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
-
-  const showSearch = !pathname.includes(SCREENS.Search);
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
-
-  
-
-  let relevantAlerts: CAPAlert[] = []
-  if (lat && lon) {
-    relevantAlerts = alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon }))
-  }
+  const titleBlock = (
+    <>
+      <Icon size={18} color={colors.primary} source="map-marker" />
+      <View style={styles.titleTextBlock}>
+        <Text style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</Text>
+        {props.isPlace && <Text style={styles.placeSubtitle}>{t('Tap to change place')}</Text>}
+      </View>
+    </>
+  );
 
   return (
     <View style={styles.appBar}>
       <View style={styles.appTitleContainer}>
         {navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={{ paddingRight: 12 }}>
-            <Icon size={28} color='white' source={backArrow} />
+          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
-        <Text style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</Text>
-        {getWarningIcons(relevantAlerts)}
+        {props.isPlace
+          ? <TouchableOpacity
+              style={styles.titleTouchable}
+              accessible={true}
+              accessibilityLabel={`${props.location}. ${t('Tap to change place')}`}
+              onPress={() => router.push(SCREENS.Search.toString() as Href)}
+            >
+              {titleBlock}
+            </TouchableOpacity>
+          : <View style={styles.titleTouchable}>{titleBlock}</View>
+        }
       </View>
 
-      <View style={styles.appNav}>
-        {showSearch &&
-          <TouchableOpacity style={styles.items} accessible={true} accessibilityLabel='Search'
-            onPress={() => router.push(SCREENS.Search.toString() as Href)}>
-            <Icon size={28} color='white' source="magnify" />
-          </TouchableOpacity>
-        }
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <Menu
-            visible={visible}
-            onDismiss={closeMenu} anchor={<TouchableOpacity accessible={true} accessibilityLabel={visible ? 'Close menu' : 'Open menu'} onPress={() => openMenu()}><Icon size={28} color='white' source={visible ? "close" : "menu"} /></TouchableOpacity>}
-            style={{ position: 'absolute', right: 0, width: 185 }}
-            contentStyle={{ backgroundColor: 'rgba(217, 217, 217, .9)', marginTop: 25, padding: 0, shadowColor: 'rgba(217, 217, 217, .9)' }}
-          >
-            <Menu.Item
-              onPress={() => {
-                closeMenu();
-                router.push(SCREENS.AboutUs.toString() as Href);
-              }}
-              style={styles.menuItem}
-              accessibilityLabel='About the developers'
-              titleStyle={styles.menuItemTitle}
-              title={t("About us")}
-            />
-            <Menu.Item
-              onPress={() => {
-                closeMenu();
-                router.push(SCREENS.AboutTheApp.toString() as Href);
-              }}
-              style={styles.menuItem}
-              accessibilityLabel='About the app'
-              titleStyle={styles.menuItemTitle}
-              title={t("About the app")}
-            />
-            <Menu.Item
-              onPress={() => {
-                closeMenu();
-                router.push(SCREENS.Settings.toString() as Href);
-              }}
-              style={styles.menuItem}
-              accessibilityLabel='Settings'
-              titleStyle={styles.menuItemTitle}
-              title={t("Settings")}
-            />
-          </Menu>
-        </View>
-      </View>
+      <TouchableOpacity
+        style={styles.settingsButton}
+        accessible={true}
+        accessibilityLabel={t('Settings')}
+        onPress={() => router.push(SCREENS.Settings.toString() as Href)}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
+        <Icon size={26} color={colors.primary} source="cog-outline" />
+      </TouchableOpacity>
     </View>
   );
 }
 
-const getWarningIcons = (alerts: Array<CAPAlert>) => {
-  if (alerts && alerts.length) {
-    const icons: Array<React.JSX.Element> = [];
-    for (let i = 0, j = 0; i < alerts.length; i += 1, j += 20) {
-      const capInfo = alerts[i].info as Array<CAPInfo>;
-      const alertColor = alertLevel(capInfo[0]).toLowerCase();
-      const icon = WEATHER_WARNING_ICONS[alertColor];
-      icons.push(
-        <TouchableOpacity key={i} style={{ position: 'relative', top: 0, right: j, zIndex: j }}>
-          <Image style={{ width: 35, height: 30 }} source={icon} />
-        </TouchableOpacity>
-      );
-    }
-    return <View style={styles.warningIcons}>
-      {icons}
-    </View>;
-  }
-};
-
 export default AppBar;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   appBar: {
     flexDirection: 'row',
-    alignContent: 'center',
-  },
-  blurBar: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: 0,
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    minHeight: touchTarget.nav + space[4],
   },
   appTitleContainer: {
-    paddingRight: 13,
-    paddingLeft: 13,
-    paddingTop: 17,
-    paddingBottom: 17,
-    flex: 7,
+    paddingLeft: space[3],
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    zIndex: 1,
+  },
+  backButton: {
+    minWidth: touchTarget.nav,
+    minHeight: touchTarget.nav,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleTouchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[1],
+    flexShrink: 1,
+    minHeight: touchTarget.nav,
+    paddingVertical: space[2],
+  },
+  titleTextBlock: {
+    flexShrink: 1,
+    marginRight: space[4],
   },
   appTitle: {
     fontSize: 20,
-    fontFamily: 'NotoSans-Regular',
-    color: 'white',
-    marginRight: 19,
-    flex: 1,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
   },
-  appNav: {
-    flex: 2,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+  placeSubtitle: {
+    fontSize: 14,
+    fontFamily: fonts.regular,
+    color: colors.primary,
+  },
+  settingsButton: {
+    width: touchTarget.nav,
+    height: touchTarget.nav,
     alignItems: 'center',
-    zIndex: 1,
-    paddingRight: 20,
-    paddingLeft: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
-  },
-  items: {
-    paddingRight: 15,
-  },
-  menuItem: {
-    paddingRight: 50,
-    paddingLeft: 20,
-    color: 'white',
-  },
-  menuItemTitle: {
-    color: 'white',
-  },
-  weatherWarning: {
-    paddingLeft: 12,
+    justifyContent: 'center',
+    marginRight: space[2],
   },
   warningIcons: {
     flexDirection: 'row',

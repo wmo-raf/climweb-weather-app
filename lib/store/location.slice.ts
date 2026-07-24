@@ -54,6 +54,7 @@ const locationSlice = createSlice({
     builder.addCase(getPreciseLocation.rejected, (state, action) => {
       console.error('Loading location rejected.');
       console.error(action.error.message);
+      state.loading = false;
       state.error = 'There was a problem figuring out where you are, :(.';
     });
   },

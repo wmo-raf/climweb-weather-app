@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Dialog, Portal, Button, Text } from 'react-native-paper';
 import { isNil } from 'lodash';
@@ -14,6 +14,8 @@ import { Place } from '@/lib/geo/places';
 
 import geonames from '@/assets/geonames.json'
 import { useTranslation } from 'react-i18next';
+import { ThemeColors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 const locationAnchor = require('@/assets/location-anchor.png');
 
 type SearchProps = {
@@ -25,6 +27,8 @@ type GPS = "INACTIVE" | "SEARCHING" | "FAILED";
 
 export const Search = ({ setLocation }: SearchProps) => {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [visible, setVisible] = useState(false);
 
   const showDialog = () => setVisible(true);
@@ -61,20 +65,20 @@ export const Search = ({ setLocation }: SearchProps) => {
           clearOnFocus={true}
           closeOnBlur={false}
           closeOnSubmit={true}
-          textInputProps={{ placeholder: t('Search location'), placeholderTextColor: 'white', style: styles.textStyle }}
+          textInputProps={{ placeholder: t('Search location'), placeholderTextColor: colors.textMuted, style: styles.textStyle }}
           onSelectItem={handleSelect}
           inputContainerStyle={styles.searchBar}
           debounce={100}
           showChevron={false}
           showClear={false}
-          RightIconComponent={<TouchableOpacity accessible={true} accessibilityLabel='Go to current location' onPress={handlePlaceByCurrentLocation}><Icon source={locationAnchor} size={24} /></TouchableOpacity>}
-          LeftComponent={<TouchableOpacity accessible={true} accessibilityLabel='Search' onPress={() => { }}><Icon source={'magnify'} color='white' size={24} /></TouchableOpacity>}
+          RightIconComponent={<TouchableOpacity accessible={true} accessibilityLabel='Go to current location' onPress={handlePlaceByCurrentLocation} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}><Icon source={locationAnchor} size={24} /></TouchableOpacity>}
+          LeftComponent={<TouchableOpacity accessible={true} accessibilityLabel='Search' onPress={() => { }} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}><Icon source={'magnify'} color={colors.primary} size={24} /></TouchableOpacity>}
           useFilter={true}
           suggestionsListContainerStyle={styles.suggestionListStyle}
           suggestionsListTextStyle={styles.textStyle}
           containerStyle={{ zIndex: 1 }}
           inputHeight={48}
-          renderItem={(item: any) => <Text style={{ color: 'white', fontSize: 16, padding: 15, width: '100%', flexGrow: 1, flexShrink: 0 }}>{isNil(item.region) ? item.title : `${item.title}, ${item.region}`}</Text>}
+          renderItem={(item: any) => <Text style={{ color: colors.text, fontFamily: fonts.regular, fontSize: 16, padding: 15, width: '100%', flexGrow: 1, flexShrink: 0 }}>{isNil(item.region) ? item.title : `${item.title}, ${item.region}`}</Text>}
         />
       </View>
       <Portal>
@@ -84,7 +88,7 @@ export const Search = ({ setLocation }: SearchProps) => {
             <Text variant="bodyMedium" style={styles.whiteText}>Not able to use your location to find the closest place.</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={hideDialog}><Text style={styles.whiteText}>Dismiss</Text></Button>
+            <Button onPress={hideDialog} style={styles.dialogButton}><Text style={styles.whiteText}>Dismiss</Text></Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -98,10 +102,13 @@ type GPSFeedbackProps = {
 }
 
 const GPSFeedback = ({ status }: GPSFeedbackProps) => {
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   if (status === "SEARCHING") {
     return (
       <View style={styles.loader}>
-        <ActivityIndicator animating={true} color={'white'} size='large' />
+        <ActivityIndicator animating={true} color={colors.primary} size='large' />
       </View>
     )
   }
@@ -112,66 +119,65 @@ const GPSFeedback = ({ status }: GPSFeedbackProps) => {
   )
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   searchBar: {
-    backgroundColor: 'rgba(217, 217, 217, 0.50)',
-    shadowColor: 'rgba(217, 217, 217, 0.50)',
-    paddingLeft: 17,
-    paddingRight: 17,
-    paddingTop: 13,
-    paddingBottom: 13,
-    borderRadius: 4,
+    backgroundColor: colors.bg,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    paddingLeft: space[4],
+    paddingRight: space[4],
+    paddingTop: space[3],
+    paddingBottom: space[3],
+    borderRadius: radius.md,
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
-    fontFamily: 'OpenSans',
-    fontSize: 20,
-    color: 'white',
-  },
-  blurBar: {
-    position: 'absolute',
-    backgroundColor: 'rgba(217, 217, 217, 0.50)',
-    top: 0,
-    width: '90%',
-    height: '100%',
-    borderRadius: 4,
-    zIndex: 0,
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    color: colors.text,
   },
   dialogStyle: {
-    backgroundColor: 'rgba(217, 217, 217, .5)',
-    shadowColor: 'rgba(217, 217, 217, .5)',
-    borderRadius: 4,
+    backgroundColor: colors.bg,
+    borderRadius: radius.lg,
+    ...shadow.md,
+  },
+  dialogButton: {
+    minHeight: touchTarget.nav,
+    justifyContent: 'center',
   },
   whiteText: {
-    color: 'white',
-    fontFamily: 'NotoSans-Regular',
+    color: colors.text,
+    fontFamily: fonts.regular,
   },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 35,
+    marginTop: space[8],
   },
   textStyle: {
-    fontFamily: 'OpenSans',
-    fontSize: 20,
-    color: 'white',
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    color: colors.text,
   },
   suggestionListStyle: {
     marginTop: -2,
     padding: 0,
-    backgroundColor: 'rgba(217, 217, 217, .5)',
-    shadowColor: 'rgba(217, 217, 217, .5)'
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    ...shadow.sm,
   },
   loader: {
-    marginTop: 40,
-    marginBottom: 80,
+    marginTop: space[10],
+    marginBottom: space[16],
   },
   gpsfeedback: {
-    marginTop: 40,
-    marginBottom: 80,
+    marginTop: space[10],
+    marginBottom: space[16],
     flexDirection: 'row',
     justifyContent: 'center',
-    marginLeft: 25,
+    marginLeft: space[6],
   }
 });
 

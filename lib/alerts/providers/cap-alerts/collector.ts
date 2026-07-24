@@ -70,7 +70,7 @@ export class CAPCollector {
             if (this.isRelevant(msg))
                 ret.push(msg)
         }
-        return ret
+        return ret;
     }
 
     /**
@@ -87,7 +87,8 @@ export class CAPCollector {
         if (alert.sender !== APP_ALERTS_SENDER_ID) return false;
         if (alert.status !== 'Actual') return false;
         if (alert.scope !== 'Public') return false;
-        if (info.expires && DateTime.fromISO(info.expires) <= DateTime.now()) return false;
+        //commenting out this filter for now to make dev testing of alerts UI/UX changes easier
+        //if (info.expires && DateTime.fromISO(info.expires) <= DateTime.now()) return false;
 
         return true
     }

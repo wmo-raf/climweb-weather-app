@@ -1,5 +1,5 @@
-import React, { JSX } from 'react';
-import { ImageBackground, StyleSheet, View, Linking, ListRenderItemInfo, Image, FlatList } from 'react-native';
+import React, { JSX, useMemo } from 'react';
+import { StyleSheet, View, Linking, ListRenderItemInfo, Image, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -9,12 +9,15 @@ import Alerts from '@/components/Alerts';
 
 import { RootState } from '@/lib/store';
 import { useTranslation } from 'react-i18next';
+import { ThemeColors, fonts, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const bulletListIcon = require('@/assets/time-period-bullet.png');
-const appBackground = require('@/assets/new-glass-bg.png');
 
 function AboutTheAppScreen(): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const { lat, lon } = useSelector((state: RootState) => state.location);
 
   const getPartners = (): Array<string> => ([
@@ -32,9 +35,9 @@ function AboutTheAppScreen(): JSX.Element {
   const onClickURL = (url: string) => Linking.openURL(url);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
-        <ImageBackground source={appBackground} style={styles.bg}>
+        <View style={styles.bg}>
           <AppBar location={t("About the app")} />
           <Alerts lat={lat} lon={lon} location={"About the app"} />
           <View style={styles.container}>
@@ -74,13 +77,7 @@ function AboutTheAppScreen(): JSX.Element {
                       <Text variant="bodyMedium">
                         <Text style={styles.whiteHeader}>{"\n"}{t('Geographical Data')}</Text>{"\n"}
                         <Text style={styles.whiteText}>
-                          {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.
-                        </Text>
-                      </Text>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.whiteHeader}>{"\n"}{t('Background photo')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('background.photo.disclaimer')}{"\n"}{"\n"}{"\n"}
+                          {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.{"\n"}{"\n"}{"\n"}
                         </Text>
                       </Text>
                     </View>
@@ -89,13 +86,13 @@ function AboutTheAppScreen(): JSX.Element {
               />
             </View>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
@@ -103,28 +100,23 @@ const styles = StyleSheet.create({
   opacity: {
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: 'rgba(100, 100, 100, .1)',
   },
   whiteHeader: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 18,
-    fontWeight: "bold",
-    lineHeight: 24.51,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.bold,
   },
   whiteText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 16,
-    lineHeight: 21.79,
-    fontWeight: '400',
-    fontFamily: 'OpenSans',
+    lineHeight: 22,
+    fontFamily: fonts.regular,
   },
   title: {
-    color: 'white',
+    color: colors.textStrong,
     fontSize: 18,
     lineHeight: 24,
-    fontWeight: "bold",
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.bold,
   },
   wrapper: {
     flexDirection: 'column',
@@ -133,27 +125,29 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     overflow: 'scroll',
+    backgroundColor: colors.bgAlt,
   },
   bg: {
     height: '100%',
+    backgroundColor: colors.bgAlt,
   },
   content: {
-    marginTop: 26,
-    marginLeft: 45,
-    marginRight: 45,
+    marginTop: space[6],
+    marginLeft: space[6],
+    marginRight: space[6],
   },
   ln: {
     textDecorationLine: 'underline',
-    color: 'rgba(174, 209, 255, 1)',
+    color: colors.info,
   },
   partnerItem: {
     flexDirection: 'row',
   },
   partnerText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 14,
     lineHeight: 25,
-    fontFamily: 'OpenSans',
+    fontFamily: fonts.regular,
   },
   bulletStyle: {
     height: 7,

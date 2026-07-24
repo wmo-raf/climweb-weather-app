@@ -1,11 +1,13 @@
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { DataTable, Icon } from 'react-native-paper';
+import { Icon } from 'react-native-paper';
 import { DateTime } from "luxon";
+import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { useTranslation } from 'react-i18next';
+import { ThemeColors, fonts, radius, space } from '@/lib/theme';
+import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 type HourlyTableProps = {
   title: string;
@@ -15,77 +17,107 @@ type HourlyTableProps = {
 
 function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const isSameDay = props.day.hasSame(DateTime.local(), "day");
-  const dayName = isSameDay ? t('Today') : props.day.toFormat('ccc');
+  const dayName = isSameDay ? t('Today') : props.day.toFormat('cccc');
+  const rainWord = t('Rain').toLowerCase();
+  const windWord = t('Wind').toLowerCase();
+
   return (
     <View style={styles.container}>
-      <View style={styles.opacity}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}>{dayName} {props.day.toFormat('dd LLL')}</Text>
-        </View>
-        <DataTable style={styles.table}>
-          <DataTable.Header>
-            <DataTable.Title><Text style={styles.whiteHeader}>{t('Time')}</Text></DataTable.Title>
-            <DataTable.Title><Text></Text></DataTable.Title>
-            <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Temp')}{"\n"}C&deg;</Text></DataTable.Title>
-            <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Rain')}{"\n"}mm</Text></DataTable.Title>
-            <DataTable.Title numeric numberOfLines={2}><Text style={styles.whiteHeader}>{t('Wind')}{"\n"}km/h</Text></DataTable.Title>
-          </DataTable.Header>
-          <ScrollView snapToStart={false} showsVerticalScrollIndicator={false}>
-            {props.daySummary.steps.map((step) => {
-              const stepTime = DateTime.fromISO(step.time);
-              return (
-                <DataTable.Row key={step.time}>
-                  <DataTable.Cell><Text style={styles.whiteText}>{stepTime.toLocaleString({ hour: '2-digit' })}</Text></DataTable.Cell>
-                  <DataTable.Cell accessible={true} accessibilityLabel={`Weather symbol on ${props.day.toFormat('dd LLL')} at ${stepTime.toLocaleString({ hour: '2-digit' })} is ${step.weatherSymbol.split('_').join(' ')}.`}><Icon source={weatherIcons[step.weatherSymbol]} size={34} /></DataTable.Cell>
-                  <DataTable.Cell numeric><Text style={styles.whiteText}>{step.temperature ? Math.round(step.temperature) : ""}&deg;</Text></DataTable.Cell>
-                  <DataTable.Cell numeric><Text style={styles.whiteText}>{step.precipitation}</Text></DataTable.Cell>
-                  <DataTable.Cell numeric><Text style={styles.whiteText}>{Math.round(step.windSpeed || 0)}</Text></DataTable.Cell>
-                </DataTable.Row>
-              );
-            })}
-          </ScrollView>
-        </DataTable>
+      <View style={styles.titleBand}>
+        <Text style={styles.titleText}>{dayName}</Text>
       </View>
+      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
+        {props.daySummary.steps.map((step) => {
+          const stepTime = DateTime.fromISO(step.time);
+          const timeLabel = stepTime.toFormat('h a').toLowerCase();
+          const precipText = typeof step.precipitation === 'number' && step.precipitation > 0
+            ? `${step.precipitation.toFixed(1)} mm`
+            : '— mm';
+          const windText = `${Math.round(step.windSpeed || 0)} km/h`;
+          const temp = step.temperature !== undefined ? Math.round(step.temperature) : undefined;
+
+          return (
+            <View
+              key={step.time}
+              style={styles.row}
+              accessible={true}
+              accessibilityLabel={`${timeLabel}: ${step.weatherSymbol.split('_').join(' ')}, ${precipText} ${rainWord}, ${windText} ${windWord}${temp !== undefined ? `, ${temp} degrees` : ''}.`}
+            >
+              <View style={styles.leftGroup}>
+                <Icon source={weatherIcons[step.weatherSymbol]} size={26} />
+                <Text style={styles.time}>{timeLabel}</Text>
+              </View>
+              <Text style={styles.description} numberOfLines={2}>
+                {precipText} {rainWord} · {windText} {windWord}
+              </Text>
+              <Text style={styles.temp}>{temp !== undefined ? `${temp}°` : ''}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
+    backgroundColor: colors.bgAlt,
   },
-  title: {
-    paddingLeft: 24,
-    paddingRight: 20,
-    paddingTop: 15,
-    marginTop: 5,
+  titleBand: {
+    marginHorizontal: space[4],
+    marginTop: space[4],
+    paddingVertical: space[3],
+    paddingHorizontal: space[4],
+    borderRadius: radius.lg,
+    backgroundColor: colors.bgTint,
   },
   titleText: {
     fontSize: 16,
-    color: 'white',
-    fontWeight: '600',
+    color: colors.primary,
+    fontFamily: fonts.bold,
   },
-  table: {
-    paddingLeft: 24,
-    paddingRight: 20,
-    paddingTop: 5,
+  list: {
     flex: 1,
+    marginTop: space[3],
   },
-  opacity: {
-    flexDirection: 'column',
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[3],
+    paddingVertical: space[3],
+    paddingHorizontal: space[4],
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  leftGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
+    minWidth: 84,
+  },
+  time: {
+    fontSize: 15,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+  },
+  description: {
     flex: 1,
-    backgroundColor: 'rgba(100, 100, 100, .1)',
+    fontSize: 14,
+    fontFamily: fonts.regular,
+    color: colors.textSubtle,
   },
-  whiteHeader: {
-    color: 'white',
-    textAlign: 'center'
-  },
-  whiteText: {
-    color: 'white',
-    fontSize: 16,
+  temp: {
+    fontSize: 18,
+    fontFamily: fonts.bold,
+    color: colors.textStrong,
+    minWidth: 44,
+    textAlign: 'right',
   },
 });
 
