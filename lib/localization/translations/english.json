@@ -251,6 +251,8 @@
   "alert.whenLabel": "When",
   "alert.whereLabel": "Where",
   "alert.whatToDo": "What to do",
+  "alert.affectedArea": "Affected area",
+  "alert.map.attribution": "Map data © OpenStreetMap contributors",
   "alert.when.now": "now",
   "alert.when.range": "From {{start}} until {{end}}.",
   "alert.when.fromOnly": "From {{start}}.",
