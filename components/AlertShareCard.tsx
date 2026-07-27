@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
+import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getShareSourceLine, getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
@@ -21,6 +22,11 @@ const CARD_WIDTH = 360;
 
 type AlertShareCardProps = {
   alert: CAPAlert;
+  // Fired once the card has nothing left to load asynchronously (the mini
+  // map's tiles, specifically) — the caller (AlertShareButton) waits for
+  // this before snapshotting the card, so the captured PNG doesn't show a
+  // blank/half-loaded map.
+  onReady?: () => void;
 };
 
 // Off-screen only — rendered so AlertShareButton can capture it into a
@@ -28,7 +34,7 @@ type AlertShareCardProps = {
 // message needs is baked into the image itself (severity, title, where/when,
 // top action, source), since it has to stand alone after being forwarded
 // several times down a chain with no surrounding app context.
-const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert }, ref) => {
+const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert, onReady }, ref) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -64,6 +70,8 @@ const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert }, ref) =>
         {topWhatToDo && (
           <Text style={styles.meta}><Text style={styles.metaLabel}>{t('alert.whatToDo')}: </Text>{topWhatToDo}</Text>
         )}
+
+        <AlertAreaMap polygon={info.area?.polygon} color={bandColor} showUserLocation={false} onMapLoaded={onReady} />
 
         {sourceLine && <Text style={styles.source}>{t('alert.share.from')} {sourceLine}</Text>}
       </View>

@@ -34,7 +34,7 @@ export const addPolygon = (area: CAPArea, p: string): CAPArea => {
   if (area.polygon === undefined) {
     area.polygon = [];
   }
-  const points = p
+  const rawPoints = p
     .split(/\s+/)
     .filter((val) => val != '')
     .map((point): number[] =>
@@ -43,9 +43,40 @@ export const addPolygon = (area: CAPArea, p: string): CAPArea => {
         .map((val): number => global.parseFloat(val))
         .reverse() // We need to reverse lat/lon pairs, since turf (and most geo libraries) use longitude/latitude.
     );
-  if (points[0] != points[points.length - 1]) {
-    points.push(points[0]);
+
+  // Collapse consecutive duplicate points (zero-length segments). Some CAP
+  // feeds in the wild (e.g. Malawi's) have these scattered throughout a
+  // ring, not just at the closing point — geometry validators downstream
+  // (turf.booleanValid/kinks) read them as spurious self-intersections.
+  const points: number[][] = [];
+  for (const point of rawPoints) {
+    const prev = points[points.length - 1];
+    if (!prev || prev[0] !== point[0] || prev[1] !== point[1]) {
+      points.push(point);
+    }
   }
+
+  // Close the ring only if it isn't already closed. Comparing arrays with
+  // `!=` (the old check here) compares by reference, not value, so it was
+  // always true regardless of content — that unconditionally appended a
+  // duplicate of the first point on top of rings the source feed had
+  // already closed properly, turning a valid closing edge into a
+  // zero-length degenerate one and failing validation on every alert.
+  const first = points[0];
+  const last = points[points.length - 1];
+  if (first && (!last || first[0] !== last[0] || first[1] !== last[1])) {
+    points.push(first);
+  }
+
+  // Not enough distinct points left to form a ring (e.g. a degenerate
+  // polygon string that collapsed entirely under deduplication) — skip
+  // this one polygon rather than let turf.polygon() throw and take the
+  // whole alert down with it.
+  if (points.length < 4) {
+    console.warn(`Skipping degenerate CAP polygon (${points.length} distinct points after cleanup): "${p.slice(0, 80)}"`);
+    return area;
+  }
+
   area.polygon.push(polygon([points]));
   return area;
 };

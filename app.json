@@ -68,7 +68,8 @@
           }
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "@maplibre/maplibre-react-native"
     ],
     "experiments": {
       "typedRoutes": true

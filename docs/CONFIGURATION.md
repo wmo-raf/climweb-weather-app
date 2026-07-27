@@ -532,6 +532,26 @@ The screens, components, and Redux store do not need to change regardless of whi
 
 ---
 
+## Alert Area Map (Mini-map)
+
+The alert detail card ([components/AlertAreaMap.tsx](../components/AlertAreaMap.tsx)) shows a small inset map of the alert's CAP polygon, so "is this near me" is visible at a glance instead of requiring reading place names. It's built on [MapLibre](https://maplibre.org/) (`@maplibre/maplibre-react-native`) rendering OpenStreetMap-compatible raster tiles — no base vector style, no Google/Apple/Mapbox account or API key required for the map itself. `AlertAreaMap.web.tsx` renders nothing on web (Metro's platform-extension resolution picks it automatically for web builds) since MapLibre's native SDK has no web implementation.
+
+If a given alert has no polygon, or the polygon fails validation (not closed, self-intersecting, non-finite coordinates, etc.), the map is silently omitted — never shown broken or misleading.
+
+Note this is a native module (not part of Expo Go) — it requires a custom dev client / prebuild, which this project already uses (`expo-dev-client`). A native rebuild (`expo prebuild --clean` or a new EAS/dev-client build) is needed after pulling in this dependency; a JS-only reload won't pick it up.
+
+### Configuring the tile server
+
+The raster tile URL is set via `EXPO_PUBLIC_OSM_TILE_URL` in `.env` (see [.env.example](../.env.example)):
+
+```env
+EXPO_PUBLIC_OSM_TILE_URL='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+```
+
+The default points at OpenStreetMap's public tile server, which is fine for development but not for production traffic — OSM's [tile usage policy](https://operations.osmfoundation.org/policies/tiles/) asks that apps with meaningful traffic not hit their servers directly. **For production, point this at your own deployment's OSM tile server** (e.g. a self-hosted `tileserver-gl`/`OpenMapTiles` instance) — any standard `{z}/{x}/{y}` XYZ raster endpoint works, no code changes needed, just set the env var for that build. Attribution ("Map data © OpenStreetMap contributors") is required regardless of which OSM-based tile source is used, and is already shown under the map.
+
+---
+
 ## Default Locations (No-Permission Screen)
 
 When the app has not been granted location permission, it displays the **No Location** screen ([app/NoLocation.tsx](app/NoLocation.tsx)). This screen shows a list of pre-configured cities that the user can tap to load a forecast without needing device location access.

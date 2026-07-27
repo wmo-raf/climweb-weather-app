@@ -15,17 +15,30 @@ type AlertShareButtonProps = {
   backgroundColor: string;
 };
 
-// Renders the branded AlertShareCard off-screen purely so it can be
-// captured to a PNG on demand — nothing here is ever visible to the user.
+// The card embeds a live mini map (async tile loading) — wait for it to
+// report ready before snapshotting, but never block sharing indefinitely
+// on a slow/failed network fetch.
+const MAP_READY_TIMEOUT_MS = 3000;
+
+// Mounts the branded AlertShareCard off-screen only while a share is in
+// progress, purely so it can be captured to a PNG — nothing here is ever
+// visible to the user. Not kept mounted permanently: it now embeds a live
+// MapLibre map, which is too heavy (GPU/network) to keep alive for every
+// alert card just in case it's shared.
 function AlertShareButton({ alert, textColor, backgroundColor }: AlertShareButtonProps) {
   const { t } = useTranslation();
   const cardRef = useRef<View>(null);
+  const readyResolveRef = useRef<(() => void) | null>(null);
   const [sharing, setSharing] = useState(false);
 
   const onShare = async () => {
     if (sharing) return;
     setSharing(true);
     try {
+      await new Promise<void>(resolve => {
+        readyResolveRef.current = resolve;
+        setTimeout(resolve, MAP_READY_TIMEOUT_MS);
+      });
       const uri = await captureRef(cardRef, { format: 'png', quality: 1 });
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri, { mimeType: 'image/png', dialogTitle: t('alert.share.dialogTitle') });
@@ -35,8 +48,14 @@ function AlertShareButton({ alert, textColor, backgroundColor }: AlertShareButto
     } catch (error) {
       console.error('Failed to share alert', error);
     } finally {
+      readyResolveRef.current = null;
       setSharing(false);
     }
+  };
+
+  const handleCardReady = () => {
+    readyResolveRef.current?.();
+    readyResolveRef.current = null;
   };
 
   return (
@@ -51,9 +70,11 @@ function AlertShareButton({ alert, textColor, backgroundColor }: AlertShareButto
         {sharing ? <ActivityIndicator size="small" color={textColor} /> : <Icon source="share-variant" size={20} color={textColor} />}
       </TouchableOpacity>
 
-      <View style={styles.offscreen} pointerEvents="none">
-        <AlertShareCard ref={cardRef} alert={alert} />
-      </View>
+      {sharing && (
+        <View style={styles.offscreen} pointerEvents="none">
+          <AlertShareCard ref={cardRef} alert={alert} onReady={handleCardReady} />
+        </View>
+      )}
     </>
   );
 }

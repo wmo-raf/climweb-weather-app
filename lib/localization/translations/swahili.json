@@ -251,6 +251,8 @@
   "alert.whenLabel": "Lini",
   "alert.whereLabel": "Wapi",
   "alert.whatToDo": "La kufanya",
+  "alert.affectedArea": "Eneo lililoathiriwa",
+  "alert.map.attribution": "Data ya ramani © wachangiaji wa OpenStreetMap",
   "alert.when.now": "sasa",
   "alert.when.range": "Kuanzia {{start}} hadi {{end}}.",
   "alert.when.fromOnly": "Kuanzia {{start}}.",

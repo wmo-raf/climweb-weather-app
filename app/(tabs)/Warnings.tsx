@@ -4,6 +4,7 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import { useRouter, Href } from 'expo-router';
 import { isUndefined } from 'lodash';
 
 import AppBar from '@/components/AppBar';
@@ -14,7 +15,7 @@ import StatusCard from '@/components/StatusCard';
 
 import type { AppDispatch, RootState } from '@/lib/store';
 import { getAlerts } from '@/lib/store/alert.slice';
-import { alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
+import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
@@ -28,16 +29,20 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 const WarningsScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
   const { alerts, error: alertsError } = useSelector((state: RootState) => state.alerts, shallowEqual);
-  const { lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
+  const { name: location, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
   const hasLocation = !isUndefined(lat) && !isUndefined(lon);
 
   const yourAreaAlerts = hasLocation ? alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon })) : [];
   const elsewhereAlerts = hasLocation ? alerts.filter(alert => !alertInLocation(alert, { latitude: lat, longitude: lon })) : alerts;
+
+  const onSelectAlert = (alert: CAPAlert) =>
+    router.push({ pathname: '/WeatherWarning', params: { location, alertID: alert.identifier } } as Href);
 
   return (
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
@@ -68,7 +73,7 @@ const WarningsScreen = () => {
                     <Text style={styles.groupHeader}>{t('warnings.group.yourArea')}</Text>
                     {yourAreaAlerts.map((alert, idx) => (
                       <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
-                        <AlertCard alert={alert} />
+                        <AlertCard alert={alert} compact onPress={() => onSelectAlert(alert)} />
                       </View>
                     ))}
                   </View>
@@ -78,7 +83,7 @@ const WarningsScreen = () => {
                     <Text style={styles.groupHeader}>{t('warnings.group.elsewhere')}</Text>
                     {elsewhereAlerts.map((alert, idx) => (
                       <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
-                        <AlertCard alert={alert} />
+                        <AlertCard alert={alert} compact onPress={() => onSelectAlert(alert)} />
                       </View>
                     ))}
                   </View>
@@ -87,7 +92,7 @@ const WarningsScreen = () => {
             ) : (
               alerts.map((alert, idx) => (
                 <View key={alert.identifier ?? idx} style={styles.cardWrapper}>
-                  <AlertCard alert={alert} />
+                  <AlertCard alert={alert} compact onPress={() => onSelectAlert(alert)} />
                 </View>
               ))
             )}

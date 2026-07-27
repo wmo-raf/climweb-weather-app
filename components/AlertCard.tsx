@@ -1,10 +1,11 @@
 import React, { JSX, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import ListenButton from './ListenButton';
 import AlertShareButton from './AlertShareButton';
+import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, getWarningTintColors } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
@@ -21,12 +22,24 @@ const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: s
 
 type AlertCardProps = {
   alert: CAPAlert;
+  // Warnings tab list context: collapses the full "What to do" checklist
+  // into a single tappable "Tap here to see what to do" row instead of
+  // repeating the full checklist per item in a long nationwide list, and
+  // omits the AlertAreaMap mini-map entirely (kept to the single-alert
+  // detail view only, not repeated per row in a long list). The
+  // single-alert detail view (WeatherWarning.tsx) leaves this false and
+  // still gets the full checklist and the mini-map.
+  compact?: boolean;
+  // Called when the compact "what to do" row is tapped — typically
+  // navigates to the single-alert detail view. Unused when compact=false.
+  onPress?: () => void;
 };
 
 // Full alert detail: colored severity band + Listen, headline, When/Where,
-// and a "What to do" checklist. Used standalone on the single-alert deep
-// link (WeatherWarning.tsx) and repeated in the Warnings tab's list.
-function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
+// and a "What to do" checklist (or, in compact mode, a tappable summary
+// row). Used standalone on the single-alert deep link (WeatherWarning.tsx)
+// and repeated (compact) in the Warnings tab's list.
+function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Element | null {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -71,30 +84,52 @@ function AlertCard({ alert }: AlertCardProps): JSX.Element | null {
       <View style={styles.body}>
         <Text style={styles.headline}>{headline}</Text>
 
-        {(whenText || whereText) &&
-          <Text style={styles.meta}>
-            {whenText && <Text><Text style={styles.metaLabel}>{t('alert.whenLabel')}: </Text>{whenText}{whereText ? '\n' : ''}</Text>}
-            {whereText && <Text><Text style={styles.metaLabel}>{t('alert.whereLabel')}: </Text>{whereText}</Text>}
-          </Text>
-        }
+        {(whenText || whereText) && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.meta}>
+              {whenText && <Text><Text style={styles.metaLabel}>{t('alert.whenLabel')}: </Text>{whenText}{whereText ? '\n' : ''}</Text>}
+              {whereText && <Text><Text style={styles.metaLabel}>{t('alert.whereLabel')}: </Text>{whereText}</Text>}
+            </Text>
+          </>
+        )}
 
-        {whatToDo.length > 0 &&
-          <View style={[styles.whatToDoBox, { backgroundColor: tint.bg }]}>
-            <Text style={[styles.whatToDoTitle, { color: tint.text }]}>{t('alert.whatToDo')}</Text>
-            {whatToDo.map((item, idx) => (
-              <View key={idx} style={styles.checklistRow}>
-                <Icon source="check-circle" size={18} color={tint.text} />
-                <Text style={styles.checklistText}>{item}</Text>
-              </View>
-            ))}
-          </View>
-        }
+        {!compact && <AlertAreaMap polygon={info.area?.polygon} color={bandColor} />}
+
+        {whatToDo.length > 0 && (
+          compact ? (
+            <TouchableOpacity
+              style={[styles.whatToDoCompact, { backgroundColor: tint.bg }]}
+              onPress={onPress}
+              accessibilityLabel={t('alert.tapToSeeWhatToDo')}
+            >
+              <Icon source="clipboard-text-outline" size={18} color={tint.text} />
+              <Text style={[styles.whatToDoCompactText, { color: tint.text }]}>{t('alert.tapToSeeWhatToDo')}</Text>
+              <Icon source="chevron-right" size={20} color={tint.text} />
+            </TouchableOpacity>
+          ) : (
+            <View style={[styles.whatToDoBox, { backgroundColor: tint.bg }]}>
+              <Text style={[styles.whatToDoTitle, { color: tint.text }]}>{t('alert.whatToDo')}</Text>
+              {whatToDo.map((item, idx) => (
+                <View key={idx} style={styles.checklistRow}>
+                  <Icon source="check-circle" size={18} color={tint.text} />
+                  <Text style={styles.checklistText}>{item}</Text>
+                </View>
+              ))}
+            </View>
+          )
+        )}
       </View>
     </View>
   );
 }
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
+  // Band and body fuse into one seamless shape instead of two
+  // separately-rounded pieces with a gap between them — the bottom of the
+  // band and the top of the body both go square so the whole card reads as
+  // a single rounded rectangle, in both compact (list) and full (detail)
+  // modes.
   band: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -102,6 +137,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingVertical: space[3],
     paddingHorizontal: space[4],
     borderRadius: radius.lg,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   bandLeft: {
     flexDirection: 'row',
@@ -119,11 +156,13 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     gap: space[2],
   },
   body: {
-    marginTop: space[4],
     padding: space[4],
     borderRadius: radius.lg,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
     backgroundColor: colors.bg,
     borderWidth: 1,
+    borderTopWidth: 0,
     borderColor: colors.border,
     ...shadow.sm,
   },
@@ -131,6 +170,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     fontSize: 20,
     fontFamily: fonts.bold,
     color: colors.textStrong,
+  },
+  // Inset (left/right padded) divider between the headline and the
+  // When/Where text — sits inside `body`'s own padding, so no extra
+  // horizontal margin is needed to keep it off the card edges.
+  divider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginTop: space[3],
   },
   meta: {
     fontSize: 14,
@@ -142,6 +189,19 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   metaLabel: {
     fontFamily: fonts.semiBold,
     color: colors.textStrong,
+  },
+  whatToDoCompact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space[2],
+    marginTop: space[4],
+    padding: space[4],
+    borderRadius: radius.md,
+  },
+  whatToDoCompactText: {
+    flex: 1,
+    fontSize: 15,
+    fontFamily: fonts.semiBold,
   },
   whatToDoBox: {
     marginTop: space[4],
