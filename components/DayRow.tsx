@@ -159,4 +159,4 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
 });
 
-export default DayRow;
+export default React.memo(DayRow);

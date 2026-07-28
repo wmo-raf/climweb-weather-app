@@ -228,4 +228,4 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
 });
 
-export default AlertCard;
+export default React.memo(AlertCard);

@@ -19,6 +19,9 @@ const readFavourites = (): Place[] => {
   return value ? JSON.parse(value) : [];
 };
 
+const favouritesEqual = (a: Place[], b: Place[]): boolean =>
+  a.length === b.length && JSON.stringify(a) === JSON.stringify(b);
+
 // Favourites are a device-local setting, not domain data, so they live in
 // storage rather than the location store. Re-reads on focus (not just on
 // mount) so the Places tab picks up edits made on EditFavourites/
@@ -29,7 +32,15 @@ export function useFavourites(): ReturnType {
 
   useFocusEffect(
     useCallback(() => {
-      setFavourites(readFavourites());
+      // Every focus (e.g. tab switches, not just actual edits) would
+      // otherwise produce a brand-new array reference here even when the
+      // stored data hasn't changed, cascading a re-render through every
+      // LocationRow on the Places tab despite React.memo — bail out of
+      // the state update entirely when the content is unchanged instead.
+      setFavourites(prev => {
+        const next = readFavourites();
+        return favouritesEqual(prev, next) ? prev : next;
+      });
     }, [])
   );
 

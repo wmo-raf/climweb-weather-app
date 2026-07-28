@@ -141,4 +141,4 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
 });
 
-export default LocationRow;
+export default React.memo(LocationRow);

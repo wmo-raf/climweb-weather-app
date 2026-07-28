@@ -1,5 +1,5 @@
 import React, { JSX, useMemo } from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 
@@ -26,46 +26,39 @@ function AboutUsScreen(): JSX.Element {
           <Alerts lat={lat} lon={lon} location={"About us"} />
           <View style={styles.container}>
             <View style={styles.opacity}>
-              <FlatList
-                data={[{ key: 'data' }]}
-                showsVerticalScrollIndicator={false}
-                snapToStart={false}
-                renderItem={() => (
-                  <>
-                    <View style={styles.content}>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.title}>
-                          {t('placeholder_app_title')}
-                        </Text>{"\n"}
-                      </Text>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('placeholder_lorem_ipsum')}  
-                        </Text>
-                      </Text>
-                      <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                        <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('placeholder_lorem_ipsum')}
-                        </Text>
-                      </Text>
-                      <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                        <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('placeholder_lorem_ipsum')}
-                        </Text>
-                      </Text>
-                      <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                        <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('placeholder_lorem_ipsum')}
-                        </Text>
-                      </Text>
-                    </View>
-                  </>
-                )}
-              />
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.content}>
+                  <Text variant="bodyMedium">
+                    <Text style={styles.title}>
+                      {t('placeholder_app_title')}
+                    </Text>{"\n"}
+                  </Text>
+                  <Text variant="bodyMedium">
+                    <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
+                    <Text style={styles.whiteText}>
+                      {t('placeholder_lorem_ipsum')}
+                    </Text>
+                  </Text>
+                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
+                    <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
+                    <Text style={styles.whiteText}>
+                      {t('placeholder_lorem_ipsum')}
+                    </Text>
+                  </Text>
+                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
+                    <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
+                    <Text style={styles.whiteText}>
+                      {t('placeholder_lorem_ipsum')}
+                    </Text>
+                  </Text>
+                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
+                    <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
+                    <Text style={styles.whiteText}>
+                      {t('placeholder_lorem_ipsum')}
+                    </Text>
+                  </Text>
+                </View>
+              </ScrollView>
             </View>
           </View>
         </View>
