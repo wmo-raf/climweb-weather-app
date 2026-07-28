@@ -17,7 +17,7 @@ export const forecastQueryKey = (latitude: number | undefined, longitude: number
 // row in NoLocation's list, every favourite, every search result, all get
 // their own cache entry that otherwise sticks around until gcTime. Cap it
 // to the most recently fetched points instead.
-const MAX_CACHED_FORECAST_POINTS = 10;
+export const MAX_CACHED_FORECAST_POINTS = 20;
 
 // Forecasts go stale half as often as alerts (see ALERTS_STALE_TIME in
 // alerts.hook.ts) — the weather doesn't turn over as fast as a CAP feed
