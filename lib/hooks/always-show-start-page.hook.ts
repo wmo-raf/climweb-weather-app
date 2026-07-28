@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
+
+import { storage } from '@/lib/storage';
 
 const ALWAYS_SHOW_START_PAGE_KEY = 'settings.alwaysShowStartPage';
 
@@ -9,23 +10,16 @@ type ReturnType = [
   setAlwaysShowStartPage: (value: boolean) => Promise<void>,
 ];
 
-// Mirrors the AsyncStorage-backed pattern used for onboarding/language —
-// a device-local setting, not domain data.
+// Device-local setting, not domain data. MMKV reads are synchronous, so
+// `loading` is always false — kept in the tuple for API compatibility
+// with call sites.
 export function useAlwaysShowStartPage(): ReturnType {
-  const [loading, setLoading] = useState(true);
-  const [alwaysShowStartPage, setAlwaysShowStartPageState] = useState(false);
-
-  useEffect(() => {
-    AsyncStorage.getItem(ALWAYS_SHOW_START_PAGE_KEY)
-      .then(value => setAlwaysShowStartPageState(value === 'true'))
-      .catch(() => setAlwaysShowStartPageState(false))
-      .finally(() => setLoading(false));
-  }, []);
+  const [alwaysShowStartPage, setAlwaysShowStartPageState] = useState(() => storage.getBoolean(ALWAYS_SHOW_START_PAGE_KEY) ?? false);
 
   const setAlwaysShowStartPage = async (value: boolean) => {
     setAlwaysShowStartPageState(value);
-    await AsyncStorage.setItem(ALWAYS_SHOW_START_PAGE_KEY, value ? 'true' : 'false');
+    storage.set(ALWAYS_SHOW_START_PAGE_KEY, value);
   };
 
-  return [loading, alwaysShowStartPage, setAlwaysShowStartPage];
+  return [false, alwaysShowStartPage, setAlwaysShowStartPage];
 }

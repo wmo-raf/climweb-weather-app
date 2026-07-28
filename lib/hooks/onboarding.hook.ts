@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
+
+import { storage } from '@/lib/storage';
 
 const ONBOARDED_KEY = 'settings.onboarded';
 
@@ -9,24 +10,16 @@ type ReturnType = [
   markOnboarded: () => Promise<void>,
 ];
 
-// Mirrors the AsyncStorage-backed pattern already used for language
-// persistence in lib/localization/i18n.ts, rather than a Redux slice —
-// this is a single app-level flag, not domain data.
+// Single app-level flag, not domain data, so it lives in storage rather
+// than the location store. MMKV reads are synchronous, so `loading` is
+// always false — kept in the tuple for API compatibility with call sites.
 export function useOnboarding(): ReturnType {
-  const [loading, setLoading] = useState(true);
-  const [hasOnboarded, setHasOnboarded] = useState(false);
-
-  useEffect(() => {
-    AsyncStorage.getItem(ONBOARDED_KEY)
-      .then(value => setHasOnboarded(value === 'true'))
-      .catch(() => setHasOnboarded(false))
-      .finally(() => setLoading(false));
-  }, []);
+  const [hasOnboarded, setHasOnboarded] = useState(() => storage.getBoolean(ONBOARDED_KEY) ?? false);
 
   const markOnboarded = async () => {
     setHasOnboarded(true);
-    await AsyncStorage.setItem(ONBOARDED_KEY, 'true');
+    storage.set(ONBOARDED_KEY, true);
   };
 
-  return [loading, hasOnboarded, markOnboarded];
+  return [false, hasOnboarded, markOnboarded];
 }
