@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { ActivityIndicator } from 'react-native';
@@ -17,11 +16,10 @@ import FiveDays from '@/components/FiveDays';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
 
-import type { AppDispatch, RootState } from '@/lib/store'
 import { SCREENS } from '@/lib/layout/constants';
-import { resetError, getPreciseLocation } from '@/lib/store/location.slice';
-import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
-import { getAlerts } from '@/lib/store/alert.slice';
+import { useLocationStore } from '@/lib/store/location.store';
+import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
+import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
@@ -42,7 +40,6 @@ const MainScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -52,20 +49,27 @@ const MainScreen = () => {
   const breakpoint = useBreakpoint();
   const isXL = breakpoint === 'xl';
 
-  const { name: location, lat, lon, loading: locationLoading, error: locationError } = useSelector((state: RootState) => state.location, shallowEqual);
-  const { loading, forecast, error: forecastError } = useSelector((state: RootState) => state.forecast, shallowEqual);
-  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
+  const location = useLocationStore(s => s.name);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
+  const locationLoading = useLocationStore(s => s.loading);
+  const locationError = useLocationStore(s => s.error);
+  const getPreciseLocation = useLocationStore(s => s.getPreciseLocation);
+  const resetLocationError = useLocationStore(s => s.resetError);
+  const { data: forecast, isLoading: loading, error: forecastErrorObj, refetch: refetchForecast } = useForecastQuery(lat, lon);
+  const forecastError = forecastErrorObj?.message;
+  const { data: alerts = [], refetch: refetchAlerts } = useAlertsQuery();
   const [refreshing, setRefreshing] = React.useState(false);
 
   // Whether to force Welcome, decided ONCE per mount as real state rather
-  // than re-derived every render from onboarding/alwaysShow — GPS
-  // permission can reject faster than those two AsyncStorage reads
-  // resolve, and re-deriving "should show welcome" fresh on every render
-  // meant the locationError-triggered re-render that follows could see a
-  // freshly-mutated hasShownStartPageThisLaunch and flip the decision to
-  // false before the Redirect ever actually took hold — silently
-  // cancelling it. Storing the decision in state makes it stick for the
-  // lifetime of this mount once made.
+  // than re-derived every render from onboarding/alwaysShow — onboarding/
+  // alwaysShow resolve synchronously from storage, but GPS location
+  // resolution is still async, and re-deriving "should show welcome" fresh
+  // on every render meant the locationError-triggered re-render that
+  // follows could see a freshly-mutated hasShownStartPageThisLaunch and
+  // flip the decision to false before the Redirect ever actually took
+  // hold — silently cancelling it. Storing the decision in state makes it
+  // stick for the lifetime of this mount once made.
   const [welcomeDecision, setWelcomeDecision] = React.useState<'pending' | 'show' | 'skip'>('pending');
 
   useEffect(() => {
@@ -86,11 +90,8 @@ const MainScreen = () => {
     }
 
     setRefreshing(true);
-    dispatch(getLocationForecast({ lat, lon }));
-    dispatch(getAlerts());
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+    await Promise.all([refetchForecast(), refetchAlerts()]);
+    setRefreshing(false);
   };
 
   const onTryAgain = () => {
@@ -98,25 +99,16 @@ const MainScreen = () => {
       return;
     }
 
-    dispatch(resetForecastError());
-    dispatch(getLocationForecast({ lat, lon }));
-    dispatch(getAlerts());
+    refetchForecast();
+    refetchAlerts();
   }
 
   // Get GPS location after first(empty)render.
   useEffect(() => {
     if (isUndefined(lat) || isUndefined(lon)) {
-      dispatch(getPreciseLocation());
+      getPreciseLocation();
     }
   }, []);
-
-  // Update forecast and alerts each time lat/lon changes.
-  useEffect(() => {
-    if (!isUndefined(lat) && !isUndefined(lon)) {
-      dispatch(getLocationForecast({ lat, lon }));
-      dispatch(getAlerts());
-    }
-  }, [lat, lon]);
 
   // If GPS/location resolution fails, send the user to their saved
   // favourite places instead of the generic city list, when they have any.
@@ -126,7 +118,7 @@ const MainScreen = () => {
   useEffect(() => {
     if (welcomeDecision !== 'skip') return;
     if (locationError && !navigation.canGoBack() && !favouritesLoading) {
-      dispatch(resetError());
+      resetLocationError();
       router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }
   }, [locationError, favouritesLoading, favourites, welcomeDecision]);

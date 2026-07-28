@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, Text } from 'react-native-paper';
 import { useRouter, Href } from 'expo-router';
@@ -14,9 +14,8 @@ import StatusCard from '@/components/StatusCard';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { useLocationRowErrors } from '@/lib/hooks/location-row-errors.hook';
-import { AppDispatch } from '@/lib/store';
-import { setForecast } from '@/lib/store/forecast.slice';
-import { setLat, setLon, setName } from '@/lib/store/location.slice';
+import { forecastQueryKey } from '@/lib/hooks/current-forecast.hook';
+import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
 import { Place } from '@/lib/geo/places';
 import { ForecastRecord } from '@/lib/forecast/types';
@@ -25,7 +24,8 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const PlacesScreen = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
+  const setLocation = useLocationStore(s => s.setLocation);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -35,10 +35,11 @@ const PlacesScreen = () => {
   const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
 
   const onSelectPlace = (place: Place, forecast: ForecastRecord) => {
-    dispatch(setForecast(forecast));
-    dispatch(setName(place.name));
-    dispatch(setLat(place.latitude));
-    dispatch(setLon(place.longitude));
+    // LocationRow already fetched this place's forecast to render its
+    // preview card — seed the query cache with it under Home's query key
+    // so navigating there doesn't re-fetch data we already have.
+    queryClient.setQueryData(forecastQueryKey(place.latitude, place.longitude), forecast);
+    setLocation({ name: place.name, lat: place.latitude, lon: place.longitude });
     router.push(SCREENS.Home.toString() as Href);
   };
 
@@ -125,8 +126,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingBottom: space[8],
   },
   // Matches the Today tab's whole-page loading spinner (plain, no card
-  // chrome) — shown while useFavourites() reads from AsyncStorage, so this
-  // screen doesn't flash the "no places set" empty state first.
+  // chrome) — useFavourites() reads from storage synchronously now, so
+  // this never actually shows, but the guard is kept in case that changes.
   loader: {
     marginTop: space[16],
     marginBottom: space[16],

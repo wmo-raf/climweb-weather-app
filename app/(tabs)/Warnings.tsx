@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +12,8 @@ import AlertLegend from '@/components/AlertLegend';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
 
-import type { AppDispatch, RootState } from '@/lib/store';
-import { getAlerts } from '@/lib/store/alert.slice';
+import { useLocationStore } from '@/lib/store/location.store';
+import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
@@ -28,14 +27,16 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 // to the user behind everything else.
 const WarningsScreen = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
-  const { alerts, error: alertsError } = useSelector((state: RootState) => state.alerts, shallowEqual);
-  const { name: location, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
+  const { data: alerts = [], error: alertsErrorObj, refetch: refetchAlerts } = useAlertsQuery();
+  const alertsError = alertsErrorObj?.message;
+  const location = useLocationStore(s => s.name);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
   const hasLocation = !isUndefined(lat) && !isUndefined(lon);
 
   const yourAreaAlerts = hasLocation ? alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon })) : [];
@@ -56,7 +57,7 @@ const WarningsScreen = () => {
                 iconColor={colors.danger}
                 title={t('warnings.error.title')}
                 text={alertsError}
-                onRetry={() => dispatch(getAlerts())}
+                onRetry={() => refetchAlerts()}
               />
             ) : alerts.length === 0 ? (
               <View style={styles.emptyState}>

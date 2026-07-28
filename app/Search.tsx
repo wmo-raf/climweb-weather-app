@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
@@ -8,15 +7,16 @@ import { Search } from '@/components/Search';
 import Alerts from '@/components/Alerts';
 import AppBar from '@/components/AppBar';
 
-import { AppDispatch, RootState } from '@/lib/store';
-import { setLocation } from '@/lib/store/location.slice';
+import { useLocationStore } from '@/lib/store/location.store';
 import { Place } from '@/lib/geo/places';
 import { ThemeColors, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const SearchScreen = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { name, lat, lon } = useSelector((state: RootState) => state.location);
+  const name = useLocationStore(s => s.name);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
+  const setLocation = useLocationStore(s => s.setLocation);
   const router = useRouter();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -33,7 +33,7 @@ const SearchScreen = () => {
             location={name}
             setLocation={
               (place: Place) => {
-                dispatch(setLocation({ name: place.name, lat: place.latitude, lon: place.longitude }));
+                setLocation({ name: place.name, lat: place.latitude, lon: place.longitude });
                 router.replace('/');
               }
             }

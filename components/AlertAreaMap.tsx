@@ -13,10 +13,9 @@ import {
 } from '@maplibre/maplibre-react-native';
 import type { Feature, FeatureCollection, Polygon as GeoJSONPolygon } from 'geojson';
 import { booleanValid, kinks } from '@turf/turf';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import type { RootState } from '@/lib/store';
+import { useLocationStore } from '@/lib/store/location.store';
 import { OSM_TILE_URL } from '@/config';
 import { ThemeColors, fonts, radius, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
@@ -169,7 +168,8 @@ function AlertAreaMap({ polygon, color, showUserLocation = true, onMapLoaded }: 
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const { lat: userLat, lon: userLon } = useSelector((state: RootState) => state.location);
+  const userLat = useLocationStore(s => s.lat);
+  const userLon = useLocationStore(s => s.lon);
 
   const features = useMemo(() => getValidFeatures(polygon), [polygon]);
   const bounds = useMemo(() => computeBounds(features), [features]);

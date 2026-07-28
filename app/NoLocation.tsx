@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useRouter, Href} from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -11,9 +11,8 @@ import StatusCard from '@/components/StatusCard';
 
 import CITIES from '@/assets/cities.json';
 import { City } from '@/lib/geo/constants';
-import { AppDispatch } from '@/lib/store';
-import { setForecast } from '@/lib/store/forecast.slice';
-import { setLat, setLon, setName } from '@/lib/store/location.slice';
+import { forecastQueryKey } from '@/lib/hooks/current-forecast.hook';
+import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useLocationRowErrors } from '@/lib/hooks/location-row-errors.hook';
@@ -22,7 +21,8 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const NoLocationScreen = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
+  const setLocation = useLocationStore(s => s.setLocation);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -50,10 +50,8 @@ const NoLocationScreen = () => {
                   id={String(idx)}
                   district={city}
                   onPress={(forecast: ForecastRecord): void => {
-                    dispatch(setForecast(forecast))
-                    dispatch(setName(city.name));
-                    dispatch(setLat(city.lat));
-                    dispatch(setLon(city.lon));
+                    queryClient.setQueryData(forecastQueryKey(city.lat, city.lon), forecast);
+                    setLocation({ name: city.name, lat: city.lat, lon: city.lon });
                     router.push(SCREENS.Home.toString() as Href);
                   }}
                   onErrorChange={onErrorChange}
