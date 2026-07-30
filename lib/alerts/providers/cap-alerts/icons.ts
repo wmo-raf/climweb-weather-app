@@ -57,7 +57,7 @@ export const WARNING_BAND_TEXT_COLORS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cy
 // active theme's status colors (danger/warning/info) since the 5 CAP levels
 // map onto fewer visually-distinct tints than raw severities. Unlike
 // WARNING_COLORS/WARNING_BAND_TEXT_COLORS, these DO retint for dark mode —
-// call with the current `useThemeColors()` result.
+// call with the current `useTheme()` result.
 export function getWarningTintColors(colors: ThemeColors): { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: { bg: string; text: string } } {
   return {
     Red: { bg: colors.dangerBg, text: colors.danger },

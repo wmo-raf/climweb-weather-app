@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { DayPart, DayPartSummary, DAY_PART_LABEL_KEYS, CONDITION_LABEL_KEYS, conditionBucket } from '@/lib/forecast/day-parts';
-import { ThemeColors, fonts, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type DayPartCardProps = {
   part: DayPart;
@@ -16,7 +16,7 @@ type DayPartCardProps = {
 
 function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const iconSource = summary.weatherSymbol ? weatherIcons[summary.weatherSymbol] : undefined;
@@ -40,32 +40,32 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: space[3],
-    marginBottom: space[3],
+    borderRadius: Radius.medium,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
     ...shadow.sm,
   },
   partLabel: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textSubtle,
-    marginBottom: space[2],
+    marginBottom: Spacing.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
+    gap: Spacing.md,
   },
   temp: {
     fontSize: 22,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   condition: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
-    marginTop: space[1],
+    marginTop: Spacing.sm,
   },
 });
 

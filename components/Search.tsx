@@ -14,8 +14,8 @@ import { Place } from '@/lib/geo/places';
 
 import geonames from '@/assets/geonames.json'
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 const locationAnchor = require('@/assets/location-anchor.png');
 
 type SearchProps = {
@@ -27,7 +27,7 @@ type GPS = "INACTIVE" | "SEARCHING" | "FAILED";
 
 export const Search = ({ setLocation }: SearchProps) => {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const [visible, setVisible] = useState(false);
 
@@ -78,7 +78,7 @@ export const Search = ({ setLocation }: SearchProps) => {
           suggestionsListTextStyle={styles.textStyle}
           containerStyle={{ zIndex: 1 }}
           inputHeight={48}
-          renderItem={(item: any) => <Text style={{ color: colors.text, fontFamily: fonts.regular, fontSize: 16, padding: 15, width: '100%', flexGrow: 1, flexShrink: 0 }}>{isNil(item.region) ? item.title : `${item.title}, ${item.region}`}</Text>}
+          renderItem={(item: any) => <Text style={{ color: colors.text, fontFamily: Fonts.sans.regular, fontSize: 16, padding: 15, width: '100%', flexGrow: 1, flexShrink: 0 }}>{isNil(item.region) ? item.title : `${item.title}, ${item.region}`}</Text>}
         />
       </View>
       <Portal>
@@ -102,7 +102,7 @@ type GPSFeedbackProps = {
 }
 
 const GPSFeedback = ({ status }: GPSFeedbackProps) => {
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (status === "SEARCHING") {
@@ -124,21 +124,21 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1.5,
     borderColor: colors.border,
-    paddingLeft: space[4],
-    paddingRight: space[4],
-    paddingTop: space[3],
-    paddingBottom: space[3],
-    borderRadius: radius.md,
+    paddingLeft: Spacing.lg,
+    paddingRight: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.md,
+    borderRadius: Radius.small,
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 16,
     color: colors.text,
   },
   dialogStyle: {
     backgroundColor: colors.bg,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     ...shadow.md,
   },
   dialogButton: {
@@ -147,15 +147,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   whiteText: {
     color: colors.text,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
   },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: space[8],
+    marginTop: Spacing.xxl,
   },
   textStyle: {
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 16,
     color: colors.text,
   },
@@ -165,19 +165,19 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: Radius.small,
     ...shadow.sm,
   },
   loader: {
-    marginTop: space[10],
-    marginBottom: space[16],
+    marginTop: Spacing.xxl,
+    marginBottom: Spacing.xxxl,
   },
   gpsfeedback: {
-    marginTop: space[10],
-    marginBottom: space[16],
+    marginTop: Spacing.xxl,
+    marginBottom: Spacing.xxxl,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginLeft: space[6],
+    marginLeft: Spacing.xl,
   }
 });
 

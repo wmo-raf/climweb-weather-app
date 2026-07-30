@@ -6,8 +6,8 @@ import { useNavigation, useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, fonts, space, touchTarget } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing, touchTarget } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 const backArrow = require('@/assets/icons8-back-100_2.png');
 
@@ -19,25 +19,28 @@ type AppBarProps = {
   isPlace?: boolean,
 };
 
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+
 const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const titleBlock = (
     <>
-      <Icon size={18} color={colors.primary} source="map-marker" />
+      {props.isPlace && <Icon size={18} color={colors.primary} source="map-marker" />}
       <View style={styles.titleTextBlock}>
-        <Text style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</Text>
-        {props.isPlace && <Text style={styles.placeSubtitle}>{t('Tap to change place')}</Text>}
+        <ThemedText type="default" themeColor="textStrong" style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</ThemedText>
+        {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t('Tap to change place')}</ThemedText>}
       </View>
     </>
   );
 
   return (
-    <View style={styles.appBar}>
+    <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
         {navigation.canGoBack() &&
           <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -65,7 +68,7 @@ const AppBar = (props: AppBarProps) => {
       >
         <Icon size={26} color={colors.primary} source="cog-outline" />
       </TouchableOpacity>
-    </View>
+    </ThemedView>
   );
 }
 
@@ -78,10 +81,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-    minHeight: touchTarget.nav + space[4],
+    minHeight: touchTarget.nav + Spacing.lg,
   },
   appTitleContainer: {
-    paddingLeft: space[3],
+    paddingLeft: Spacing.md,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -96,23 +99,23 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   titleTouchable: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[1],
+    gap: Spacing.sm,
     flexShrink: 1,
     minHeight: touchTarget.nav,
-    paddingVertical: space[2],
+    paddingVertical: Spacing.md,
   },
   titleTextBlock: {
     flexShrink: 1,
-    marginRight: space[4],
+    marginRight: Spacing.lg,
   },
   appTitle: {
     fontSize: 20,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   placeSubtitle: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.primary,
   },
   settingsButton: {
@@ -120,7 +123,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     height: touchTarget.nav,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: space[2],
+    marginRight: Spacing.md,
   },
   warningIcons: {
     flexDirection: 'row',
