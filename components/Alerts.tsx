@@ -1,9 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
 import { useRouter, Href } from "expo-router";
-import { shallowEqual, useSelector } from "react-redux";
 
-import { RootState } from "@/lib/store";
+import { useAlertsQuery } from "@/lib/hooks/alerts.hook";
 import { CAPAlert, alertInLocation, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_SEVERITY_RANK } from "@/lib/alerts/providers/cap-alerts/icons";
 import WeatherAlert from "./WeatherAlert";
@@ -17,7 +16,7 @@ type AlertsProps = {
 
 const Alerts = (props: AlertsProps) => {
   const { lat, lon, location } = props;
-  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
+  const { data: alerts = [] } = useAlertsQuery();
 
   const router = useRouter();
 

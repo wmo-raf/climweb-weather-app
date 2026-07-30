@@ -2,14 +2,14 @@ import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
-import { shallowEqual, useSelector } from 'react-redux';
 import { useLocalSearchParams } from 'expo-router';
 
 import AppBar from '@/components/AppBar';
 import HourlyTable from '@/components/HourlyTable';
 import Alerts from '@/components/Alerts';
 
-import { RootState } from '@/lib/store';
+import { useLocationStore } from '@/lib/store/location.store';
+import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { ForecastDayRecord } from '@/lib/forecast/types';
 import { ThemeColors, fonts, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
@@ -20,8 +20,10 @@ function HourlyScreen(): JSX.Element {
 
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const { name: store_location_name, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
-  const { forecast } = useSelector((state: RootState) => state.forecast, shallowEqual);
+  const store_location_name = useLocationStore(s => s.name);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
+  const { data: forecast } = useForecastQuery(lat, lon);
 
   let daySummary: ForecastDayRecord | undefined = undefined;
   if (forecast && dayString && location_name === store_location_name) {

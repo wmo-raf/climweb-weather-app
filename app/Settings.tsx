@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, SegmentedButtons, Switch, Text } from 'react-native-paper';
-import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Dropdown from 'react-native-input-select';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +8,7 @@ import { useRouter, Href } from 'expo-router';
 
 import Alerts from '@/components/Alerts';
 import AppBar from '@/components/AppBar';
-import { RootState } from '@/lib/store';
+import { useLocationStore } from '@/lib/store/location.store';
 import { LANGUAGES } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
 import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
@@ -39,7 +38,9 @@ const SettingsScreen = () => {
   };
 
   const [, setLanguage] = useState<string>();
-  const { name, lat, lon } = useSelector((state: RootState) => state.location);
+  const name = useLocationStore(s => s.name);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
   const [, alwaysShowStartPage, setAlwaysShowStartPage] = useAlwaysShowStartPage();
 
   return (

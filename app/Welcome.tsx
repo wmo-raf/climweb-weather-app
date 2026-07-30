@@ -28,10 +28,11 @@ function WelcomeScreen(): JSX.Element {
 
   const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
 
-  // i18n's own language detection resolves from AsyncStorage asynchronously
-  // and can finish after this screen's first render — re-sync once it does
-  // so a previously chosen language shows as selected instead of getting
-  // stuck on whatever i18n.language happened to be at mount time.
+  // i18n's own language detection now resolves synchronously from storage,
+  // but i18next itself still finalizes init() on a microtask — re-sync
+  // once it does so a previously chosen language shows as selected
+  // instead of getting stuck on whatever i18n.language happened to be at
+  // mount time.
   useEffect(() => {
     setSelectedLang((i18n.language as LanguageKey) ?? 'en');
   }, [i18n.language]);

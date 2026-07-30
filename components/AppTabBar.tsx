@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge, Icon, Text } from 'react-native-paper';
-import { useSelector, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { RootState } from '@/lib/store';
+import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { ThemeColors, fonts, navRailWidth, radius, space, touchTarget } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
@@ -46,7 +45,7 @@ function AppTabBar({ state, navigation }: TabBarProps) {
   const breakpoint = useBreakpoint();
   const isRail = breakpoint === 'xl';
 
-  const { alerts } = useSelector((s: RootState) => s.alerts, shallowEqual);
+  const { data: alerts = [] } = useAlertsQuery();
 
   const items = state.routes.map((route: { key: string; name: string }, index: number) => {
     const focused = state.index === index;

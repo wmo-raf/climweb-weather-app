@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { storage } from '@/lib/storage';
 import { Place } from '@/lib/geo/places';
 
 const FAVOURITES_KEY = 'places.favourites';
@@ -14,28 +14,40 @@ type ReturnType = [
   saveFavourites: (places: Place[]) => Promise<void>,
 ];
 
-// Mirrors the AsyncStorage-backed pattern used for onboarding/language —
-// favourites are a device-local setting, not domain data, so they live
-// outside Redux like those do. Re-reads on focus (not just on mount) so
-// the Places tab picks up edits made on EditFavourites/OnboardingPlaces
-// without needing to remount.
+const readFavourites = (): Place[] => {
+  const value = storage.getString(FAVOURITES_KEY);
+  return value ? JSON.parse(value) : [];
+};
+
+const favouritesEqual = (a: Place[], b: Place[]): boolean =>
+  a.length === b.length && JSON.stringify(a) === JSON.stringify(b);
+
+// Favourites are a device-local setting, not domain data, so they live in
+// storage rather than the location store. Re-reads on focus (not just on
+// mount) so the Places tab picks up edits made on EditFavourites/
+// OnboardingPlaces without needing to remount. MMKV reads are synchronous,
+// so `loading` is always false — kept in the tuple for API compatibility.
 export function useFavourites(): ReturnType {
-  const [loading, setLoading] = useState(true);
-  const [favourites, setFavourites] = useState<Place[]>([]);
+  const [favourites, setFavourites] = useState<Place[]>(readFavourites);
 
   useFocusEffect(
     useCallback(() => {
-      AsyncStorage.getItem(FAVOURITES_KEY)
-        .then(value => setFavourites(value ? JSON.parse(value) : []))
-        .catch(() => setFavourites([]))
-        .finally(() => setLoading(false));
+      // Every focus (e.g. tab switches, not just actual edits) would
+      // otherwise produce a brand-new array reference here even when the
+      // stored data hasn't changed, cascading a re-render through every
+      // LocationRow on the Places tab despite React.memo — bail out of
+      // the state update entirely when the content is unchanged instead.
+      setFavourites(prev => {
+        const next = readFavourites();
+        return favouritesEqual(prev, next) ? prev : next;
+      });
     }, [])
   );
 
   const saveFavourites = useCallback(async (places: Place[]) => {
     setFavourites(places);
-    await AsyncStorage.setItem(FAVOURITES_KEY, JSON.stringify(places));
+    storage.set(FAVOURITES_KEY, JSON.stringify(places));
   }, []);
 
-  return [loading, favourites, saveFavourites];
+  return [false, favourites, saveFavourites];
 }

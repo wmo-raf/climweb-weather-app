@@ -3,8 +3,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SystemBars } from 'react-native-edge-to-edge';
-import { store } from '@/lib/store';
-import { Provider as StoreProvider } from 'react-redux';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { queryClient, persistOptions } from '@/lib/query/client';
 import { MD3LightTheme, MD3DarkTheme, PaperProvider, configureFonts } from 'react-native-paper';
 import {
   useFonts,
@@ -80,11 +80,11 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StoreProvider store={store}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
         <ThemeProvider>
           <AppContent />
         </ThemeProvider>
-      </StoreProvider>
+      </PersistQueryClientProvider>
     </SafeAreaProvider>
   );
 }

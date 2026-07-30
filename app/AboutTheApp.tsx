@@ -1,36 +1,32 @@
 import React, { JSX, useMemo } from 'react';
-import { StyleSheet, View, Linking, ListRenderItemInfo, Image, FlatList } from 'react-native';
+import { StyleSheet, View, Linking, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
-import { useSelector } from 'react-redux';
 
 import AppBar from '@/components/AppBar';
 import Alerts from '@/components/Alerts';
 
-import { RootState } from '@/lib/store';
+import { useLocationStore } from '@/lib/store/location.store';
 import { useTranslation } from 'react-i18next';
 import { ThemeColors, fonts, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 const bulletListIcon = require('@/assets/time-period-bullet.png');
 
+const PARTNERS = [
+  'Norwegian Meteorological Institute',
+  'NORAD',
+  'NORCAP',
+  'World Meteorological Organisation',
+  'Save the Children',
+];
+
 function AboutTheAppScreen(): JSX.Element {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const { lat, lon } = useSelector((state: RootState) => state.location);
-
-  const getPartners = (): Array<string> => ([
-    'Norwegian Meteorological Institute',
-    'NORAD',
-    'NORCAP',
-    'World Meteorological Organisation',
-    'Save the Children'
-  ]);
-
-  const renderPartner = (item: ListRenderItemInfo<string>) => <View style={styles.partnerItem}>
-    <Image style={styles.bulletStyle} source={bulletListIcon} /><Text style={styles.partnerText}> {item.item}</Text>
-  </View>;
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
 
   const onClickURL = (url: string) => Linking.openURL(url);
 
@@ -42,48 +38,48 @@ function AboutTheAppScreen(): JSX.Element {
           <Alerts lat={lat} lon={lon} location={"About the app"} />
           <View style={styles.container}>
             <View style={styles.opacity}>
-              <FlatList
-                data={[{ key: 'data' }]}
-                showsVerticalScrollIndicator={false}
-                snapToStart={false}
-                renderItem={() => (
-                  <>
-                    <View style={styles.content}>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.title}>{t('app.and.forecasts')}</Text>
-                      </Text>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.whiteText}>
-                          {t('app.and.forecasts.desc')}
-                        </Text>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.content}>
+                  <Text variant="bodyMedium">
+                    <Text style={styles.title}>{t('app.and.forecasts')}</Text>
+                  </Text>
+                  <Text variant="bodyMedium">
+                    <Text style={styles.whiteText}>
+                      {t('app.and.forecasts.desc')}
+                    </Text>
+                  </Text>
+                  <View>
+                    <View>
+                      <Text style={styles.whiteHeader}>
+                        {"\n"}{t('partners')}:
                       </Text>
                       <View>
-                        <View>
-                          <Text style={styles.whiteHeader}>
-                            {"\n"}{t('partners')}:
-                          </Text>
-                          <FlatList data={getPartners()} renderItem={(item: ListRenderItemInfo<string>) => renderPartner(item)} key={new Date().toISOString()} />
-                        </View>
+                        {PARTNERS.map((partner) => (
+                          <View key={partner} style={styles.partnerItem}>
+                            <Image style={styles.bulletStyle} source={bulletListIcon} />
+                            <Text style={styles.partnerText}> {partner}</Text>
+                          </View>
+                        ))}
                       </View>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.whiteHeader}>{"\n"}{t('Icons')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          <Text style={styles.whiteText}>
-                            {t("icons.disclaimer")} <Text onPress={() => onClickURL('https://yr.no/NRK')} style={{ ...styles.whiteText, ...styles.ln }}>yr.no/NRK</Text>.
-                          </Text>{"\n"}{"\n"}
-                          {t('warning.icons.disclaimer')}
-                        </Text>
-                      </Text>
-                      <Text variant="bodyMedium">
-                        <Text style={styles.whiteHeader}>{"\n"}{t('Geographical Data')}</Text>{"\n"}
-                        <Text style={styles.whiteText}>
-                          {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.{"\n"}{"\n"}{"\n"}
-                        </Text>
-                      </Text>
                     </View>
-                  </>
-                )}
-              />
+                  </View>
+                  <Text variant="bodyMedium">
+                    <Text style={styles.whiteHeader}>{"\n"}{t('Icons')}</Text>{"\n"}
+                    <Text style={styles.whiteText}>
+                      <Text style={styles.whiteText}>
+                        {t("icons.disclaimer")} <Text onPress={() => onClickURL('https://yr.no/NRK')} style={{ ...styles.whiteText, ...styles.ln }}>yr.no/NRK</Text>.
+                      </Text>{"\n"}{"\n"}
+                      {t('warning.icons.disclaimer')}
+                    </Text>
+                  </Text>
+                  <Text variant="bodyMedium">
+                    <Text style={styles.whiteHeader}>{"\n"}{t('Geographical Data')}</Text>{"\n"}
+                    <Text style={styles.whiteText}>
+                      {t('geographical.data.disclaimer')} <Text onPress={() => onClickURL('https://download.geonames.org/export/dump/MW.zip')} style={{ ...styles.whiteText, ...styles.ln }}>Geonames</Text>.{"\n"}{"\n"}{"\n"}
+                    </Text>
+                  </Text>
+                </View>
+              </ScrollView>
             </View>
           </View>
         </View>

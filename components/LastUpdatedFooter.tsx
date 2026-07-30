@@ -1,31 +1,34 @@
 import React, { JSX, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useSelector, shallowEqual } from 'react-redux';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 
-import type { RootState } from '@/lib/store';
+import { useLocationStore } from '@/lib/store/location.store';
+import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { APP_TIMEZONE } from '@/config';
 import { ThemeColors, fonts, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
 
 // Shown at the bottom of Today, 5 Days, Places and Alerts — a single,
 // app-wide "how fresh is this data" indicator tied to the last time the
-// forecast slice actually received data from the API (see forecast.slice.ts),
-// not to whatever's currently rendered on screen. Renders nothing until the
-// first successful fetch.
+// current location's forecast query actually received data, not to
+// whatever's currently rendered on screen. Reads the same query cache entry
+// Today/5 Days/Hourly populate, so it reflects whichever of them fetched
+// most recently. Renders nothing until the first successful fetch.
 function LastUpdatedFooter(): JSX.Element | null {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const { lastFetchedAt } = useSelector((state: RootState) => state.forecast, shallowEqual);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
+  const { dataUpdatedAt } = useForecastQuery(lat, lon);
 
-  if (!lastFetchedAt) {
+  if (!dataUpdatedAt) {
     return null;
   }
 
-  const time = DateTime.fromISO(lastFetchedAt).setZone(APP_TIMEZONE).toFormat('yyyy-MM-dd h:mm a');
+  const time = DateTime.fromMillis(dataUpdatedAt).setZone(APP_TIMEZONE).toFormat('yyyy-MM-dd h:mm a');
 
   return (
     <Text style={styles.footer}>{t('forecast.lastUpdated', { time })}</Text>

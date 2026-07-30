@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView, Text } from 'react-native';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from 'luxon';
 import { useRouter, Href } from 'expo-router';
@@ -12,10 +11,10 @@ import FiveDays from '@/components/FiveDays';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
 
-import type { AppDispatch, RootState } from '@/lib/store';
+import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
-import { getLocationForecast, resetForecastError } from '@/lib/store/forecast.slice';
-import { getAlerts } from '@/lib/store/alert.slice';
+import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
+import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { ThemeColors, fonts, navRailWidth, space } from '@/lib/theme';
@@ -25,21 +24,22 @@ import Alerts from '@/components/Alerts';
 const FiveDaysScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
-  const { name: location, lat, lon } = useSelector((state: RootState) => state.location, shallowEqual);
-  const { forecast, error: forecastError } = useSelector((state: RootState) => state.forecast, shallowEqual);
-  const { alerts } = useSelector((state: RootState) => state.alerts, shallowEqual);
+  const location = useLocationStore(s => s.name);
+  const lat = useLocationStore(s => s.lat);
+  const lon = useLocationStore(s => s.lon);
+  const { data: forecast, error: forecastErrorObj, refetch: refetchForecast } = useForecastQuery(lat, lon);
+  const forecastError = forecastErrorObj?.message;
+  const { data: alerts = [], refetch: refetchAlerts } = useAlertsQuery();
   const hasLocation = !isUndefined(lat) && !isUndefined(lon);
 
   const onRetry = () => {
     if (isUndefined(lat) || isUndefined(lon)) return;
-    dispatch(resetForecastError());
-    dispatch(getLocationForecast({ lat, lon }));
-    dispatch(getAlerts());
+    refetchForecast();
+    refetchAlerts();
   };
 
   const today = DateTime.now();

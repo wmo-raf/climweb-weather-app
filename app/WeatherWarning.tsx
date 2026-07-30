@@ -3,13 +3,12 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { useLocalSearchParams } from 'expo-router';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
 import AlertCard from '@/components/AlertCard';
 
-import { RootState } from '@/lib/store';
+import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { ThemeColors, fonts, space } from '@/lib/theme';
 import { useThemeColors } from '@/lib/theme/ThemeContext';
 import AlertLegend from '@/components/AlertLegend';
@@ -20,7 +19,7 @@ function WeatherWarningScreen(): JSX.Element {
   const colors = useThemeColors();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const { alerts } = useSelector((state: RootState) => state.alerts);
+  const { data: alerts = [] } = useAlertsQuery();
   const alert = alerts.find(alert => alert.identifier === alertID)
 
   return (
