@@ -16,8 +16,8 @@ import { useLocationStore } from '@/lib/store/location.store';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, navRailWidth, Radius, shadow, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type AlertSection = { title?: string; data: CAPAlert[] };
 
@@ -35,7 +35,7 @@ type AlertSection = { title?: string; data: CAPAlert[] };
 const WarningsScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
@@ -124,42 +124,42 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   content: {
-    padding: space[4],
-    paddingBottom: space[8],
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
   cardWrapper: {
-    marginBottom: space[4],
+    marginBottom: Spacing.lg,
   },
   groupHeader: {
     fontSize: 14,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
     color: colors.textSubtle,
-    marginBottom: space[3],
+    marginBottom: Spacing.md,
   },
   emptyState: {
     alignItems: 'center',
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: space[6],
-    marginBottom: space[4],
+    borderRadius: Radius.medium,
+    padding: Spacing.xl,
+    marginBottom: Spacing.lg,
     ...shadow.sm,
   },
   emptyTitle: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   emptyText: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
     textAlign: 'center',
-    marginTop: space[1],
+    marginTop: Spacing.sm,
   },
   xlPadding: {
     paddingLeft: navRailWidth,

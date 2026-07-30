@@ -9,7 +9,7 @@
     AboutTheApp = "AboutTheApp",
     PrivacyPolicy = "PrivacyPolicy",
     WeatherWarning = "WeatherWarning",
-    Settings = "Settings",
+    Settings = "/settings",
     OnboardingPlaces = "OnboardingPlaces",
     EditFavourites = "EditFavourites"
   };

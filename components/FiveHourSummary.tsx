@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { ThemeColors, fonts, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type FiveHourSummaryProps = {
   daySummary: ForecastDayRecord;
@@ -23,7 +23,7 @@ const HOURS_SHOWN = 5;
 function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.Element | null {
   const { t } = useTranslation();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const nowISO = DateTime.now().toISO()!;
@@ -76,9 +76,9 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
-    marginTop: space[4],
-    padding: space[4],
-    borderRadius: radius.lg,
+    marginTop: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.medium,
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
@@ -88,18 +88,18 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: space[2],
+    marginBottom: Spacing.md,
   },
   headerText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[3],
-    paddingVertical: space[2],
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
@@ -109,12 +109,12 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   time: {
     flex: 1,
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   temp: {
     fontSize: 14,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
     minWidth: 44,
     textAlign: 'right',

@@ -8,8 +8,8 @@ import { City } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, fonts, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
 
 
@@ -25,7 +25,7 @@ type LocationRowProps = {
 };
 function LocationRow(props: LocationRowProps): JSX.Element | null {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const { district, onPress, id, onErrorChange } = props;
   const [, forecast, error, retry] = useForecast(district.lat, district.lon);
@@ -82,7 +82,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    marginTop: space[4],
+    marginTop: Spacing.lg,
   },
   // Deliberately no card chrome (border/shadow/background) here, unlike
   // the loaded-row wrapper above — matches the plain floating spinner used
@@ -90,14 +90,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // spinner shown while Places/NoLocation's rows are individually loading.
   loadingWrapper: {
     width: '100%',
-    marginTop: space[4],
-    paddingVertical: space[6],
+    marginTop: Spacing.lg,
+    paddingVertical: Spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
   },
   glassWrapper: {
     width: '100%',
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
   },
   opacity: {
     backgroundColor: colors.bg,
@@ -106,12 +106,12 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    paddingRight: space[4],
-    paddingLeft: space[4],
-    paddingTop: space[3],
-    paddingBottom: space[3],
+    paddingRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.md,
     zIndex: 1,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     ...shadow.sm,
   },
   left: {
@@ -128,16 +128,16 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   header: {
     fontSize: 20,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   small: {
     fontSize: 16,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
   },
   smallContainer: {
-    marginTop: space[1],
+    marginTop: Spacing.sm,
   },
 });
 

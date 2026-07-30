@@ -17,8 +17,8 @@ import { useTranslation } from 'react-i18next';
 
 import { useLocationStore } from '@/lib/store/location.store';
 import { OSM_TILE_URL } from '@/config';
-import { ThemeColors, fonts, radius, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type AlertAreaMapProps = {
   // The alert's raw CAP area polygon(s) — deliberately untrusted, since
@@ -166,7 +166,7 @@ function hexToRgba(hex: string, alpha: number): string {
 // tile server) via MapLibre, not a Google/Apple/Mapbox-hosted basemap.
 function AlertAreaMap({ polygon, color, showUserLocation = true, onMapLoaded }: AlertAreaMapProps): JSX.Element | null {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const userLat = useLocationStore(s => s.lat);
   const userLon = useLocationStore(s => s.lon);
@@ -240,17 +240,17 @@ function AlertAreaMap({ polygon, color, showUserLocation = true, onMapLoaded }: 
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
-    marginTop: space[4],
+    marginTop: Spacing.lg,
   },
   label: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginBottom: space[2],
+    marginBottom: Spacing.md,
   },
   mapWrapper: {
     height: MAP_HEIGHT,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
@@ -262,16 +262,16 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   userDot: {
     width: 12,
     height: 12,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
     backgroundColor: colors.primary,
     borderWidth: 2,
     borderColor: colors.bg,
   },
   attribution: {
     fontSize: 11,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textMuted,
-    marginTop: space[1],
+    marginTop: Spacing.sm,
     textAlign: 'right',
   },
 });

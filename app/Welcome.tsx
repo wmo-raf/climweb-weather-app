@@ -10,13 +10,14 @@ import Constants from 'expo-constants';
 import { LANGUAGES, LanguageKey } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
+import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 // Fixed to the light palette, not the active theme: Welcome always renders
 // its own dark-navy hero (see SystemBars override below) regardless of the
 // user's in-app dark-mode setting — the design brief keeps this colored
 // hero screen as-is in both themes.
-import { fonts, lightColors as colors, radius, space, touchTarget } from '@/lib/theme';
+import { Fonts, Colors, Radius, Spacing, touchTarget } from '@/lib/theme';
 
+const colors = Colors.light;
 const appName = Constants.expoConfig?.name ?? 'Weather App';
 
 function WelcomeScreen(): JSX.Element {
@@ -24,7 +25,7 @@ function WelcomeScreen(): JSX.Element {
   const router = useRouter();
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
-  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
+  const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
 
   const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
 
@@ -55,7 +56,7 @@ function WelcomeScreen(): JSX.Element {
   // Only index.tsx is allowed to legitimately land a fully-onboarded user
   // here, and only when "Always Show Start Page" is on; that case must
   // still render normally, so it's explicitly excluded.
-  if (!onboardingLoading && !alwaysShowLoading && hasOnboarded && !alwaysShowStartPage) {
+  if (!onboardingLoading && hasOnboarded && !alwaysShowStartPage) {
     return <Redirect href="/" />;
   }
 
@@ -115,53 +116,53 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: space[8],
+    paddingHorizontal: Spacing.xxl,
   },
   iconBadge: {
     width: 88,
     height: 88,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
     backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: space[6],
+    marginBottom: Spacing.xl,
   },
   title: {
     fontSize: 32,
-    fontFamily: fonts.extraBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textInverse,
     textAlign: 'center',
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   footer: {
-    padding: space[6],
+    padding: Spacing.xl,
   },
   languagePrompt: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
     textAlign: 'center',
-    marginBottom: space[3],
+    marginBottom: Spacing.md,
   },
   languageRow: {
     flexDirection: 'row',
-    gap: space[3],
-    marginBottom: space[4],
+    gap: Spacing.md,
+    marginBottom: Spacing.lg,
   },
   languageButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     minHeight: touchTarget.nav,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     borderWidth: 1.5,
     borderColor: colors.textInverse,
     backgroundColor: 'transparent',
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
   },
   languageButtonText: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
   languageButtonTextSelected: {
@@ -182,14 +183,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     minHeight: touchTarget.nav,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     backgroundColor: colors.bg,
   },
   getStartedText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.primary,
   },
 });
