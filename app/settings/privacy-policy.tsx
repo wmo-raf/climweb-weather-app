@@ -24,7 +24,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("Privacy Policy")} />
+        <AppBar location={t("Privacy Policy")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}

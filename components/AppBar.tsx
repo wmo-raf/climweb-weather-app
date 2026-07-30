@@ -17,6 +17,7 @@ type AppBarProps = {
   // should be tappable to switch location — other screens use `location`
   // as a plain screen title (e.g. "Settings", "Warnings").
   isPlace?: boolean,
+  hideSettings?: boolean,
 };
 
 import { ThemedText } from '@/components/themed-text';
@@ -59,15 +60,17 @@ const AppBar = (props: AppBarProps) => {
         }
       </View>
 
-      <TouchableOpacity
-        style={styles.settingsButton}
-        accessible={true}
-        accessibilityLabel={t('Settings')}
-        onPress={() => router.push(SCREENS.Settings.toString() as Href)}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <Icon size={26} color={colors.primary} source="cog-outline" />
-      </TouchableOpacity>
+      {!props.hideSettings && (
+        <TouchableOpacity
+          style={styles.settingsButton}
+          accessible={true}
+          accessibilityLabel={t('Settings')}
+          onPress={() => router.push(SCREENS.Settings.toString() as Href)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Icon size={26} color={colors.primary} source="cog-outline" />
+        </TouchableOpacity>
+      )}
     </ThemedView>
   );
 }
