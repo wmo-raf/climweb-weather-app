@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { jsonStorage } from '@/lib/storage';
+import { LANGUAGES } from '@/lib/localization/translations';
 
 const LANGUAGE_KEY = 'language-storage';
 
@@ -10,13 +11,13 @@ export interface Language {
   nativeName: string;
 }
 
-export const SUPPORTED_LANGUAGES: Language[] = [
-  { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'am', name: 'Amharic', nativeName: 'አማርኛ' },
-  { code: 'om', name: 'Oromo', nativeName: 'Afaan Oromoo' },
-  { code: 'ti', name: 'Tigrinya', nativeName: 'ትግርኛ' },
-  { code: 'so', name: 'Somali', nativeName: 'Soomaaliga' },
-];
+export const SUPPORTED_LANGUAGES: Language[] = Object.entries(LANGUAGES).map(
+  ([code, config]) => ({
+    code,
+    name: config.name,
+    nativeName: config.nativeName,
+  })
+);
 
 interface LanguageState {
   languageCode: string;
