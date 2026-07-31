@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { APP_TIMEZONE } from '@/config';
-import { ThemeColors, fonts, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 // Shown at the bottom of Today, 5 Days, Places and Alerts — a single,
 // app-wide "how fresh is this data" indicator tied to the last time the
@@ -18,7 +18,7 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 // most recently. Renders nothing until the first successful fetch.
 function LastUpdatedFooter(): JSX.Element | null {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const lat = useLocationStore(s => s.lat);
   const lon = useLocationStore(s => s.lon);
@@ -38,11 +38,11 @@ function LastUpdatedFooter(): JSX.Element | null {
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   footer: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textMuted,
     textAlign: 'center',
-    marginTop: space[2],
-    marginBottom: space[8],
+    marginTop: Spacing.md,
+    marginBottom: Spacing.xxl,
   },
 });
 

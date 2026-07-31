@@ -17,8 +17,10 @@ import {
 
 import '../lib/localization/i18n';
 import { AutocompleteDropdownContextProvider } from "@/lib/autocomplete";
-import { fonts } from '@/lib/theme';
-import { ThemeProvider, useAppTheme } from '@/lib/theme/ThemeContext';
+import { Fonts } from '@/lib/theme';
+import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { useColorScheme } from '@/lib/hooks/use-color-scheme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 global.Buffer = global.Buffer || Buffer;
 
@@ -31,7 +33,8 @@ SplashScreen.setOptions({
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { colors, scheme } = useAppTheme();
+  const scheme = useColorScheme();
+  const colors = useTheme();
 
   const theme = {
     ...(scheme === 'dark' ? MD3DarkTheme : MD3LightTheme),
@@ -44,22 +47,27 @@ function AppContent() {
       surface: colors.bg,
       onSurface: colors.text,
     },
-    fonts: configureFonts({ config: { fontFamily: fonts.regular } }),
+    fonts: configureFonts({ config: { fontFamily: Fonts.sans.regular } }),
   };
 
   return (
-    <PaperProvider theme={theme}>
-      <AutocompleteDropdownContextProvider>
-        {/* Default follows the resolved theme; Welcome/OnboardingPlaces (dark
-            background regardless of theme) push their own "light" override
-            while mounted. */}
-        <SystemBars style={scheme === 'dark' ? 'light' : 'dark'} />
-        <Stack screenOptions={{
-          // Hide the default expo header
-          headerShown: false,
-        }} />
-      </AutocompleteDropdownContextProvider>
-    </PaperProvider>
+    <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <PaperProvider theme={theme}>
+        <AutocompleteDropdownContextProvider>
+          {/* Default follows the resolved theme; Welcome/OnboardingPlaces (dark
+              background regardless of theme) push their own "light" override
+              while mounted. */}
+          <SystemBars style={scheme === 'dark' ? 'light' : 'dark'} />
+          <Stack screenOptions={{
+            // Hide the default expo header
+            headerShown: false,
+          }} >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="settings" />
+          </Stack>
+        </AutocompleteDropdownContextProvider>
+      </PaperProvider>
+    </ThemeProvider>
   );
 }
 
@@ -81,9 +89,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-        <ThemeProvider>
-          <AppContent />
-        </ThemeProvider>
+        <AppContent />
       </PersistQueryClientProvider>
     </SafeAreaProvider>
   );

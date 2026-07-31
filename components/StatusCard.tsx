@@ -3,8 +3,8 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
-import { ThemeColors, fonts, radius, shadow, space, touchTarget } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type StatusCardProps = {
   icon: string;
@@ -25,7 +25,7 @@ type StatusCardProps = {
 // NoLocation, 5 Days).
 function StatusCard({ icon, iconColor, title, text, onRetry, actionLabel }: StatusCardProps): JSX.Element {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const label = actionLabel ?? t('Retry');
 
@@ -50,38 +50,38 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: space[6],
-    marginTop: space[4],
-    marginBottom: space[4],
+    borderRadius: Radius.medium,
+    padding: Spacing.xl,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.lg,
     ...shadow.sm,
   },
   title: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginTop: space[3],
+    marginTop: Spacing.md,
     textAlign: 'center',
   },
   text: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
     textAlign: 'center',
-    marginTop: space[1],
+    marginTop: Spacing.sm,
   },
   retryButton: {
-    marginTop: space[4],
+    marginTop: Spacing.lg,
     minHeight: touchTarget.nav,
-    paddingHorizontal: space[6],
-    borderRadius: radius.lg,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: Radius.medium,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   retryButtonText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
 });

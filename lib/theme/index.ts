@@ -5,77 +5,79 @@ import { Platform } from 'react-native';
 // Redesign reference, "Turn 5 — dark mode"). Severity accent colors
 // (danger/warning/success) and anything meant to pop as a white pill against
 // a colored hero stay identical in both themes — only surfaces/text/tints
-// shift. Consume via `useThemeColors()` (lib/theme/ThemeContext), never
+// shift. Consume via `useTheme()` (lib/theme/ThemeContext), never
 // import a fixed palette directly in component code.
-export const lightColors = {
-  primary: '#0C447C',
-  primaryHov: '#176C9C',
-  primaryPrs: '#093766',
-  accent: '#226296',
-  info: '#3E8ED0',
-  bgTint: '#E6F1FB',
-  bgTintLight: '#EAF2F9',
-  bgOverlay: '#0A2240',
-  bgFooter: '#0C447C',
+export const Colors = {
+  light: {
+    primary: '#0C447C',
+    primaryHov: '#176C9C',
+    primaryPrs: '#093766',
+    accent: '#226296',
+    info: '#3E8ED0',
+    bgTint: '#E6F1FB',
+    bgTintLight: '#EAF2F9',
+    bgOverlay: '#0A2240',
+    bgFooter: '#0C447C',
 
-  bg: '#FFFFFF',
-  bgAlt: '#F8F9FB',
-  bgHover: '#F4F6F9',
-  bgMuted: '#E0E0E0',
-  border: '#DCDCDC',
+    bg: '#FFFFFF',
+    bgAlt: '#F8F9FB',
+    bgHover: '#F4F6F9',
+    bgMuted: '#E0E0E0',
+    border: '#DCDCDC',
 
-  text: '#363636',
-  textStrong: '#1A1A1A',
-  textSubtle: '#707070',
-  textMuted: '#999999',
-  textInverse: '#FFFFFF',
-  focus: '#176C9C',
+    text: '#363636',
+    textStrong: '#1A1A1A',
+    textSubtle: '#707070',
+    textMuted: '#999999',
+    textInverse: '#FFFFFF',
+    focus: '#176C9C',
 
-  success: '#0B612D',
-  successBg: '#D1FAE5',
-  warning: '#92400E',
-  warningBg: '#FEF3C7',
-  danger: '#B91C1C',
-  dangerBg: '#FEE2E2',
-  infoText: '#1E40AF',
-  infoBg: '#DBEAFE',
+    success: '#0B612D',
+    successBg: '#D1FAE5',
+    warning: '#92400E',
+    warningBg: '#FEF3C7',
+    danger: '#B91C1C',
+    dangerBg: '#FEE2E2',
+    infoText: '#1E40AF',
+    infoBg: '#DBEAFE',
+  },
+  dark: {
+    primary: '#6FB3EA',
+    primaryHov: '#8AC4EA',
+    primaryPrs: '#5A9FD9',
+    accent: '#8AC4EA',
+    info: '#6FB3EA',
+    bgTint: '#152C40',
+    bgTintLight: '#152C40',
+    bgOverlay: '#0B0F14',
+    bgFooter: '#152C40',
+
+    bg: '#17202A',
+    bgAlt: '#0B0F14',
+    bgHover: '#202A34',
+    bgMuted: '#2A3540',
+    border: '#2A3540',
+
+    text: '#C7D0DA',
+    textStrong: '#F2F4F7',
+    textSubtle: '#93A0AC',
+    textMuted: '#7C8792',
+    textInverse: '#FFFFFF',
+    focus: '#8AC4EA',
+
+    success: '#0B612D',
+    successBg: '#D1FAE5',
+    warning: '#FBBF24',
+    warningBg: '#2E230A',
+    danger: '#B91C1C',
+    dangerBg: '#2A1414',
+    infoText: '#1E40AF',
+    infoBg: '#DBEAFE',
+  },
 } as const;
 
-export type ThemeColors = { [K in keyof typeof lightColors]: string };
-
-export const darkColors: ThemeColors = {
-  primary: '#6FB3EA',
-  primaryHov: '#8AC4EA',
-  primaryPrs: '#5A9FD9',
-  accent: '#8AC4EA',
-  info: '#6FB3EA',
-  bgTint: '#152C40',
-  bgTintLight: '#152C40',
-  bgOverlay: '#0B0F14',
-  bgFooter: '#152C40',
-
-  bg: '#17202A',
-  bgAlt: '#0B0F14',
-  bgHover: '#202A34',
-  bgMuted: '#2A3540',
-  border: '#2A3540',
-
-  text: '#C7D0DA',
-  textStrong: '#F2F4F7',
-  textSubtle: '#93A0AC',
-  textMuted: '#7C8792',
-  textInverse: '#FFFFFF',
-  focus: '#8AC4EA',
-
-  success: '#0B612D',
-  successBg: '#D1FAE5',
-  warning: '#FBBF24',
-  warningBg: '#2E230A',
-  danger: '#B91C1C',
-  dangerBg: '#2A1414',
-  infoText: '#1E40AF',
-  infoBg: '#DBEAFE',
-};
+export type ThemeColors = { [K in keyof typeof Colors.light]: string };
+export type ThemeColor = keyof typeof Colors.light;
 
 // Big current-temperature numerals: #0A2240 on light, pure white on dark —
 // distinct from any text.* token, so it gets its own key.
@@ -84,33 +86,66 @@ export const tempTextColor: { light: string; dark: string } = {
   dark: '#FFFFFF',
 };
 
-export const space = { 1: 4, 2: 8, 3: 12, 4: 16, 6: 24, 8: 32, 10: 40, 12: 48, 16: 64 } as const;
+export const Spacing = {
+  xs: 2,
+  sm: 4,
+  md: 8,
+  lg: 16,
+  xl: 24,
+  xxl: 32,
+  xxxl: 64,
+} as const;
 
-export const radius = { sm: 4, md: 8, lg: 12, xl: 16, full: 9999 } as const;
+export const Radius = {
+  small: 8,
+  medium: 12,
+  large: 16,
+  extraLarge: 28,
+} as const;
 
-export const fonts = {
-  regular: 'OpenSans_400Regular',
-  medium: 'OpenSans_500Medium',
-  semiBold: 'OpenSans_600SemiBold',
-  bold: 'OpenSans_700Bold',
-  extraBold: 'OpenSans_800ExtraBold',
+
+
+export const Fonts = {
+  sans: Platform.select({
+    ios: {
+      regular: 'OpenSans_400Regular',
+      medium: 'OpenSans_500Medium',
+      bold: 'OpenSans_700Bold',
+    },
+    android: {
+      regular: 'OpenSans_400Regular',
+      medium: 'OpenSans_500Medium',
+      bold: 'OpenSans_700Bold',
+    },
+    default: {
+      regular: 'System',
+      medium: 'System',
+      bold: 'System',
+    },
+  }),
+  mono: Platform.select({
+    ios: { regular: 'Courier New', bold: 'Courier-Bold' },
+    android: { regular: 'monospace', bold: 'monospace' },
+    web: { regular: 'monospace', bold: 'monospace' },
+    default: { regular: 'monospace', bold: 'monospace' },
+  }),
 } as const;
 
 // bodySm/caption/label are floored at 14px, below docs/STYLE.md's web scale
 // (13/12/11px) — this app's low-literacy, possibly low-vision audience needs
 // no readable text smaller than 14px on phones (accessibility pass, Step 7).
 export const type = {
-  display: { fontSize: 40, fontFamily: fonts.extraBold },
-  h1: { fontSize: 32, fontFamily: fonts.bold },
-  h2: { fontSize: 26, fontFamily: fonts.bold },
-  h3: { fontSize: 20, fontFamily: fonts.semiBold },
-  h4: { fontSize: 17, fontFamily: fonts.semiBold },
-  h5: { fontSize: 15, fontFamily: fonts.semiBold },
-  bodyLg: { fontSize: 16, fontFamily: fonts.regular },
-  body: { fontSize: 14, fontFamily: fonts.regular },
-  bodySm: { fontSize: 14, fontFamily: fonts.regular },
-  caption: { fontSize: 14, fontFamily: fonts.regular },
-  label: { fontSize: 14, fontFamily: fonts.semiBold },
+  display: { fontSize: 40, fontFamily: Fonts.sans.bold },
+  h1: { fontSize: 32, fontFamily: Fonts.sans.bold },
+  h2: { fontSize: 26, fontFamily: Fonts.sans.bold },
+  h3: { fontSize: 20, fontFamily: Fonts.sans.bold },
+  h4: { fontSize: 17, fontFamily: Fonts.sans.bold },
+  h5: { fontSize: 15, fontFamily: Fonts.sans.bold },
+  bodyLg: { fontSize: 16, fontFamily: Fonts.sans.regular },
+  body: { fontSize: 14, fontFamily: Fonts.sans.regular },
+  bodySm: { fontSize: 14, fontFamily: Fonts.sans.regular },
+  caption: { fontSize: 14, fontFamily: Fonts.sans.regular },
+  label: { fontSize: 14, fontFamily: Fonts.sans.bold },
 } as const;
 
 const elevation = (elev: number) =>
@@ -144,3 +179,7 @@ export const tempSize = { small: 44, medium: 52, large: 60, xl: 60 } as const;
 // Left nav rail width at the XL breakpoint (>=600dp), replacing the bottom
 // tab bar used on phones.
 export const navRailWidth = 96;
+
+
+export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
+export const MaxContentWidth = 800;

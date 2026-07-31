@@ -16,15 +16,15 @@ import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useLocationRowErrors } from '@/lib/hooks/location-row-errors.hook';
-import { ThemeColors, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 const NoLocationScreen = () => {
   const { t } = useTranslation();
   const setLocation = useLocationStore(s => s.setLocation);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
 
@@ -78,8 +78,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginLeft: space[4],
-    marginRight: space[4],
+    marginLeft: Spacing.lg,
+    marginRight: Spacing.lg,
   },
   bg: {
     height: '100%',

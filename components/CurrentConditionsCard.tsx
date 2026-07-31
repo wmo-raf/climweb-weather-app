@@ -7,8 +7,9 @@ import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
 import { CONDITION_LABEL_KEYS, conditionBucket, getDayParts, buildTodaySummary } from '@/lib/forecast/day-parts';
 import { windLevel, WIND_LEVEL_SENTENCE_KEYS } from '@/lib/forecast/plain-language';
-import { ThemeColors, fonts, radius, space, tempTextColor } from '@/lib/theme';
-import { useAppTheme } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, Spacing, tempTextColor } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
+import { useColorScheme } from '@/lib/hooks/use-color-scheme';
 
 type CurrentConditionsCardProps = {
   daySummary: ForecastDayRecord;
@@ -23,7 +24,8 @@ type CurrentConditionsCardProps = {
 
 function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSummary, compact }: CurrentConditionsCardProps): JSX.Element {
   const { t } = useTranslation();
-  const { colors, scheme } = useAppTheme();
+  const scheme = useColorScheme();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors, tempTextColor[scheme]), [colors, scheme]);
 
   const nowStep = daySummary.steps[0];
@@ -62,57 +64,57 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
 
 const makeStyles = (colors: ThemeColors, tempColor: string) => StyleSheet.create({
   currentCard: {
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     backgroundColor: colors.bgTint,
-    padding: space[4],
+    padding: Spacing.lg,
   },
   currentCardCompact: {
-    padding: space[3],
+    padding: Spacing.md,
   },
   currentRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[4],
+    gap: Spacing.lg,
   },
   currentTempBlock: {
     flexDirection: 'column',
   },
   large: {
-    fontFamily: fonts.extraBold,
+    fontFamily: Fonts.sans.bold,
     color: tempColor,
   },
   nowCondition: {
     fontSize: 18,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.primary,
   },
   summaryText: {
     fontSize: 16,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   summaryBold: {
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   windCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: space[2],
-    marginTop: space[4],
-    paddingTop: space[4],
+    gap: Spacing.md,
+    marginTop: Spacing.lg,
+    paddingTop: Spacing.lg,
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
   windText: {
     flex: 1,
     fontSize: 15,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
   },
   windLabel: {
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
 });

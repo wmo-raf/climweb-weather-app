@@ -9,14 +9,14 @@ import AppBar from '@/components/AppBar';
 import AlertCard from '@/components/AlertCard';
 
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
-import { ThemeColors, fonts, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 import AlertLegend from '@/components/AlertLegend';
 
 function WeatherWarningScreen(): JSX.Element {
   const { t } = useTranslation();
   const { location, alertID } = useLocalSearchParams<{ location: string, alertID: string }>()
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const { data: alerts = [] } = useAlertsQuery();
@@ -62,21 +62,21 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     height: '100%',
     width: '100%',
     margin: 0,
-    padding: space[4],
+    padding: Spacing.lg,
   },
   scrollView: {
     height: '100%',
     width: '100%',
   },
   content: {
-    padding: space[4],
-    paddingBottom: space[8],
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
   whiteText: {
     color: colors.text,
     fontSize: 14,
     lineHeight: 19,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
   },
 });
 

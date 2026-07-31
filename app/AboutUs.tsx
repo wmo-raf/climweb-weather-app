@@ -8,12 +8,12 @@ import Alerts from '@/components/Alerts';
 
 import { useLocationStore } from '@/lib/store/location.store';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, fonts, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 function AboutUsScreen(): JSX.Element {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const lat = useLocationStore(s => s.lat);
   const lon = useLocationStore(s => s.lon);
@@ -79,19 +79,19 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   whiteHeader: {
     color: colors.textStrong,
     fontSize: 18,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
   },
   whiteText: {
     color: colors.text,
     fontSize: 16,
     lineHeight: 22,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
   },
   title: {
     color: colors.textStrong,
     fontSize: 18,
     lineHeight: 24,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
   },
   wrapper: {
     flexDirection: 'column',
@@ -107,9 +107,9 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   content: {
-    marginTop: space[6],
-    marginLeft: space[6],
-    marginRight: space[6],
+    marginTop: Spacing.xl,
+    marginLeft: Spacing.xl,
+    marginRight: Spacing.xl,
   },
 });
 

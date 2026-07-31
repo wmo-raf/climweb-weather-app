@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { ALERT_LEAD_WORD_KEYS, WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
-import { fonts, radius, space } from "@/lib/theme";
+import { Fonts, Radius, Spacing } from '@/lib/theme';
 
 type WeatherAlertProps = {
   alert: CAPAlert;
@@ -52,21 +52,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    borderRadius: radius.lg,
-    padding: space[4],
-    gap: space[3],
+    borderRadius: Radius.medium,
+    padding: Spacing.lg,
+    gap: Spacing.md,
   },
   textBlock: {
     flex: 1,
   },
   headline: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
   },
   subtext: {
     fontSize: 14,
-    fontFamily: fonts.regular,
-    marginTop: space[1],
+    fontFamily: Fonts.sans.regular,
+    marginTop: Spacing.sm,
   },
 });
 
