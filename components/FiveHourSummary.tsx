@@ -77,7 +77,8 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     marginTop: Spacing.lg,
-    padding: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
     borderRadius: Radius.large,
     backgroundColor: colors.bg,
     elevation: 1,
@@ -90,7 +91,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.md,
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.bgMuted,
   },
   headerText: {
     fontSize: 16,
@@ -101,9 +105,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
-    paddingVertical: Spacing.md,
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.bgMuted,
   },
   rowLast: {
     borderBottomWidth: 0,

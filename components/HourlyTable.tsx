@@ -74,7 +74,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     marginTop: Spacing.lg,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     backgroundColor: colors.bgTint,
   },
   titleText: {
@@ -90,10 +90,11 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
-    paddingVertical: Spacing.md,
+    paddingVertical: Spacing.lg,
     paddingHorizontal: Spacing.lg,
+    minHeight: 48,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.bgMuted,
   },
   leftGroup: {
     flexDirection: 'row',
