@@ -28,35 +28,37 @@ function AboutUsScreen(): JSX.Element {
             <View style={styles.opacity}>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
-                  <Text variant="bodyMedium">
-                    <Text style={styles.title}>
-                      {t('placeholder_app_title')}
-                    </Text>{"\n"}
-                  </Text>
-                  <Text variant="bodyMedium">
-                    <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                  <View style={styles.card}>
+                    <Text variant="bodyMedium">
+                      <Text style={styles.title}>
+                        {t('placeholder_app_title')}
+                      </Text>{"\n"}
                     </Text>
-                  </Text>
-                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                    <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                    <Text variant="bodyMedium">
+                      <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('placeholder_lorem_ipsum')}
+                      </Text>
                     </Text>
-                  </Text>
-                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                    <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                    <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
+                      <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('placeholder_lorem_ipsum')}
+                      </Text>
                     </Text>
-                  </Text>
-                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                    <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                    <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
+                      <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('placeholder_lorem_ipsum')}
+                      </Text>
                     </Text>
-                  </Text>
+                    <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
+                      <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('placeholder_lorem_ipsum')}
+                      </Text>
+                    </Text>
+                  </View>
                 </View>
               </ScrollView>
             </View>
@@ -107,9 +109,19 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   content: {
-    marginTop: Spacing.xl,
-    marginLeft: Spacing.xl,
-    marginRight: Spacing.xl,
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.xxxl,
+  },
+  card: {
+    backgroundColor: colors.bg,
+    borderRadius: Radius.large,
+    padding: Spacing.xl,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
 });
 
