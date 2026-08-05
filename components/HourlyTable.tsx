@@ -26,12 +26,12 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
   const windWord = t('Wind').toLowerCase();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleBand}>
-        <Text style={styles.titleText}>{dayName}</Text>
-      </View>
-      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
-        {props.daySummary.steps.map((step) => {
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{dayName}</Text>
+        </View>
+        {props.daySummary.steps.map((step, idx) => {
           const stepTime = DateTime.fromISO(step.time);
           const timeLabel = stepTime.toFormat('h a').toLowerCase();
           const precipText = typeof step.precipitation === 'number' && step.precipitation > 0
@@ -43,7 +43,7 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
           return (
             <View
               key={step.time}
-              style={styles.row}
+              style={[styles.row, idx === props.daySummary.steps.length - 1 && styles.rowLast]}
               accessible={true}
               accessibilityLabel={`${timeLabel}: ${step.weatherSymbol.split('_').join(' ')}, ${precipText} ${rainWord}, ${windText} ${windWord}${temp !== undefined ? `, ${temp} degrees` : ''}.`}
             >
@@ -58,43 +58,56 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
             </View>
           );
         })}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
-    flexDirection: 'column',
     flex: 1,
     backgroundColor: colors.bgAlt,
   },
-  titleBand: {
-    marginHorizontal: Spacing.lg,
-    marginTop: Spacing.lg,
-    paddingVertical: Spacing.md,
+  contentContainer: {
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
+  },
+  card: {
     paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
     borderRadius: Radius.large,
-    backgroundColor: colors.bgTint,
+    backgroundColor: colors.bg,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
-  titleText: {
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.bgMuted,
+  },
+  headerText: {
     fontSize: 16,
-    color: colors.primary,
+    color: colors.textStrong,
     fontFamily: Fonts.sans.bold,
-  },
-  list: {
-    flex: 1,
-    marginTop: Spacing.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
     paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.lg,
     minHeight: 48,
     borderBottomWidth: 1,
     borderBottomColor: colors.bgMuted,
+  },
+  rowLast: {
+    borderBottomWidth: 0,
   },
   leftGroup: {
     flexDirection: 'row',
