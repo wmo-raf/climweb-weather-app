@@ -8,7 +8,7 @@ import { City } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
 
@@ -97,12 +97,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   glassWrapper: {
     width: '100%',
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
   },
   opacity: {
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
     flex: 1,
     flexDirection: 'row',
     width: '100%',
@@ -111,8 +109,12 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
     zIndex: 1,
-    borderRadius: Radius.medium,
-    ...shadow.sm,
+    borderRadius: Radius.large,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   left: {
     flex: 1,

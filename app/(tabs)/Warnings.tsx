@@ -16,7 +16,7 @@ import { useLocationStore } from '@/lib/store/location.store';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { ThemeColors, Fonts, navRailWidth, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, navRailWidth, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type AlertSection = { title?: string; data: CAPAlert[] };
@@ -141,12 +141,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   emptyState: {
     alignItems: 'center',
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.xl,
     marginBottom: Spacing.lg,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   emptyTitle: {
     fontSize: 16,

@@ -85,7 +85,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     width: CARD_WIDTH,
     backgroundColor: colors.bg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     overflow: 'hidden',
   },
   band: {

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type FiveHourSummaryProps = {
@@ -78,11 +78,13 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     marginTop: Spacing.lg,
     padding: Spacing.lg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   header: {
     flexDirection: 'row',

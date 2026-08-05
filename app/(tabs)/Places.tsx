@@ -19,7 +19,7 @@ import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
 import { Place } from '@/lib/geo/places';
 import { ForecastRecord } from '@/lib/forecast/types';
-import { ThemeColors, Fonts, navRailWidth, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, navRailWidth, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 const PlacesScreen = () => {
@@ -147,12 +147,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   emptyState: {
     alignItems: 'center',
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.xl,
     marginBottom: Spacing.lg,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   emptyTitle: {
     fontSize: 16,

@@ -9,7 +9,7 @@ import { ForecastDayRecord } from "@/lib/forecast/types";
 import { describeDaySummary } from "@/lib/forecast/day-parts";
 import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
-import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from "@/lib/hooks/use-theme";
 
 type DayRowProps = {
@@ -96,13 +96,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md,
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
     width: '100%',
     padding: Spacing.lg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     minHeight: touchTarget.nav,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   cardWithChip: {
     borderBottomWidth: 0,
@@ -148,8 +150,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     borderWidth: 1,
     borderTopWidth: 0,
     borderColor: colors.border,
-    borderBottomLeftRadius: Radius.medium,
-    borderBottomRightRadius: Radius.medium,
+    borderBottomLeftRadius: Radius.large,
+    borderBottomRightRadius: Radius.large,
     minHeight: touchTarget.nav,
   },
   alertChipText: {

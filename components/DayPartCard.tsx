@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { DayPart, DayPartSummary, DAY_PART_LABEL_KEYS, CONDITION_LABEL_KEYS, conditionBucket } from '@/lib/forecast/day-parts';
-import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type DayPartCardProps = {
@@ -38,12 +38,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     width: '48%',
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.md,
     marginBottom: Spacing.md,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   partLabel: {
     fontSize: 14,

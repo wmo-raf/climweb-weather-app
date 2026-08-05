@@ -64,9 +64,14 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
 
 const makeStyles = (colors: ThemeColors, tempColor: string) => StyleSheet.create({
   currentCard: {
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     backgroundColor: colors.bgTint,
     padding: Spacing.lg,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   currentCardCompact: {
     padding: Spacing.md,
