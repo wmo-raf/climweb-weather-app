@@ -17,14 +17,14 @@ import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
-import { ThemeColors, fonts, navRailWidth, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, navRailWidth, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 import Alerts from '@/components/Alerts';
 
 const FiveDaysScreen = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
@@ -123,16 +123,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   footnote: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textMuted,
     textAlign: 'center',
-    marginTop: space[2],
-    marginBottom: space[8],
+    marginTop: Spacing.md,
+    marginBottom: Spacing.xxl,
   },
   alertsWrapper: {
-    marginLeft: space[6],
-    marginRight: space[6],
-    marginTop: space[4],
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.sm,
   },
   xlPadding: {
     paddingLeft: navRailWidth,

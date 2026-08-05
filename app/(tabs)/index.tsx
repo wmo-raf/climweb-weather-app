@@ -22,12 +22,12 @@ import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
+import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
-import { ThemeColors, fonts, navRailWidth, space, tempSize } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, navRailWidth, Spacing, tempSize } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 // Module-level, not component state — persists only for the lifetime of
 // the JS process. Resets on a real app relaunch (cold start), but not
@@ -40,11 +40,11 @@ const MainScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
-  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
+  const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const [favouritesLoading, favourites] = useFavourites();
   const breakpoint = useBreakpoint();
   const isXL = breakpoint === 'xl';
@@ -73,7 +73,7 @@ const MainScreen = () => {
   const [welcomeDecision, setWelcomeDecision] = React.useState<'pending' | 'show' | 'skip'>('pending');
 
   useEffect(() => {
-    if (onboardingLoading || alwaysShowLoading) return;
+    if (onboardingLoading) return;
     if (!hasOnboarded) {
       setWelcomeDecision('show');
     } else if (alwaysShowStartPage && !hasShownStartPageThisLaunch) {
@@ -82,7 +82,7 @@ const MainScreen = () => {
     } else {
       setWelcomeDecision('skip');
     }
-  }, [onboardingLoading, alwaysShowLoading, hasOnboarded, alwaysShowStartPage]);
+  }, [onboardingLoading, hasOnboarded, alwaysShowStartPage]);
 
   const onRefresh = async () => {
     if (isUndefined(lat) || isUndefined(lon)) {
@@ -230,7 +230,7 @@ const MainScreen = () => {
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />
-          {!isXL &&
+          {!isXL && relevantAlerts.length > 0 &&
             <View style={styles.alertsWrapper}>
               <Alerts lat={lat} lon={lon} location={location} />
             </View>
@@ -268,25 +268,25 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
   },
   contentWrapper: {
-    marginRight: space[4],
-    marginLeft: space[4],
-    marginTop: space[4],
-    marginBottom: space[12],
+    marginRight: Spacing.lg,
+    marginLeft: Spacing.lg,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.xxxl,
   },
   alertsWrapper: {
-    marginRight: space[4],
-    marginLeft: space[4],
-    marginTop: space[4],
+    marginRight: Spacing.lg,
+    marginLeft: Spacing.lg,
+    marginTop: Spacing.lg,
   },
   opacity: {},
   loader: {
-    marginTop: space[16],
-    marginBottom: space[16],
+    marginTop: Spacing.xxxl,
+    marginBottom: Spacing.xxxl,
   },
   xlRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: space[6],
+    gap: Spacing.xl,
   },
   xlLeftPane: {
     flex: 1,
@@ -295,13 +295,13 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1.3,
   },
   xlFiveDaysSection: {
-    marginTop: space[6],
+    marginTop: Spacing.xl,
   },
   xlSectionHeader: {
     fontSize: 20,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginBottom: space[1],
+    marginBottom: Spacing.sm,
   },
   xlPadding: {
     paddingLeft: navRailWidth,

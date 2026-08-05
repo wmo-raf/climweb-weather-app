@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { ThemeColors, fonts, radius, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type HourlyTableProps = {
   title: string;
@@ -17,7 +17,7 @@ type HourlyTableProps = {
 
 function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const isSameDay = props.day.hasSame(DateTime.local(), "day");
@@ -26,12 +26,12 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
   const windWord = t('Wind').toLowerCase();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleBand}>
-        <Text style={styles.titleText}>{dayName}</Text>
-      </View>
-      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
-        {props.daySummary.steps.map((step) => {
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{dayName}</Text>
+        </View>
+        {props.daySummary.steps.map((step, idx) => {
           const stepTime = DateTime.fromISO(step.time);
           const timeLabel = stepTime.toFormat('h a').toLowerCase();
           const precipText = typeof step.precipitation === 'number' && step.precipitation > 0
@@ -43,7 +43,7 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
           return (
             <View
               key={step.time}
-              style={styles.row}
+              style={[styles.row, idx === props.daySummary.steps.length - 1 && styles.rowLast]}
               accessible={true}
               accessibilityLabel={`${timeLabel}: ${step.weatherSymbol.split('_').join(' ')}, ${precipText} ${rainWord}, ${windText} ${windWord}${temp !== undefined ? `, ${temp} degrees` : ''}.`}
             >
@@ -58,63 +58,78 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
             </View>
           );
         })}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
-    flexDirection: 'column',
     flex: 1,
     backgroundColor: colors.bgAlt,
   },
-  titleBand: {
-    marginHorizontal: space[4],
-    marginTop: space[4],
-    paddingVertical: space[3],
-    paddingHorizontal: space[4],
-    borderRadius: radius.lg,
-    backgroundColor: colors.bgTint,
+  contentContainer: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xxl,
   },
-  titleText: {
+  card: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.large,
+    backgroundColor: colors.bg,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.bgMuted,
+  },
+  headerText: {
     fontSize: 16,
-    color: colors.primary,
-    fontFamily: fonts.bold,
-  },
-  list: {
-    flex: 1,
-    marginTop: space[3],
+    color: colors.textStrong,
+    fontFamily: Fonts.sans.bold,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[3],
-    paddingVertical: space[3],
-    paddingHorizontal: space[4],
+    gap: Spacing.md,
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.bgMuted,
+  },
+  rowLast: {
+    borderBottomWidth: 0,
   },
   leftGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     minWidth: 84,
   },
   time: {
     fontSize: 15,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   description: {
     flex: 1,
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textSubtle,
   },
   temp: {
     fontSize: 18,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
     minWidth: 44,
     textAlign: 'right',

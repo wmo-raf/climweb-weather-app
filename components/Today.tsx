@@ -8,8 +8,8 @@ import { getDayParts } from '@/lib/forecast/day-parts';
 import CurrentConditionsCard from './CurrentConditionsCard';
 import DayPartsGrid from './DayPartsGrid';
 import FiveHourSummary from './FiveHourSummary';
-import { ThemeColors, fonts, space, tempSize } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing, tempSize } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type TodaysForecastProps = {
   daySummary: ForecastDayRecord | undefined;
@@ -25,7 +25,7 @@ type TodaysForecastProps = {
 // grouping (conditions+wind on the left, day-parts+5-day list on the right).
 function Today({ daySummary, location, tempFontSize = tempSize.large, compact }: TodaysForecastProps): JSX.Element {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (!daySummary) {
@@ -51,14 +51,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // horizontal inset. Duplicating it here made this card narrower than
   // the alert banner above it, which uses that same single inset.
   wrapper: {
-    marginTop: space[4],
+    marginTop: 0,
   },
   wrapperCompact: {
-    marginTop: space[3],
+    marginTop: 0,
   },
   todaysHeader: {
     fontSize: 20,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
 });

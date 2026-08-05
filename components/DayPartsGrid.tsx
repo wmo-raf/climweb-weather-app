@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import DayPartCard from './DayPartCard';
 import { DAY_PARTS, DayPart, DayPartSummary } from '@/lib/forecast/day-parts';
-import { ThemeColors, fonts, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type DayPartsGridProps = {
   dayParts: Partial<Record<DayPart, DayPartSummary>>;
@@ -16,7 +16,7 @@ type DayPartsGridProps = {
 
 function DayPartsGrid({ dayParts, columns = 2 }: DayPartsGridProps): JSX.Element | null {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const partsWithData = DAY_PARTS.filter(part => dayParts[part]);
 
@@ -40,13 +40,13 @@ function DayPartsGrid({ dayParts, columns = 2 }: DayPartsGridProps): JSX.Element
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   section: {
-    marginTop: space[6],
+    marginTop: Spacing.xl,
   },
   sectionHeader: {
     fontSize: 20,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginBottom: space[3],
+    marginBottom: Spacing.md,
   },
   grid: {
     flexDirection: 'row',

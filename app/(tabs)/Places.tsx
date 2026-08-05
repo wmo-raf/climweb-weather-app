@@ -19,15 +19,15 @@ import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
 import { Place } from '@/lib/geo/places';
 import { ForecastRecord } from '@/lib/forecast/types';
-import { ThemeColors, fonts, navRailWidth, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, navRailWidth, Radius, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 const PlacesScreen = () => {
   const { t } = useTranslation();
   const setLocation = useLocationStore(s => s.setLocation);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
@@ -122,63 +122,65 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   content: {
-    padding: space[4],
-    paddingBottom: space[8],
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
   // Matches the Today tab's whole-page loading spinner (plain, no card
   // chrome) — useFavourites() reads from storage synchronously now, so
   // this never actually shows, but the guard is kept in case that changes.
   loader: {
-    marginTop: space[16],
-    marginBottom: space[16],
+    marginTop: Spacing.xxxl,
+    marginBottom: Spacing.xxxl,
     alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: space[2],
+    marginBottom: Spacing.md,
   },
   headerText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   emptyState: {
     alignItems: 'center',
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: space[6],
-    marginBottom: space[4],
-    ...shadow.sm,
+    borderRadius: Radius.large,
+    padding: Spacing.xl,
+    marginBottom: Spacing.lg,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   emptyTitle: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   emptyText: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
     textAlign: 'center',
-    marginTop: space[1],
+    marginTop: Spacing.sm,
   },
   setButton: {
-    marginTop: space[4],
+    marginTop: Spacing.lg,
     minHeight: 44,
-    paddingHorizontal: space[6],
-    borderRadius: radius.lg,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: Radius.medium,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   setButtonText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
   xlPadding: {

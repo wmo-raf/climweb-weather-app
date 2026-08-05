@@ -4,8 +4,8 @@ import { Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import { WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
-import { ThemeColors, fonts, lightColors, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Colors, Radius, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 // "Green" isn't a real CAP severity in this app's data (only Red/Orange/
 // Yellow have icon assets and are commonly issued) — it stands for "no
@@ -17,12 +17,12 @@ const ROWS: { color: string; labelKey: string; descriptionKey: string }[] = [
   { color: WARNING_COLORS.Red, labelKey: 'legend.red.label', descriptionKey: 'legend.red.description' },
   { color: WARNING_COLORS.Orange, labelKey: 'legend.orange.label', descriptionKey: 'legend.orange.description' },
   { color: WARNING_COLORS.Yellow, labelKey: 'legend.yellow.label', descriptionKey: 'legend.yellow.description' },
-  { color: lightColors.success, labelKey: 'legend.green.label', descriptionKey: 'legend.green.description' },
+  { color: Colors.light.success, labelKey: 'legend.green.label', descriptionKey: 'legend.green.description' },
 ];
 
 function AlertLegend() {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   return (
@@ -44,28 +44,30 @@ function AlertLegend() {
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: space[4],
-    ...shadow.sm,
+    borderRadius: Radius.large,
+    padding: Spacing.lg,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   title: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
-    marginBottom: space[3],
+    marginBottom: Spacing.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: space[3],
-    gap: space[3],
+    marginBottom: Spacing.md,
+    gap: Spacing.md,
   },
   swatch: {
     width: 16,
     height: 16,
-    borderRadius: radius.sm,
+    borderRadius: Radius.small,
     marginTop: 3,
   },
   textBlock: {
@@ -73,12 +75,12 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   description: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
     marginTop: 2,
   },

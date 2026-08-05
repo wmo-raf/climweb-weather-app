@@ -7,7 +7,7 @@ import * as Sharing from 'expo-sharing';
 
 import AlertShareCard from './AlertShareCard';
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
-import { radius } from '@/lib/theme';
+import { Radius } from '@/lib/theme';
 
 type AlertShareButtonProps = {
   alert: CAPAlert;
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 40,
     height: 40,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
   },
   offscreen: {
     position: 'absolute',

@@ -2,7 +2,7 @@ import React, { JSX, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SystemBars } from 'react-native-edge-to-edge';
-import { Icon, Text } from 'react-native-paper';
+import { Icon, Text, Menu, Button } from 'react-native-paper';
 import { useRouter, Redirect, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
@@ -10,13 +10,14 @@ import Constants from 'expo-constants';
 import { LANGUAGES, LanguageKey } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
+import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 // Fixed to the light palette, not the active theme: Welcome always renders
 // its own dark-navy hero (see SystemBars override below) regardless of the
 // user's in-app dark-mode setting — the design brief keeps this colored
 // hero screen as-is in both themes.
-import { fonts, lightColors as colors, radius, space, touchTarget } from '@/lib/theme';
+import { Fonts, Colors, Radius, Spacing, touchTarget } from '@/lib/theme';
 
+const colors = Colors.light;
 const appName = Constants.expoConfig?.name ?? 'Weather App';
 
 function WelcomeScreen(): JSX.Element {
@@ -24,9 +25,13 @@ function WelcomeScreen(): JSX.Element {
   const router = useRouter();
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
-  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
+  const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
 
   const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
+  const [menuVisible, setMenuVisible] = useState(false);
+  
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
 
   // i18n's own language detection now resolves synchronously from storage,
   // but i18next itself still finalizes init() on a microtask — re-sync
@@ -55,7 +60,7 @@ function WelcomeScreen(): JSX.Element {
   // Only index.tsx is allowed to legitimately land a fully-onboarded user
   // here, and only when "Always Show Start Page" is on; that case must
   // still render normally, so it's explicitly excluded.
-  if (!onboardingLoading && !alwaysShowLoading && hasOnboarded && !alwaysShowStartPage) {
+  if (!onboardingLoading && hasOnboarded && !alwaysShowStartPage) {
     return <Redirect href="/" />;
   }
 
@@ -64,6 +69,35 @@ function WelcomeScreen(): JSX.Element {
       {/* Always-dark navy background needs light status/nav bar icons,
           overriding the root layout's theme-driven default. */}
       <SystemBars style="light" />
+
+      <View style={styles.header}>
+        <Menu
+          visible={menuVisible}
+          onDismiss={closeMenu}
+          anchor={
+            <TouchableOpacity onPress={openMenu} style={styles.languageSelector}>
+              <Icon source="earth" size={20} color={colors.textInverse} />
+              <Text style={styles.languageSelectorText}>
+                {LANGUAGES[selectedLang]?.nativeName || LANGUAGES[selectedLang]?.label || 'English'}
+              </Text>
+              <Icon source="chevron-down" size={20} color={colors.textInverse} />
+            </TouchableOpacity>
+          }
+        >
+          {(Object.keys(LANGUAGES) as LanguageKey[]).map(key => (
+            <Menu.Item
+              key={key}
+              onPress={() => {
+                onSelectLanguage(key);
+                closeMenu();
+              }}
+              title={LANGUAGES[key].nativeName || LANGUAGES[key].label}
+              leadingIcon={selectedLang === key ? "check" : undefined}
+            />
+          ))}
+        </Menu>
+      </View>
+
       <View style={styles.content}>
         <View style={styles.iconBadge}>
           <Icon source="weather-partly-cloudy" size={44} color={colors.bgOverlay} />
@@ -73,27 +107,6 @@ function WelcomeScreen(): JSX.Element {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.languagePrompt}>Choose your language · Chagua lugha yako</Text>
-        <View style={styles.languageRow}>
-          {(Object.keys(LANGUAGES) as LanguageKey[]).map(key => {
-            const selected = selectedLang === key;
-            return (
-              <TouchableOpacity
-                key={key}
-                style={[styles.languageButton, selected && styles.languageButtonSelected]}
-                onPress={() => onSelectLanguage(key)}
-                accessibilityLabel={LANGUAGES[key].label}
-                accessibilityState={{ selected }}
-              >
-                {selected && <Icon source="check-circle" size={18} color={colors.primary} />}
-                <Text style={[styles.languageButtonText, selected && styles.languageButtonTextSelected]}>
-                  {LANGUAGES[key].label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
         <TouchableOpacity style={styles.getStartedButton} onPress={onNext} accessibilityLabel={t('welcome.next')}>
           <Text style={styles.getStartedText}>{t('welcome.next')}</Text>
           <Icon source="arrow-right" size={20} color={colors.primary} />
@@ -115,81 +128,63 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: space[8],
+    paddingHorizontal: Spacing.xxl,
   },
   iconBadge: {
     width: 88,
     height: 88,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
     backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: space[6],
+    marginBottom: Spacing.xl,
   },
   title: {
     fontSize: 32,
-    fontFamily: fonts.extraBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textInverse,
     textAlign: 'center',
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
-  footer: {
-    padding: space[6],
-  },
-  languagePrompt: {
-    fontSize: 14,
-    fontFamily: fonts.semiBold,
-    color: colors.textInverse,
-    textAlign: 'center',
-    marginBottom: space[3],
-  },
-  languageRow: {
+  header: {
     flexDirection: 'row',
-    gap: space[3],
-    marginBottom: space[4],
+    justifyContent: 'flex-end',
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.md,
+    zIndex: 10,
   },
-  languageButton: {
-    flex: 1,
+  languageSelector: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: space[2],
-    minHeight: touchTarget.nav,
-    borderRadius: radius.lg,
-    borderWidth: 1.5,
-    borderColor: colors.textInverse,
-    backgroundColor: 'transparent',
+    gap: Spacing.xs,
+    padding: Spacing.sm,
   },
-  languageButtonSelected: {
-    backgroundColor: colors.bg,
-    borderColor: colors.bg,
-  },
-  languageButtonText: {
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
+  languageSelectorText: {
     color: colors.textInverse,
+    fontFamily: Fonts.sans.bold,
+    fontSize: 14,
   },
-  languageButtonTextSelected: {
-    color: colors.primary,
+  footer: {
+    padding: Spacing.xl,
   },
   getStartedButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     minHeight: touchTarget.nav,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     backgroundColor: colors.bg,
   },
   getStartedText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.primary,
   },
 });
