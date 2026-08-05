@@ -230,7 +230,7 @@ const MainScreen = () => {
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />
-          {!isXL &&
+          {!isXL && relevantAlerts.length > 0 &&
             <View style={styles.alertsWrapper}>
               <Alerts lat={lat} lon={lon} location={location} />
             </View>
