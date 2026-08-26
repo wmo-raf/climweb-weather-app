@@ -43,7 +43,7 @@ const MainScreen = () => {
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const [onboardingLoading, hasOnboarded] = useOnboarding();
+  const [, hasOnboarded] = useOnboarding();
   const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const [favouritesLoading, favourites] = useFavourites();
   const breakpoint = useBreakpoint();
@@ -62,27 +62,31 @@ const MainScreen = () => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   // Whether to force Welcome, decided ONCE per mount as real state rather
-  // than re-derived every render from onboarding/alwaysShow — onboarding/
-  // alwaysShow resolve synchronously from storage, but GPS location
-  // resolution is still async, and re-deriving "should show welcome" fresh
-  // on every render meant the locationError-triggered re-render that
-  // follows could see a freshly-mutated hasShownStartPageThisLaunch and
-  // flip the decision to false before the Redirect ever actually took
-  // hold — silently cancelling it. Storing the decision in state makes it
-  // stick for the lifetime of this mount once made.
-  const [welcomeDecision, setWelcomeDecision] = React.useState<'pending' | 'show' | 'skip'>('pending');
-
-  useEffect(() => {
-    if (onboardingLoading) return;
+  // than re-derived every render from onboarding/alwaysShow — both resolve
+  // synchronously from storage, but re-deriving "should show welcome" fresh
+  // on every render would let a later, unrelated re-render (e.g. the
+  // locationError-triggered one below) see a freshly-mutated
+  // hasShownStartPageThisLaunch and flip the decision to false before the
+  // Redirect ever actually took hold — silently cancelling it.
+  //
+  // Computed in the useState initializer itself, not a useEffect that runs
+  // after mount: the underlying reads are already synchronous, so there's
+  // no real async gap to wait out — deferring to an effect just meant this
+  // component's first render returned null before a second render actually
+  // carried the Redirect, and on a slow device that gap between "blank
+  // landing shell paints" and "effect fires" was long enough to see.
+  // Computing it here means the very first render already returns the
+  // right thing.
+  const [welcomeDecision] = React.useState<'show' | 'skip'>(() => {
     if (!hasOnboarded) {
-      setWelcomeDecision('show');
-    } else if (alwaysShowStartPage && !hasShownStartPageThisLaunch) {
-      hasShownStartPageThisLaunch = true;
-      setWelcomeDecision('show');
-    } else {
-      setWelcomeDecision('skip');
+      return 'show';
     }
-  }, [onboardingLoading, hasOnboarded, alwaysShowStartPage]);
+    if (alwaysShowStartPage && !hasShownStartPageThisLaunch) {
+      hasShownStartPageThisLaunch = true;
+      return 'show';
+    }
+    return 'skip';
+  });
 
   const onRefresh = async () => {
     if (isUndefined(lat) || isUndefined(lon)) {
@@ -122,10 +126,6 @@ const MainScreen = () => {
       router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }
   }, [locationError, favouritesLoading, favourites, welcomeDecision]);
-
-  if (welcomeDecision === 'pending') {
-    return null;
-  }
 
   if (welcomeDecision === 'show') {
     return <Redirect href="/Welcome" />;
