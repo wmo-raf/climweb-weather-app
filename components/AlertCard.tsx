@@ -128,16 +128,25 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
-    flexShrink: 1,
+    // flex: 1 (not just flexShrink) so this takes exactly the space left
+    // after bandActions' fixed-size icons, forcing bandLabel to wrap
+    // within that width instead of overflowing past the row — a plain
+    // flexShrink here isn't enough on its own for a Text sibling to wrap
+    // rather than spill under bandActions.
+    flex: 1,
   },
   bandLabel: {
     fontSize: 15,
     fontFamily: Fonts.sans.bold,
+    flexShrink: 1,
   },
   bandActions: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
+    // Never squeezed by a long bandLabel — the icons stay full size and
+    // bandLabel wraps instead.
+    flexShrink: 0,
   },
   body: {
     padding: Spacing.lg,
