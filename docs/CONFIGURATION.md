@@ -552,6 +552,138 @@ The default points at OpenStreetMap's public tile server, which is fine for deve
 
 ---
 
+## Weather Alert Push Notifications
+
+Push notifications for CAP weather alerts have two parts that must both be configured: a backend service ([backend/](../backend/)) that ingests CAP alerts, matches them against devices' chosen alert areas, and sends Expo push notifications; and client-side integration ([lib/push/](../lib/push/), [lib/hooks/alert-areas.hook.ts](../lib/hooks/alert-areas.hook.ts), [lib/store/push.store.ts](../lib/store/push.store.ts)) that lets the user pick which areas they want warnings for and registers the device.
+
+The device's GPS location is never sent to the backend for this feature — see [Privacy: how the notifications backend targets a device](#privacy-how-the-notifications-backend-targets-a-device) above. Only the names of up to 5 user-chosen areas are sent.
+
+### Architecture
+
+```txt
+CAP alert composer ──webhook──▶┐
+                                ├─▶ backend (Fastify) ─▶ insertAlertWithAreas: insert alert + areas,
+CAP RSS feed ───scheduled poll─▶┘                        enqueue a dispatch-alert job (same DB transaction)
+                                                                        │
+                                                                        ▼
+                                                     graphile-worker queue (Postgres-backed, in-process)
+                                                                        │
+                                                                        ▼
+                                        dispatchForAlert: device_areas geoquery match ─▶ Expo push ─▶ device
+                                                                        ▲
+                                        reminder redispatch (re-notifies devices still matching an active alert,
+                                                              every REMINDER_INTERVAL_MINUTES — independent safety net)
+
+App ──register device (token + up to 5 chosen alert areas)──▶ backend
+Notification tap ──deep link──▶ app/WeatherWarning.tsx (alert detail)
+```
+
+Ingestion (webhook/poll) only ever does the insert + enqueue — it never waits on device matching or push sending, so it stays fast regardless of how many devices end up matching. The queued job is what actually finds matching devices and sends pushes; see [backend/src/tasks/dispatch-alert.ts](../backend/src/tasks/dispatch-alert.ts).
+
+- **Backend**: [backend/src/routes/alerts-webhook.ts](../backend/src/routes/alerts-webhook.ts) (CAP composer push path), [backend/src/cap/sync.ts](../backend/src/cap/sync.ts) (scheduled RSS poll, fallback/primary depending on composer capability), [backend/src/db/alerts.repo.ts](../backend/src/db/alerts.repo.ts) (`insertAlertWithAreas` — insert + atomic job enqueue), [backend/src/tasks/dispatch-alert.ts](../backend/src/tasks/dispatch-alert.ts) (the queued job), [backend/src/db/devices.repo.ts](../backend/src/db/devices.repo.ts) (`ST_Covers` geoquery match per chosen area), [backend/src/push/dispatch.ts](../backend/src/push/dispatch.ts) (Expo push send + receipt tracking).
+- **Client**: [lib/hooks/alert-areas.hook.ts](../lib/hooks/alert-areas.hook.ts) (chosen-areas storage, capped at 5), [app/OnboardingAlertAreas.tsx](../app/OnboardingAlertAreas.tsx) / [app/EditAlertAreas.tsx](../app/EditAlertAreas.tsx) (area picker screens), [lib/push/token.ts](../lib/push/token.ts) (permissions + Expo push token), [lib/push/devices-api.ts](../lib/push/devices-api.ts) (registration call), [lib/push/notifications.ts](../lib/push/notifications.ts) (foreground display + tap deep-link), [lib/store/push.store.ts](../lib/store/push.store.ts) (opt-in state + registration sync), [app/Settings.tsx](../app/Settings.tsx) (opt-in toggle + "Manage alert areas").
+
+---
+
+### 1. Backend setup
+
+Requires [Docker](https://docs.docker.com/get-docker/) and Docker Compose.
+
+1. Copy the backend env file and fill it in:
+
+   ```bash
+   cp backend/.env.example backend/.env
+   ```
+
+   | Variable | Description |
+   |----------|--------------|
+   | `CAP_FEED_URL` | CAP RSS feed polled by the scheduler — same feed the client reads (`EXPO_PUBLIC_PRIMARY_ALERTS_URL`), used as the ingestion fallback/primary depending on whether the composer supports webhooks. |
+   | `CAP_ALERTS_SENDER_ID` | Must match the client's `EXPO_PUBLIC_APP_ALERTS_SENDER_ID` — alerts from any other sender are ignored, same relevance rule the client applies (see [Sender ID filtering](#sender-id-filtering)). |
+   | `WEBHOOK_SECRET` | Shared secret the CAP alert composer sends in the `X-Webhook-Secret` header when POSTing to `/api/alerts/webhook`. Generate a real random value for anything beyond local development. |
+   | `DATABASE_URL` | Overridden by `docker-compose.yml` when running via Compose (points at the `db` service); only matters if running the backend outside Docker. |
+   | `EXPO_ACCESS_TOKEN` | Optional — only needed if the EAS project has [enhanced push security](https://docs.expo.dev/push-notifications/sending-notifications/#additional-security) enabled. |
+   | `POLL_INTERVAL_MINUTES` / `RECEIPT_CHECK_INTERVAL_MINUTES` | Must each divide 60 evenly (cron steps on the minute field). Defaults: 5 and 30. |
+   | `REMINDER_INTERVAL_MINUTES` | Must be a positive multiple of 60 (cron steps on the hour field). Default: 180 (3 hours) — re-notifies every device still inside an active alert's polygon, catching devices that entered the area after the initial push. |
+
+2. Bring the stack up from the `backend/` directory (`docker-compose.yml` lives there, alongside the `.env` file from step 1):
+
+   ```bash
+   cd backend
+   docker compose up -d db      # PostGIS
+   docker compose up migrate    # applies migrations/ AND installs the
+                                 # graphile-worker queue schema (one-shot)
+   docker compose up -d backend # API + scheduler + queue worker
+   ```
+
+3. Verify: `curl http://localhost:3000/healthz` should return `{"ok":true}`.
+
+4. Point the CAP alert composer's webhook at `POST https://<backend-host>/api/alerts/webhook` with header `X-Webhook-Secret: <WEBHOOK_SECRET>` and a raw CAP XML body. If the composer has no webhook support, the scheduled poll against `CAP_FEED_URL` covers ingestion on its own, just with up to `POLL_INTERVAL_MINUTES` of latency.
+
+---
+
+### 2. Client setup
+
+The `expo-notifications` and `expo-device` packages are already dependencies; no install step needed for a standard checkout.
+
+1. Set the backend's base URL:
+
+   ```env
+   EXPO_PUBLIC_DEVICES_API_URL=https://<backend-host>
+   ```
+
+   The client POSTs registrations to `${EXPO_PUBLIC_DEVICES_API_URL}/api/devices/register`.
+
+2. Confirm `extra.eas.projectId` is set in [app.json](../app.json) — required for `Notifications.getExpoPushTokenAsync()`. Already present for this project; a fork pointing at a different EAS project must update it.
+
+3. **Rebuild required.** Like the [Alert Area Map](#alert-area-map-mini-map) native module, the `POST_NOTIFICATIONS` permission and the `expo-notifications` config plugin only take effect after regenerating the native projects:
+
+   ```bash
+   npx expo prebuild --clean
+   npm run android
+   npm run ios
+   ```
+
+   Push notifications cannot be tested in Expo Go — a dev client build is required (this project already uses `expo-dev-client`).
+
+---
+
+### 3. How the opt-in flow works
+
+Notifications are off by default and opt-in through the Settings screen ([app/Settings.tsx](../app/Settings.tsx), "Weather Alert Notifications" toggle) rather than prompted at launch, matching how location access is already handled per-feature in this app. No location permission of any kind is requested for this feature — see [Privacy: how the notifications backend targets a device](#privacy-how-the-notifications-backend-targets-a-device).
+
+| Step | What happens |
+|------|--------------|
+| Onboarding: "Enable Notifications" | Requests notification permission, then routes to [app/OnboardingAlertAreas.tsx](../app/OnboardingAlertAreas.tsx) to pick up to 5 alert areas — same picker/cap as the Places tab's favourites. Registers the device with the backend once areas are chosen. |
+| Onboarding: "Not Now" | Skips straight to finishing onboarding — no permission requested, nothing registered. |
+| Settings toggle on (after onboarding) | Requests notification permission and registers the device with whatever areas are already saved, if any. |
+| Settings → "Manage alert areas" | Opens [app/EditAlertAreas.tsx](../app/EditAlertAreas.tsx) any time to add/remove areas; saving immediately re-registers with the backend. |
+| Toggle off | Just flips the local flag — the backend reaps the device on its own via push receipts if the token ever goes dead, and re-toggling on re-registers with the same saved areas. |
+
+Registration re-syncs (token rotation, or picking up areas saved while notifications were off) on app open and app foreground — see `lib/store/push.store.ts`'s `syncRegistration()`. This, and the backend's own reminder redispatch (`REMINDER_INTERVAL_MINUTES`, see [Backend setup](#1-backend-setup)) which re-notifies every device still matching an active alert on its own schedule, are the two safety nets — neither depends on any background task, since this feature no longer uses one. Not supported on web — the toggle is hidden there (`Platform.OS === 'web'`).
+
+---
+
+### 4. Notification tap → alert detail
+
+Tapping a notification deep-links into [app/WeatherWarning.tsx](../app/WeatherWarning.tsx) using the `alertID` the backend includes in the push payload ([backend/src/push/dispatch.ts](../backend/src/push/dispatch.ts)). The screen checks the cached alerts feed first; if the alert isn't there yet (it may have arrived after the feed was last polled — the RSS feed only reveals an identifier once its own CAP XML is fetched), it forces one fresh fetch of the alerts feed before falling back to a "missing" state.
+
+Note: the detail screen only resolves alerts at "Yellow" severity and above, the same filter the in-app alert banner uses (see [Alerts Source Configuration](#alerts-source-configuration)). The backend's push relevance filter does not filter by severity — only sender/status/scope — so a notification for a Minor/blue-level alert will not resolve on this screen. This is intentional for consistency with what the in-app banner already shows, not an oversight.
+
+---
+
+### Recommended setup flow
+
+For a new deployment:
+
+1. Stand up the backend (from `backend/`: `docker compose up -d db && docker compose up migrate && docker compose up -d backend`), pointing `CAP_FEED_URL` and `CAP_ALERTS_SENDER_ID` at the same source as the client's alert configuration.
+2. Set `WEBHOOK_SECRET` and register it with the CAP alert composer's webhook, or confirm the scheduled poll interval is acceptable if no webhook is available.
+3. Set `EXPO_PUBLIC_DEVICES_API_URL` in the client's `.env` to the deployed backend's URL.
+4. Confirm `extra.eas.projectId` in `app.json` matches the deployment's EAS project.
+5. `npx expo prebuild --clean` and produce a new dev/production client build — this feature cannot be verified in Expo Go.
+6. On a real device: enable notifications and pick an alert area, confirm rows appear in the backend's `devices` and `device_areas` tables, then send a test CAP alert covering that area's polygon and confirm the push arrives and taps through to the correct alert.
+
+---
+
 ## Default Locations (No-Permission Screen)
 
 When the app has not been granted location permission, it displays the **No Location** screen ([app/NoLocation.tsx](app/NoLocation.tsx)). This screen shows a list of pre-configured cities that the user can tap to load a forecast without needing device location access.
@@ -644,6 +776,12 @@ The app uses location data for two purposes:
 - **Location search / autocomplete** — the search bar lets users type a place name and pick from matching results. This uses [lib/autocomplete/dataset.json](lib/autocomplete/dataset.json) and [lib/autocomplete/trie.json](lib/autocomplete/trie.json).
 
 Both are generated from a [GeoNames](https://www.geonames.org) country dump using the script at [lib/geo/convert-geonames.ts](lib/geo/convert-geonames.ts).
+
+### Privacy: how the notifications backend targets a device
+
+The app never sends a device's GPS coordinates, current location, or background position to the alerts backend at all. Instead, during onboarding (or later from Settings → "Manage alert areas") the user explicitly picks up to 5 places they want severe weather warnings for — the same picker/cap used by the Places tab's favourites (see [components/FavouritePlacesPicker.tsx](components/FavouritePlacesPicker.tsx)). Each place's `name` and its fixed `lat`/`lon` (the same coordinates for every user who picks that place, resolved client-side against [assets/geonames.json](assets/geonames.json) — not a live position) are sent to `POST /api/devices/register`, one row per area in the `device_areas` table.
+
+The backend stores each area's point as-is and uses it for `ST_Covers` alert-area matching — a device is notified whenever any of its chosen areas falls inside an active warning's polygon. It performs no location lookup of its own and keeps no geonames copy; the app is the only place that resolves a place name to coordinates. No background location permission or periodic location resync is requested for notifications purposes; areas only change when the user edits them.
 
 ### Default behaviour
 
