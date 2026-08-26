@@ -82,7 +82,6 @@ export class CAPCollector {
      */
     private isRelevant(alert: CAPAlert): boolean {
         if (!alert.info) return false;
-        const info = alert.info[0]
 
         if (alert.sender !== APP_ALERTS_SENDER_ID) return false;
         if (alert.status !== 'Actual') return false;
