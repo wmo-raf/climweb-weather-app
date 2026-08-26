@@ -3,7 +3,6 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
-import ListenButton from './ListenButton';
 import AlertShareButton from './AlertShareButton';
 import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
@@ -35,10 +34,10 @@ type AlertCardProps = {
   onPress?: () => void;
 };
 
-// Full alert detail: colored severity band + Listen, headline, When/Where,
-// and a "What to do" checklist (or, in compact mode, a tappable summary
-// row). Used standalone on the single-alert deep link (WeatherWarning.tsx)
-// and repeated (compact) in the Warnings tab's list.
+// Full alert detail: colored severity band, headline, When/Where, and a
+// "What to do" checklist (or, in compact mode, a tappable summary row).
+// Used standalone on the single-alert deep link (WeatherWarning.tsx) and
+// repeated (compact) in the Warnings tab's list.
 function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Element | null {
   const { t } = useTranslation();
   const colors = useTheme();
@@ -51,22 +50,14 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
   const bandColor = WARNING_COLORS[level];
   const bandTextColor = WARNING_BAND_TEXT_COLORS[level];
   const tint = getWarningTintColors(colors)[level];
-  // The Listen/Share pills always sit on a solid-white circle regardless of
-  // theme (design brief: white pills stay white with colored icon in both
+  // The Share pill always sits on a solid-white circle regardless of theme
+  // (design brief: white pills stay white with colored icon in both
   // themes) — use the light-mode tint fixed, not the retinted one.
   const pillTint = getWarningTintColors(Colors.light)[level];
   const headline = info.headline || info.event;
   const whatToDo = getWhatToDo(info);
   const whenText = getWhenText(t, info);
   const whereText = getWhereText(info);
-
-  const speechText = [
-    t(BAND_LABEL_KEYS[level]),
-    headline,
-    whenText,
-    whereText ? `${t('alert.whereLabel')}: ${whereText}` : undefined,
-    whatToDo.length ? `${t('alert.whatToDo')}. ${whatToDo.join('. ')}` : undefined,
-  ].filter(Boolean).join('. ');
 
   return (
     <View>
@@ -76,7 +67,6 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
           <Text style={[styles.bandLabel, { color: bandTextColor }]}>{t(BAND_LABEL_KEYS[level])}</Text>
         </View>
         <View style={styles.bandActions}>
-          <ListenButton text={speechText} textColor={pillTint.text} backgroundColor="#FFFFFF" />
           <AlertShareButton alert={alert} textColor={pillTint.text} backgroundColor="#FFFFFF" />
         </View>
       </View>
