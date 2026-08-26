@@ -59,8 +59,11 @@ const WarningsScreen = () => {
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({ pathname: '/WeatherWarning', params: { location, alertID: alert.identifier } } as Href);
 
+  // Excludes bottom on phones — the custom bottom tab bar already reserves
+  // its own space and pads by insets.bottom, so this screen never reaches
+  // the true bottom edge. See the fuller explanation in (tabs)/index.tsx.
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={isXL ? undefined : ['top', 'right', 'left']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={t('Warnings')} />

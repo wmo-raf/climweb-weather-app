@@ -225,8 +225,17 @@ const MainScreen = () => {
     )
   }
 
+  // On phones the custom bottom tab bar (components/AppTabBar.tsx) already
+  // reserves its own flex space below this screen and pads itself by
+  // insets.bottom — this screen never actually reaches the device's true
+  // bottom edge, so SafeAreaView's default bottom inset here just adds a
+  // second, redundant chunk of empty padding, shrinking the usable content
+  // area for no reason. At the XL breakpoint the tab bar becomes a
+  // left-side rail (position: absolute) that doesn't reserve flex space,
+  // so the screen DOES extend to the true bottom edge there and needs the
+  // normal bottom inset.
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={isXL ? undefined : ['top', 'right', 'left']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />
