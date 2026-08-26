@@ -1,12 +1,12 @@
 {
   "expo": {
     "name": "Climweb Weather App",
-    "slug": "climweb.weatherapp",
+    "slug": "climweb-weather-app",
     "version": "1.7.1",
     "orientation": "portrait",
     "icon": "./assets/ic_launcher.png",
     "userInterfaceStyle": "automatic",
-    "scheme": "climweb.weatherapp",
+    "scheme": "com.climweb.weatherapp",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.climweb.weatherapp",
@@ -79,9 +79,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "bef4595e-6aaa-4349-b669-c06646b868a0"
+        "projectId": "b7e49278-da68-4481-91db-539b4d5d841f"
       }
     },
-    "owner": "robeleq"
+    "owner": "danielmwakanema"
   }
 }
