@@ -4,20 +4,13 @@ import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import AlertShareButton from './AlertShareButton';
+import AlertSmsButton from './AlertSmsButton';
 import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, getWarningTintColors } from '@/lib/alerts/providers/cap-alerts/icons';
-import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
+import { BAND_LABEL_KEYS, getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
 import { ThemeColors, Fonts, Colors, Radius, shadow, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
-
-const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
-  Red: 'alert.band.red',
-  Orange: 'alert.band.orange',
-  Yellow: 'alert.band.yellow',
-  Cyan: 'alert.band.notice',
-  Blue: 'alert.band.notice',
-};
 
 type AlertCardProps = {
   alert: CAPAlert;
@@ -50,8 +43,8 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
   const bandColor = WARNING_COLORS[level];
   const bandTextColor = WARNING_BAND_TEXT_COLORS[level];
   const tint = getWarningTintColors(colors)[level];
-  // The Share pill always sits on a solid-white circle regardless of theme
-  // (design brief: white pills stay white with colored icon in both
+  // The SMS/Share pills always sit on a solid-white circle regardless of
+  // theme (design brief: white pills stay white with colored icon in both
   // themes) — use the light-mode tint fixed, not the retinted one.
   const pillTint = getWarningTintColors(Colors.light)[level];
   const headline = info.headline || info.event;
@@ -67,6 +60,7 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
           <Text style={[styles.bandLabel, { color: bandTextColor }]}>{t(BAND_LABEL_KEYS[level])}</Text>
         </View>
         <View style={styles.bandActions}>
+          <AlertSmsButton alert={alert} textColor={pillTint.text} backgroundColor="#FFFFFF" />
           <AlertShareButton alert={alert} textColor={pillTint.text} backgroundColor="#FFFFFF" />
         </View>
       </View>

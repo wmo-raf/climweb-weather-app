@@ -1,8 +1,20 @@
 import { DateTime } from 'luxon';
 
-import { CAPAlert, CAPInfo } from './alert';
+import { CAPAlert, CAPInfo, alertLevel } from './alert';
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
+
+// Shared by AlertCard, AlertShareCard, and buildSmsText below so the
+// severity+urgency wording ("RED — act now") is guaranteed identical
+// everywhere it appears, rather than three components each keeping their
+// own copy in sync by hand.
+export const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
+  Red: 'alert.band.red',
+  Orange: 'alert.band.orange',
+  Yellow: 'alert.band.yellow',
+  Cyan: 'alert.band.notice',
+  Blue: 'alert.band.notice',
+};
 
 // Splits the raw CAP `instruction` text into a checklist of short imperative
 // sentences. Returns [] (not a fabricated fallback) when there's nothing to
@@ -53,18 +65,105 @@ export function getWhereText(info: CAPInfo | undefined): string | undefined {
   return info?.area?.areaDesc;
 }
 
-// "Ethiopian Meteorology and Hydrology Institute · ethiomet.gov.et" — built
-// from the CAP feed's own data (senderName, sender address) rather than a
-// hardcoded org name, since this app is deployed per-country against
+// Pulled from the CAP feed's own data (senderName, sender address) rather
+// than a hardcoded org name, since this app is deployed per-country against
 // whichever feed EXPO_PUBLIC_APP_ALERTS_SENDER_ID points to (see
-// docs/CONFIGURATION.md).
-export function getShareSourceLine(alert: CAPAlert, info: CAPInfo | undefined): string | undefined {
+// docs/CONFIGURATION.md). Shared by getShareSourceLine (joined on one line
+// for the share-image card) and buildSmsText (kept as two lines — see
+// there for why).
+function getSenderNameAndDomain(alert: CAPAlert, info: CAPInfo | undefined): { name?: string; domain?: string } {
   const name = info?.senderName?.trim() || undefined;
   const atIndex = alert.sender?.indexOf('@') ?? -1;
   const domain = atIndex > -1 ? alert.sender.slice(atIndex + 1).trim() : undefined;
+  return { name, domain };
+}
 
+// "Ethiopian Meteorology and Hydrology Institute · ethiomet.gov.et"
+export function getShareSourceLine(alert: CAPAlert, info: CAPInfo | undefined): string | undefined {
+  const { name, domain } = getSenderNameAndDomain(alert, info);
   if (name && domain) return `${name} · ${domain}`;
   return name ?? domain;
+}
+
+// Terser sibling of describeMoment for SMS: "Wed evening" instead of
+// "Wednesday evening" — every character costs in a text message, unlike the
+// share-image card or in-app text.
+function shortMoment(t: Translate, iso: string | undefined, now: DateTime): string | undefined {
+  if (!iso) return undefined;
+  const dt = DateTime.fromISO(iso);
+  if (!dt.isValid) return undefined;
+  if (dt <= now) return t('alert.when.now');
+
+  const sameDay = dt.hasSame(now, 'day');
+  const period = t(timeOfDayKey(dt.hour));
+  return sameDay ? period : `${dt.toFormat('ccc')} ${period}`;
+}
+
+// "now until Wed evening" — the SMS-specific counterpart to getWhenText,
+// using shortMoment and its own (shorter, unpunctuated) translation strings.
+function getSmsWhenText(t: Translate, info: CAPInfo | undefined, now: DateTime = DateTime.now()): string | undefined {
+  if (!info) return undefined;
+  const start = shortMoment(t, info.onset ?? info.effective, now);
+  const end = shortMoment(t, info.expires, now);
+
+  if (start && end) return t('alert.when.sms.range', { start, end });
+  if (start) return t('alert.when.sms.fromOnly', { start });
+  if (end) return t('alert.when.sms.untilOnly', { end });
+  return undefined;
+}
+
+// Builds a plain-text SMS body for an alert — no image, no map, no styling,
+// since MMS/image delivery over SMS is unreliable and costly compared to a
+// plain text message, and some recipients' phones/carriers won't render an
+// image attachment at all. Caps the "what to do" checklist at 3 items to
+// keep the message within a couple of SMS segments; the full checklist
+// remains available in the app itself (AlertCard).
+//
+// Layout:
+//   ⚠️ RED — act now
+//   <headline>
+//
+//   Where: <area>
+//   When: <window>
+//
+//   What to do:
+//   - <item>
+//   - <item>
+//
+//   — <sender name>
+//   <sender domain>
+const SMS_MAX_ACTIONS = 3;
+
+export function buildSmsText(t: Translate, alert: CAPAlert): string | undefined {
+  const info = alert.info?.[0];
+  if (!info) return undefined;
+
+  const level = alertLevel(info);
+  const headline = info.headline || info.event;
+  const whereText = getWhereText(info);
+  const whenText = getSmsWhenText(t, info);
+  const whatToDo = getWhatToDo(info).slice(0, SMS_MAX_ACTIONS);
+  const { name: senderName, domain: senderDomain } = getSenderNameAndDomain(alert, info);
+
+  const lines: string[] = [`⚠️ ${t(BAND_LABEL_KEYS[level])}`];
+  if (headline) lines.push(headline);
+
+  const whereWhen = [
+    whereText && `${t('alert.whereLabel')}: ${whereText}`,
+    whenText && `${t('alert.whenLabel')}: ${whenText}`,
+  ].filter(Boolean) as string[];
+  if (whereWhen.length) lines.push('', ...whereWhen);
+
+  if (whatToDo.length) {
+    lines.push('', `${t('alert.whatToDo')}:`, ...whatToDo.map(item => `- ${item}`));
+  }
+
+  if (senderName || senderDomain) {
+    lines.push('', senderName ? `— ${senderName}` : `— ${senderDomain}`);
+    if (senderName && senderDomain) lines.push(senderDomain);
+  }
+
+  return lines.join('\n');
 }
 
 // Finds the first alert (already filtered to relevant ones by the caller)
