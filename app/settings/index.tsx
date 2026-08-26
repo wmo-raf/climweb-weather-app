@@ -1,6 +1,6 @@
-import { StyleSheet, View, ScrollView, Switch } from "react-native";
+import { Platform, StyleSheet, View, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, Href } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -12,12 +12,16 @@ import { useLanguage } from "@/lib/hooks/use-language";
 import AppBar from "@/components/AppBar";
 import { useTranslation } from "react-i18next";
 import { useOnboardingToggle } from "@/lib/hooks/use-onboarding-toggle";
+import { usePushStore } from "@/lib/store/push.store";
+import { SCREENS } from "@/lib/layout/constants";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { isDarkMode, setIsDarkMode } = useThemeToggle();
   const { currentLanguage } = useLanguage();
   const { alwaysShowOnboarding, setAlwaysShowOnboarding } = useOnboardingToggle();
+  const notificationsEnabled = usePushStore(s => s.notificationsEnabled);
+  const setNotificationsEnabled = usePushStore(s => s.setNotificationsEnabled);
   const theme = useTheme();
   const router = useRouter();
 
@@ -105,6 +109,57 @@ export default function SettingsScreen() {
               }
             />
           </ThemedView>
+
+          {Platform.OS !== 'web' && (
+            <>
+              {/* Notifications Section */}
+              <ThemedText
+                type="smallBold"
+                themeColor="textSubtle"
+                style={styles.sectionHeader}
+              >
+                {t('settings.weatherAlertNotifications')}
+              </ThemedText>
+
+              <ThemedView type="bgAlt" style={styles.card}>
+                {/* Weather Alert Notifications Toggle Row */}
+                <SettingItem
+                  label={t('settings.weatherAlertNotifications')}
+                  leftIcon="notifications"
+                  leftIconColor="#e8710a"
+                  leftIconBgColor="rgba(232, 113, 10, 0.15)"
+                  showChevron={false}
+                  rightElement={
+                    <Switch
+                      value={notificationsEnabled}
+                      onValueChange={(value) => setNotificationsEnabled(value)}
+                      trackColor={{
+                        false: theme.bgMuted,
+                        true: "#34c759",
+                      }}
+                      thumbColor={notificationsEnabled ? "#fff" : "#f4f3f4"}
+                    />
+                  }
+                />
+
+                <View
+                  style={[
+                    styles.separator,
+                    { backgroundColor: theme.bgMuted },
+                  ]}
+                />
+
+                {/* Manage Alert Areas Row */}
+                <SettingItem
+                  label={t('settings.manageAlertAreas')}
+                  leftIcon="map"
+                  leftIconColor="#e8710a"
+                  leftIconBgColor="rgba(232, 113, 10, 0.15)"
+                  onPress={() => router.push(SCREENS.EditAlertAreas.toString() as Href)}
+                />
+              </ThemedView>
+            </>
+          )}
 
           {/* About Section */}
           <ThemedText

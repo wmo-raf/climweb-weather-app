@@ -1,5 +1,5 @@
-import React, { JSX, useMemo } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { useLocalSearchParams } from 'expo-router';
@@ -19,8 +19,25 @@ function WeatherWarningScreen(): JSX.Element {
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const { data: alerts = [] } = useAlertsQuery();
-  const alert = alerts.find(alert => alert.identifier === alertID)
+  const { data: alerts = [], refetch } = useAlertsQuery();
+  const alert = alerts.find(alert => alert.identifier === alertID);
+
+  // A notification can deep-link here for an alert that arrived after the
+  // cached feed was last polled — the CAP RSS feed only reveals an item's
+  // identifier once its own XML is fetched and parsed (see
+  // lib/alerts/providers/cap-alerts/collector.ts), so an identifier the
+  // cache doesn't recognize isn't necessarily invalid, just not fetched
+  // yet. Force one fresh fetch of the alerts feed before concluding it's
+  // genuinely missing.
+  const [checkedFreshFeed, setCheckedFreshFeed] = useState(false);
+  useEffect(() => {
+    if (alert || checkedFreshFeed || !alertID) {
+      return;
+    }
+    refetch().finally(() => setCheckedFreshFeed(true));
+  }, [alert, alertID, checkedFreshFeed, refetch]);
+
+  const isResolving = !alert && !checkedFreshFeed;
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -33,6 +50,10 @@ function WeatherWarningScreen(): JSX.Element {
               <View style={{ marginBottom: 14 }}></View>
               <AlertLegend />
             </ScrollView>
+          ) : isResolving ? (
+            <View style={styles.contentContainer}>
+              <ActivityIndicator animating color={colors.primary} size="large" />
+            </View>
           ) : (
             <View style={styles.contentContainer}>
               <Text style={styles.whiteText}>{t('alert.missing')}</Text>

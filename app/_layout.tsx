@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Buffer } from 'buffer';
+import { AppState } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -21,6 +23,8 @@ import { Fonts } from '@/lib/theme';
 import { ThemeProvider, DarkTheme, DefaultTheme } from 'expo-router/react-navigation';
 import { useColorScheme } from '@/lib/hooks/use-color-scheme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { usePushStore } from '@/lib/store/push.store';
+import { registerNotificationResponseListener } from '@/lib/push/notifications';
 
 global.Buffer = global.Buffer || Buffer;
 
@@ -35,6 +39,34 @@ SplashScreen.preventAutoHideAsync();
 function AppContent() {
   const scheme = useColorScheme();
   const colors = useTheme();
+
+  const notificationsEnabled = usePushStore(s => s.notificationsEnabled);
+
+  // Deep-links a tapped notification into the alert detail screen — see
+  // lib/push/notifications.ts.
+  useEffect(() => registerNotificationResponseListener(), []);
+
+  // Re-registers with the backend on app open, and once more whenever the
+  // app returns to the foreground, to catch a rotated push token promptly.
+  // Alert areas themselves only change when the user edits them
+  // (OnboardingAlertAreas/EditAlertAreas call syncRegistration() directly
+  // after saving), not on any interval — no GPS or background task
+  // involved. syncRegistration() no-ops if nothing actually changed since
+  // the last successful registration.
+  useEffect(() => {
+    if (notificationsEnabled) {
+      usePushStore.getState().syncRegistration();
+    }
+  }, [notificationsEnabled]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active' && usePushStore.getState().notificationsEnabled) {
+        usePushStore.getState().syncRegistration();
+      }
+    });
+    return () => subscription.remove();
+  }, []);
 
   const theme = {
     ...(scheme === 'dark' ? MD3DarkTheme : MD3LightTheme),
