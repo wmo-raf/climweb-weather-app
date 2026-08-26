@@ -1,12 +1,6 @@
-import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import {
-  ConsecutiveBreaker,
-  handleAll,
-  circuitBreaker,
-  CircuitBreakerPolicy,
-  CircuitState,
-} from 'cockatiel';
+import Axios, { AxiosRequestConfig } from 'axios';
 
+import { createPolicy, PolicyBuilder } from '@/lib/http/resilience';
 import { YrForecast } from '../types'
 import { PRIMARY_API_URL, FALLBACK_API_URL, APP_USER_AGENT } from '../../../config';
 import { LocationForecastInterface } from '../interfaces';
@@ -21,7 +15,7 @@ export class YrLocationForecastProvider implements LocationForecastInterface<YrF
   private readonly apiUrl: string = PRIMARY_API_URL;
   private readonly fallbackApiUrl: string = FALLBACK_API_URL;
   private config: AxiosRequestConfig;
-  private breakerPolicy: CircuitBreakerPolicy;
+  private policy: PolicyBuilder<never>;
 
   constructor(userAgent?: string, baseURL?: string) {
     userAgent && (this.userAgent = userAgent);
@@ -34,26 +28,10 @@ export class YrLocationForecastProvider implements LocationForecastInterface<YrF
       timeout: 5_000,
     };
 
-    // Stop calling the executed function for 15 seconds if it fails 3 times in a row
-    this.breakerPolicy = circuitBreaker(handleAll, {
-      halfOpenAfter: 15_000,
-      breaker: new ConsecutiveBreaker(2),
-    });
-    this.setBreakerLogging();
-  }
-
-  private setBreakerLogging(): void {
-    this.breakerPolicy.onBreak(() => {
-      console.warn('💥 Breaker tripped after consecutive failures');
-    });
-
-    this.breakerPolicy.onReset(() => {
-      console.log('✅ Breaker reset — primary API re-enabled');
-    });
-
-    this.breakerPolicy.onStateChange((state) => {
-      console.info(`⚡ Breaker state changed to: ${state}`);
-    });
+    // Retries the primary up to 3 times (through the breaker, so each
+    // attempt counts toward tripping it) before getForecast() falls back to
+    // the secondary API. See lib/http/resilience.ts.
+    this.policy = createPolicy('Primary Forecast API').withRetry().withBreaker();
   }
 
   private buildUrl(base: string, lat: number, lon: number, alt?: number): string {
@@ -63,25 +41,26 @@ export class YrLocationForecastProvider implements LocationForecastInterface<YrF
   }
 
   async getForecast(lat: number, lon: number, alt?: number): Promise<YrForecast> {
-    try {
-      console.log(`Querying primary API for forecast over ${lat},${lon} with breaker in state ${this.breakerPolicy.state}...`);
-      const url = this.buildUrl(this.apiUrl, lat, lon, alt);
+    const url = this.buildUrl(this.apiUrl, lat, lon, alt);
+    const fallbackUrl = this.buildUrl(this.fallbackApiUrl, lat, lon, alt);
 
-      const { data } = await this.breakerPolicy.execute(() => Axios.get<YrForecast>(url, this.config));
+    // withFallback/compose built per-call (cheap — no state of their own)
+    // so the fallback's closure can carry this call's own lat/lon/alt;
+    // this.policy (breaker+retry) is the persistent instance state, shared
+    // across calls without being rebuilt or duplicated.
+    const resilience = this.policy
+      .withFallback(async () => {
+        console.warn('🚨 [fallback] Falling back to secondary forecast API...');
+        const { data } = await Axios.get<YrForecast>(fallbackUrl, this.config);
+        console.log('✅ [fallback] Secondary forecast API request succeeded');
+        return data;
+      })
+      .compose();
+
+    return resilience.execute(async () => {
+      const { data } = await Axios.get<YrForecast>(url, this.config);
       console.log('✅ Successfully got data from primary API.');
       return data;
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      console.warn('⚠️ Error from primary API:', axiosError.message);
-
-      if (this.breakerPolicy.state === CircuitState.Open) {
-        console.warn('🚨 Breaker is OPEN. Using fallback API.');
-        const fallback = this.buildUrl(this.fallbackApiUrl, lat, lon, alt);
-        const { data } = await Axios.get<YrForecast>(fallback, this.config);
-        return data;
-      }
-
-      throw axiosError;
-    }
+    });
   }
 }

@@ -1,6 +1,6 @@
 import Axios, { AxiosRequestConfig } from 'axios';
-import { ConsecutiveBreaker, handleAll, circuitBreaker, CircuitBreakerPolicy } from 'cockatiel';
 
+import { createPolicy } from '@/lib/http/resilience';
 import { DEVICES_API_URL, APP_USER_AGENT } from '@/config';
 
 export type AlertAreaInput = {
@@ -26,17 +26,13 @@ const requestConfig: AxiosRequestConfig = {
   timeout: 5_000,
 };
 
-// Same shape as the forecast/alerts providers' breaker (see
-// lib/forecast/providers/yr-location-forecast.provider.ts) — stop calling a
-// failing backend for 15s after 2 consecutive failures, rather than
-// retrying into a down service on every location/foreground tick.
-const breakerPolicy: CircuitBreakerPolicy = circuitBreaker(handleAll, {
-  halfOpenAfter: 15_000,
-  breaker: new ConsecutiveBreaker(2),
-});
+// No fallback URL here (single backend, unlike the forecast/alerts
+// providers) — once this is exhausted the caller just sees the failure and
+// tries again on the next sync tick (see lib/store/push.store.ts).
+const resilience = createPolicy('Device Registration').withRetry().withBreaker().compose();
 
 export async function registerDevice(input: RegisterDeviceInput): Promise<void> {
-  await breakerPolicy.execute(() =>
+  await resilience.execute(() =>
     Axios.post(`${DEVICES_API_URL}/api/devices/register`, input, requestConfig)
   );
 }

@@ -2,16 +2,7 @@ import { DateTime } from 'luxon'
 import { parseString } from 'xml2js';
 import Axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
 
-import {
-  ConsecutiveBreaker,
-  ExponentialBackoff,
-  handleAll,
-  circuitBreaker,
-  retry,
-  wrap,
-  CircuitBreakerPolicy,
-} from 'cockatiel';
-
+import { createPolicy } from '@/lib/http/resilience';
 import { PRIMARY_ALERTS_URL, FALLBACK_ALERTS_URL, APP_USER_AGENT } from '@/config';
 
 /**
@@ -24,39 +15,48 @@ export interface CAPReference {
   pubDate: DateTime
 }
 
-function initBreaker(breaker: CircuitBreakerPolicy): void {
-  breaker.onBreak(() => {
-    console.warn('💥 Breaker tripped after consecutive failures');
-  });
-
-  breaker.onReset(() => {
-    console.log('✅ Breaker reset — primary API re-enabled');
-  });
-
-  breaker.onStateChange((state) => {
-    console.info(`⚡ Breaker state changed to: ${state}`);
-  });
+// Shared by both the primary and fallback fetches — a plain, unconditional
+// request unless extraHeaders adds something like If-Modified-Since (only
+// the primary ever passes that).
+function buildRequestConfig(extraHeaders?: Record<string, string>): AxiosRequestConfig {
+  return {
+    headers: { 'User-Agent': APP_USER_AGENT, ...extraHeaders },
+    responseType: 'text',
+    timeout: 5_000,
+  };
 }
 
-// Stop calling the executed function for 15 seconds if it fails 3 times in a row
-const breakerPolicy = circuitBreaker(handleAll, {
-  halfOpenAfter: 15_000,
-  breaker: new ConsecutiveBreaker(3),
-});
-initBreaker(breakerPolicy);
-
-// Retries the primary feed up to 3 times (through the breaker above, so
-// each attempt counts toward tripping it) before giving up on it —
-// download()'s catch block then falls back to the secondary feed. Mirrors
-// cockatiel's own retry+breaker composition example.
-const retryPolicy = retry(handleAll, { maxAttempts: 3, backoff: new ExponentialBackoff() });
-const resiliencePolicy = wrap(retryPolicy, breakerPolicy);
-
-function errorMessage(error: unknown): string {
-  if (Axios.isAxiosError(error)) return error.message;
-  if (error instanceof Error) return error.message;
-  return String(error);
+// 304 handling lives here, scoped to the primary only: a 304 is only ever a
+// valid response to a *conditional* request (one carrying If-Modified-Since
+// or similar), which only the primary ever sends (see download() below).
+// Axios's default validateStatus only treats 2xx as success, so without
+// this override a 304 would reject the promise before it could be
+// recognized as "no changes" rather than a failure.
+async function fetchPrimaryFeed(url: string, config: AxiosRequestConfig): Promise<string | null> {
+  const response = await Axios.get(url, {
+    ...config,
+    validateStatus: (status) => (status >= 200 && status < 300) || status === HttpStatusCode.NotModified,
+  });
+  return response.status === HttpStatusCode.NotModified ? null : response.data;
 }
+
+// Retries the primary feed up to 3 times (through the breaker, so each
+// attempt counts toward tripping it), then falls back to
+// FALLBACK_ALERTS_URL once both are exhausted. See lib/http/resilience.ts.
+// The primary's If-Modified-Since reflects the primary resource's history,
+// not the fallback's — reusing it here isn't meaningful, so the fallback
+// gets its own plain, unconditional request, and whatever it returns is
+// taken as-is: since this request carries no conditional header
+const resilience = createPolicy('Primary Alerts Feed')
+  .withFallback(async () => {
+    console.warn('🚨 [fallback] Falling back to secondary alerts feed...');
+    const response = await Axios.get(FALLBACK_ALERTS_URL, buildRequestConfig());
+    console.log('✅ [fallback] Secondary alerts feed request succeeded');
+    return response.data;
+  })
+  .withRetry()
+  .withBreaker()
+  .compose();
 
 /**
  * Downloads the CAP RSS feed at `url`, conditionally (via `If-Modified-Since`)
@@ -64,53 +64,46 @@ function errorMessage(error: unknown): string {
  * (breaker-guarded — 3 consecutive failures trips the breaker, so once
  * tripped, further attempts within the retry fail fast instead of hitting
  * a known-down host) before falling back to `FALLBACK_ALERTS_URL`. If the
- * fallback also fails, the error propagates. Returns `null` for a 304 (no
- * changes since `ifModifiedSince`).
+ * fallback also fails, the error propagates. Returns `null` for a 304 from
+ * the primary (no changes since `ifModifiedSince`) — the fallback is always
+ * unconditional and never produces one.
  */
 async function download(url: string, ifModifiedSince?: DateTime): Promise<string | null> {
-  const headers: Record<string, string> = { 'User-Agent': APP_USER_AGENT };
-  if (ifModifiedSince) headers['If-Modified-Since'] = ifModifiedSince.toHTTP()!;
+  const config = buildRequestConfig(
+    ifModifiedSince ? { 'If-Modified-Since': ifModifiedSince.toHTTP()! } : undefined
+  );
 
-  const config: AxiosRequestConfig = {
-    headers,
-    responseType: 'text',
-    // Axios's default validateStatus only treats 2xx as success, so a 304
-    // (expected and handled explicitly below) would otherwise reject the
-    // promise before the status check ever runs.
-    validateStatus: (status) => (status >= 200 && status < 300) || status === HttpStatusCode.NotModified,
-  };
-
-  try {
-    console.log(`Querying primary alerts feed alerts with breaker in state ${breakerPolicy.state}...`);
-    const response = await resiliencePolicy.execute(() => Axios.get(url, config));
-    console.log('✅ Successfully got response from primary alerts feed.');
-
-    if (response.status === HttpStatusCode.NotModified) {
+  return resilience.execute(async () => {
+    const data = await fetchPrimaryFeed(url, config);
+    if (data === null) {
       console.log(`Alerts feed from ${url} has not been modified since ${ifModifiedSince}. Returning null...`);
-      return null;
+    } else {
+      console.info('✅ Successfully got response from primary alerts feed.');
     }
+    return data;
+  });
+}
 
-    return response.data;
-  } catch (error) {
-    // Only reached once resiliencePolicy has given up — all 3 retry
-    // attempts against the primary failed (or failed fast, breaker-open).
-    console.warn('⚠️ Primary alerts feed failed after retries:', errorMessage(error));
-    console.warn('🚨 Falling back to secondary alerts feed...');
-    try {
-      // The primary's If-Modified-Since reflects the primary resource's
-      // history, not the fallback's — reusing it here isn't meaningful, so
-      // the fallback gets its own plain, unconditional config.
-      const fallbackConfig: AxiosRequestConfig = {
-        headers: { 'User-Agent': APP_USER_AGENT },
-        responseType: 'text',
-      };
-      const response = await Axios.get(FALLBACK_ALERTS_URL, fallbackConfig);
-      return response.data;
-    } catch (fallbackError) {
-      console.warn('⚠️ Fallback alerts feed also failed:', errorMessage(fallbackError));
-      throw fallbackError;
-    }
-  }
+function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]> {
+  return new Promise((resolve, reject) => {
+    parseString(doc, (err: Error | null, result: any) => {
+      if (err != null) {
+        reject(err);
+        return;
+      }
+      let ret: CAPReference[] = [];
+
+      for (const item of result.rss.channel[0].item ?? []) {
+        ret.push({
+          title: item.title[0],
+          link: item.link[0],
+          guid: item.guid[0],
+          pubDate: DateTime.fromRFC2822(item.pubDate[0])
+        });
+      }
+      resolve(ret);
+    });
+  });
 }
 
 /**
@@ -125,26 +118,4 @@ export async function readCapFeedIfModified(ifModifiedSince: DateTime): Promise<
     return null
   }
   return parseRssFeed(doc)
-}
-
-function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]> {
-  return new Promise((resolve, reject) => {
-    parseString(doc, (err: Error | null, result: any) => {
-      if (err != null) {
-        reject(err);
-        return;
-      }
-      let ret: CAPReference[] = [];
-
-      for (const item of result.rss.channel[0].item) {
-        ret.push({
-          title: item.title[0],
-          link: item.link[0],
-          guid: item.guid[0],
-          pubDate: DateTime.fromRFC2822(item.pubDate[0])
-        });
-      }
-      resolve(ret);
-    });
-  });
 }
