@@ -38,7 +38,7 @@ export default function LanguageScreen() {
             Select Language
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             {supportedLanguages.map((item, index) => {
               const isSelected = item.code === languageCode;
               return (
@@ -122,6 +122,11 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: Radius.large,
     overflow: "hidden",
+    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   row: {
     flexDirection: "row",
