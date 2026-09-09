@@ -41,7 +41,7 @@ export default function AboutTheAppScreen(): JSX.Element {
           bounces={false}
         >
           {/* Main About the App Section */}
-          <ThemedView type="bgAlt" style={[styles.card, { marginTop: 16 }]}>
+          <ThemedView type="bg" style={[styles.card, { marginTop: 16 }]}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="information-circle-outline" size={22} color={theme.primary} />
@@ -56,7 +56,7 @@ export default function AboutTheAppScreen(): JSX.Element {
           </ThemedView>
 
           {/* Partners Section */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="people-outline" size={22} color={theme.primary} />
@@ -78,7 +78,7 @@ export default function AboutTheAppScreen(): JSX.Element {
           </ThemedView>
 
           {/* Icons Section */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="images-outline" size={22} color={theme.primary} />
@@ -102,7 +102,7 @@ export default function AboutTheAppScreen(): JSX.Element {
           </ThemedView>
 
           {/* Geographical Data Section */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="map-outline" size={22} color={theme.primary} />

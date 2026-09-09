@@ -51,10 +51,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // horizontal inset. Duplicating it here made this card narrower than
   // the alert banner above it, which uses that same single inset.
   wrapper: {
-    marginTop: Spacing.lg,
+    marginTop: 0,
   },
   wrapperCompact: {
-    marginTop: Spacing.md,
+    marginTop: 0,
   },
   todaysHeader: {
     fontSize: 20,

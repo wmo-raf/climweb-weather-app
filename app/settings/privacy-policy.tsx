@@ -31,7 +31,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           bounces={false}
         >
           {/* Overview / Intro */}
-          <ThemedView type="bgAlt" style={[styles.card, { marginTop: 16 }]}>
+          <ThemedView type="bg" style={[styles.card, { marginTop: 16 }]}>
             <View style={styles.sectionHeaderContainer}>
               <View
                 style={[
@@ -51,7 +51,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Data Collected */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="server-outline" size={22} color={theme.primary} />
@@ -66,7 +66,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Location */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="location-outline" size={22} color={theme.primary} />
@@ -81,7 +81,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Favourites */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="star-outline" size={22} color={theme.primary} />
@@ -96,7 +96,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Security */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="lock-closed-outline" size={22} color={theme.primary} />
@@ -111,7 +111,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Children's Privacy */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="people-outline" size={22} color={theme.primary} />
@@ -126,7 +126,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Third-Party Services */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="link-outline" size={22} color={theme.primary} />
@@ -141,7 +141,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Changes */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="time-outline" size={22} color={theme.primary} />
@@ -156,7 +156,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
           </ThemedView>
 
           {/* Contact Us */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="mail-outline" size={22} color={theme.primary} />

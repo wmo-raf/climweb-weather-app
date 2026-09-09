@@ -40,7 +40,7 @@ export default function SettingsScreen() {
             Preferences
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             {/* Dark Mode Row */}
             <SettingItem
               label="Dark Mode"
@@ -115,7 +115,7 @@ export default function SettingsScreen() {
             About
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             {/* About EMI Row */}
             <SettingItem
               label="About Us"

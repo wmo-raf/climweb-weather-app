@@ -130,9 +130,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     marginBottom: Spacing.xxl,
   },
   alertsWrapper: {
-    marginLeft: Spacing.xl,
-    marginRight: Spacing.xl,
-    marginTop: Spacing.lg,
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.sm,
   },
   xlPadding: {
     paddingLeft: navRailWidth,

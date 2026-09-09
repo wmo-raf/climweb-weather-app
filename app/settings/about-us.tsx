@@ -30,7 +30,7 @@ export default function AboutUsScreen() {
           bounces={false}
         >
           {/* About EMI Section */}
-          <ThemedView type="bgAlt" style={[styles.card, { marginTop: 16 }]}>
+          <ThemedView type="bg" style={[styles.card, { marginTop: 16 }]}>
             <View style={styles.sectionHeaderContainer}>
               <View
                 style={[
@@ -72,7 +72,7 @@ export default function AboutUsScreen() {
             Forecast Services
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View
                 style={[

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
-import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type StatusCardProps = {
@@ -48,13 +48,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.xl,
     marginTop: Spacing.lg,
     marginBottom: Spacing.lg,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   title: {
     fontSize: 16,

@@ -83,9 +83,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
         marginTop: Spacing.xxl,
     },
     fiveDaysWrapper: {
-        paddingLeft: Spacing.xl,
-        paddingRight: Spacing.xl,
-        marginTop: Spacing.md,
+        paddingHorizontal: Spacing.lg,
+        marginTop: Spacing.sm,
         paddingBottom: Spacing.md,
     },
 });

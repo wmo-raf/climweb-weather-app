@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import { WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
-import { ThemeColors, Fonts, Colors, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Colors, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 // "Green" isn't a real CAP severity in this app's data (only Red/Orange/
@@ -44,11 +44,13 @@ function AlertLegend() {
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.lg,
-    ...shadow.sm,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
   },
   title: {
     fontSize: 16,
