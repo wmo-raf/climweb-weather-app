@@ -9,8 +9,8 @@ import { ForecastDayRecord } from "@/lib/forecast/types";
 import { describeDaySummary } from "@/lib/forecast/day-parts";
 import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
-import { ThemeColors, fonts, radius, shadow, space, touchTarget } from "@/lib/theme";
-import { useThemeColors } from "@/lib/theme/ThemeContext";
+import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { useTheme } from "@/lib/hooks/use-theme";
 
 type DayRowProps = {
   summary: ForecastDayRecord | undefined;
@@ -24,7 +24,7 @@ type DayRowProps = {
 
 const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (!summary) {
@@ -87,20 +87,20 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   dayRow: {
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     width: "100%",
-    marginTop: space[2],
+    marginTop: Spacing.md,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[3],
+    gap: Spacing.md,
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
     width: '100%',
-    padding: space[4],
-    borderRadius: radius.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.medium,
     minHeight: touchTarget.nav,
     ...shadow.sm,
   },
@@ -115,46 +115,46 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   rightBlock: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[1],
+    gap: Spacing.sm,
   },
   whiteText: {
     color: colors.text,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 14,
     textAlign: 'left'
   },
   dayName: {
     color: colors.textStrong,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     fontSize: 16,
     textAlign: 'left'
   },
   description: {
     color: colors.text,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 14,
-    marginTop: space[1],
+    marginTop: Spacing.sm,
   },
   tempRange: {
     color: colors.textStrong,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     fontSize: 16,
   },
   alertChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
-    padding: space[3],
+    gap: Spacing.md,
+    padding: Spacing.md,
     borderWidth: 1,
     borderTopWidth: 0,
     borderColor: colors.border,
-    borderBottomLeftRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
+    borderBottomLeftRadius: Radius.medium,
+    borderBottomRightRadius: Radius.medium,
     minHeight: touchTarget.nav,
   },
   alertChipText: {
     flex: 1,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     fontSize: 14,
   },
 });

@@ -6,8 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { ThemeColors, fonts, navRailWidth, radius, space, touchTarget } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, navRailWidth, Radius, Spacing, touchTarget } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 // Loosely typed on purpose: this is assigned the real BottomTabBarProps at
 // the call site (app/(tabs)/_layout.tsx), whose exact shape isn't reliably
@@ -40,7 +40,7 @@ const LABEL_KEYS: Record<string, string> = {
 function AppTabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const breakpoint = useBreakpoint();
   const isRail = breakpoint === 'xl';
@@ -83,7 +83,7 @@ function AppTabBar({ state, navigation }: TabBarProps) {
 
   if (isRail) {
     return (
-      <View style={[styles.rail, { paddingTop: insets.top + space[4] }]}>
+      <View style={[styles.rail, { paddingTop: insets.top + Spacing.lg }]}>
         <View style={styles.railBadge}>
           <Icon source="weather-partly-cloudy" size={26} color={colors.textInverse} />
         </View>
@@ -105,7 +105,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderTopColor: colors.border,
     borderTopWidth: 1,
-    paddingTop: space[1],
+    paddingTop: Spacing.sm,
   },
   rail: {
     position: 'absolute',
@@ -122,27 +122,27 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   railBadge: {
     width: 48,
     height: 48,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: space[6],
+    marginBottom: Spacing.xl,
   },
   item: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: space[2],
-    paddingHorizontal: space[1],
-    marginHorizontal: space[1],
-    borderRadius: radius.lg,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    marginHorizontal: Spacing.sm,
+    borderRadius: Radius.medium,
     minHeight: touchTarget.nav,
   },
   itemRail: {
     flex: 0,
     width: 72,
-    borderRadius: radius.lg,
-    marginBottom: space[3],
+    borderRadius: Radius.medium,
+    marginBottom: Spacing.md,
   },
   itemFocused: {
     backgroundColor: colors.bgTint,
@@ -159,7 +159,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     marginTop: 2,
   },
 });

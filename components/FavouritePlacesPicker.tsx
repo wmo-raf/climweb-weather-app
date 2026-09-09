@@ -13,8 +13,8 @@ import {
 import geonames from '@/assets/geonames.json';
 import { Place } from '@/lib/geo/places';
 import { MAX_FAVOURITE_PLACES } from '@/lib/hooks/favourites.hook';
-import { ThemeColors, fonts, lightColors, radius, shadow, space, touchTarget } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Colors, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type FavouritePlacesPickerProps = {
   initialSelected?: Place[];
@@ -32,14 +32,14 @@ function isSamePlace(a: Place, b: Place): boolean {
 function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, theme = 'light' }: FavouritePlacesPickerProps): JSX.Element {
   const isDark = theme === 'dark';
   const { t } = useTranslation();
-  const themeColors = useThemeColors();
+  const themeColors = useTheme();
   // theme='dark' means "onboarding's colored hero", not the app's dark-mode
   // setting — that variant always renders against a fixed dark hero
   // (Welcome.tsx), so its base (non -Dark-suffixed) styles stay pinned to
   // the light palette regardless of the user's theme choice. theme='light'
   // (the default, used by EditFavourites) is a normal screen and follows
   // the active theme like everything else.
-  const colors = isDark ? lightColors : themeColors;
+  const colors = isDark ? Colors.light : themeColors;
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const [selected, setSelected] = useState<Place[]>(initialSelected);
   const controllerRef = useRef<AutocompleteDropdownRef | null>(null);
@@ -132,14 +132,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: space[4],
-    paddingBottom: space[10],
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
-    marginBottom: space[4],
+    marginBottom: Spacing.lg,
   },
   subtitleDark: {
     color: colors.textInverse,
@@ -151,26 +151,26 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1.5,
     borderColor: colors.border,
-    paddingLeft: space[4],
-    paddingRight: space[4],
-    paddingTop: space[3],
-    paddingBottom: space[3],
-    borderRadius: radius.md,
+    paddingLeft: Spacing.lg,
+    paddingRight: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.md,
+    borderRadius: Radius.small,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 16,
     color: colors.text,
   },
   textStyle: {
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 16,
     color: colors.text,
   },
   itemText: {
     color: colors.text,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     fontSize: 16,
     padding: 15,
     width: '100%',
@@ -183,23 +183,23 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: Radius.small,
     ...shadow.sm,
   },
   maxReachedText: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textSubtle,
-    padding: space[3],
+    padding: Spacing.md,
     textAlign: 'center',
     backgroundColor: colors.bgTint,
-    borderRadius: radius.md,
+    borderRadius: Radius.small,
   },
   countText: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textSubtle,
-    marginTop: space[4],
+    marginTop: Spacing.lg,
   },
   countTextDark: {
     color: colors.textInverse,
@@ -207,30 +207,30 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: space[2],
-    marginTop: space[3],
+    gap: Spacing.md,
+    marginTop: Spacing.md,
   },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     backgroundColor: colors.bgTint,
-    borderRadius: radius.full,
-    paddingVertical: space[2],
-    paddingLeft: space[3],
-    paddingRight: space[2],
+    borderRadius: Radius.extraLarge,
+    paddingVertical: Spacing.md,
+    paddingLeft: Spacing.md,
+    paddingRight: Spacing.md,
     maxWidth: '100%',
   },
   chipText: {
     fontSize: 14,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.primary,
     maxWidth: 200,
   },
   finishButton: {
-    marginTop: space[6],
+    marginTop: Spacing.xl,
     minHeight: touchTarget.nav,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -240,7 +240,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   finishButtonText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
   finishButtonTextDark: {

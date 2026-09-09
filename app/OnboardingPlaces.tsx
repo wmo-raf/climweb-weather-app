@@ -8,13 +8,14 @@ import { useTranslation } from 'react-i18next';
 
 import FavouritePlacesPicker from '@/components/FavouritePlacesPicker';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
+import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { Place } from '@/lib/geo/places';
 // Fixed to the light palette — same reasoning as Welcome.tsx: this screen's
 // dark-navy hero doesn't retint with the app's dark-mode setting.
-import { fonts, lightColors as colors, space } from '@/lib/theme';
+import { Fonts, Colors, Spacing } from '@/lib/theme';
 
+const colors = Colors.light;
 // Second and final onboarding step, reached from Welcome's language
 // screen. Selecting places is optional — finishing with none selected
 // is how a user skips this step.
@@ -22,10 +23,10 @@ function OnboardingPlacesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [onboardingLoading, hasOnboarded, markOnboarded] = useOnboarding();
-  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
+  const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const [favouritesLoading, favourites, saveFavourites] = useFavourites();
 
-  const loading = onboardingLoading || alwaysShowLoading || favouritesLoading;
+  const loading = onboardingLoading || favouritesLoading;
 
   const onFinish = async (places: Place[]) => {
     await saveFavourites(places);
@@ -64,12 +65,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgOverlay,
   },
   header: {
-    paddingHorizontal: space[4],
-    paddingTop: space[4],
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.lg,
   },
   title: {
     fontSize: 22,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
 });

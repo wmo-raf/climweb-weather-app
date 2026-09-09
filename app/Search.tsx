@@ -9,8 +9,8 @@ import AppBar from '@/components/AppBar';
 
 import { useLocationStore } from '@/lib/store/location.store';
 import { Place } from '@/lib/geo/places';
-import { ThemeColors, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 const SearchScreen = () => {
   const name = useLocationStore(s => s.name);
@@ -18,7 +18,7 @@ const SearchScreen = () => {
   const lon = useLocationStore(s => s.lon);
   const setLocation = useLocationStore(s => s.setLocation);
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   return (
@@ -62,6 +62,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   alertsWrapper: {
     width: '90%',
     alignSelf: 'center',
-    marginTop: space[4],
+    marginTop: Spacing.lg,
   },
 })

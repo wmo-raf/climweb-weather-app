@@ -7,8 +7,8 @@ import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getShareSourceLine, getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { ThemeColors, fonts, radius, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
   Red: 'alert.band.red',
@@ -36,7 +36,7 @@ type AlertShareCardProps = {
 // several times down a chain with no surrounding app context.
 const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert, onReady }, ref) => {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const info = alert.info?.[0];
 
@@ -85,45 +85,45 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     width: CARD_WIDTH,
     backgroundColor: colors.bg,
-    borderRadius: radius.lg,
+    borderRadius: Radius.medium,
     overflow: 'hidden',
   },
   band: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
-    paddingVertical: space[3],
-    paddingHorizontal: space[4],
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
   },
   bandLabel: {
     fontSize: 16,
-    fontFamily: fonts.extraBold,
+    fontFamily: Fonts.sans.bold,
   },
   body: {
-    padding: space[4],
-    gap: space[2],
+    padding: Spacing.lg,
+    gap: Spacing.md,
   },
   headline: {
     fontSize: 18,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   meta: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
     lineHeight: 20,
   },
   metaLabel: {
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   source: {
     fontSize: 12,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textMuted,
-    marginTop: space[2],
-    paddingTop: space[2],
+    marginTop: Spacing.md,
+    paddingTop: Spacing.md,
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },

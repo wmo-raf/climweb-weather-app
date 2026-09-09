@@ -9,8 +9,8 @@ import { ForecastRecord } from '@/lib/forecast/types';
 import { getFiveDayWindow } from '@/lib/forecast/day-parts';
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
 import { getAlertForDay } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { ThemeColors, fonts, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type FiveDaysProps = {
     startDate: DateTime;
@@ -24,7 +24,7 @@ type FiveDaysProps = {
 }
 function FiveDays(props: FiveDaysProps): JSX.Element {
     const { t } = useTranslation();
-    const colors = useThemeColors();
+    const colors = useTheme();
     const styles = useMemo(() => makeStyles(colors), [colors]);
     const { startDate, forecast, alerts, onSelectAlert } = props
 
@@ -69,24 +69,24 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     noForecast: {
-        fontFamily: fonts.regular,
+        fontFamily: Fonts.sans.regular,
         color: colors.text,
-        paddingLeft: space[3],
-        paddingRight: space[3],
-        marginTop: space[10],
+        paddingLeft: Spacing.md,
+        paddingRight: Spacing.md,
+        marginTop: Spacing.xxl,
     },
     loading: {
-        fontFamily: fonts.regular,
+        fontFamily: Fonts.sans.regular,
         color: colors.text,
-        paddingLeft: space[3],
-        paddingRight: space[3],
-        marginTop: space[10],
+        paddingLeft: Spacing.md,
+        paddingRight: Spacing.md,
+        marginTop: Spacing.xxl,
     },
     fiveDaysWrapper: {
-        paddingLeft: space[6],
-        paddingRight: space[6],
-        marginTop: space[2],
-        paddingBottom: space[2],
+        paddingLeft: Spacing.xl,
+        paddingRight: Spacing.xl,
+        marginTop: Spacing.md,
+        paddingBottom: Spacing.md,
     },
 });
 

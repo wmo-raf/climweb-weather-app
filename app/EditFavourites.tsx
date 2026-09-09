@@ -9,7 +9,7 @@ import FavouritePlacesPicker from '@/components/FavouritePlacesPicker';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { Place } from '@/lib/geo/places';
 import { ThemeColors } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 // Reached from the Places tab (empty state or edit action) to add/remove
 // favourites after onboarding — same picker as OnboardingPlaces, but the
@@ -17,7 +17,7 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 function EditFavouritesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const [loading, favourites, saveFavourites] = useFavourites();
 

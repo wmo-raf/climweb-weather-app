@@ -9,8 +9,8 @@ import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, getWarningTintColors } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { ThemeColors, fonts, lightColors, radius, shadow, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Colors, Radius, shadow, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
   Red: 'alert.band.red',
@@ -41,7 +41,7 @@ type AlertCardProps = {
 // and repeated (compact) in the Warnings tab's list.
 function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Element | null {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const info = alert.info?.[0];
 
@@ -54,7 +54,7 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
   // The Listen/Share pills always sit on a solid-white circle regardless of
   // theme (design brief: white pills stay white with colored icon in both
   // themes) — use the light-mode tint fixed, not the retinted one.
-  const pillTint = getWarningTintColors(lightColors)[level];
+  const pillTint = getWarningTintColors(Colors.light)[level];
   const headline = info.headline || info.event;
   const whatToDo = getWhatToDo(info);
   const whenText = getWhenText(t, info);
@@ -134,30 +134,30 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: space[3],
-    paddingHorizontal: space[4],
-    borderRadius: radius.lg,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.medium,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
   bandLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     flexShrink: 1,
   },
   bandLabel: {
     fontSize: 15,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
   },
   bandActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
+    gap: Spacing.md,
   },
   body: {
-    padding: space[4],
-    borderRadius: radius.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.medium,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     backgroundColor: colors.bg,
@@ -168,7 +168,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   headline: {
     fontSize: 20,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   // Inset (left/right padded) divider between the headline and the
@@ -177,53 +177,53 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: colors.border,
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   meta: {
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
     lineHeight: 22,
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   metaLabel: {
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   whatToDoCompact: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
-    marginTop: space[4],
-    padding: space[4],
-    borderRadius: radius.md,
+    gap: Spacing.md,
+    marginTop: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.small,
   },
   whatToDoCompactText: {
     flex: 1,
     fontSize: 15,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
   },
   whatToDoBox: {
-    marginTop: space[4],
-    padding: space[4],
-    borderRadius: radius.md,
+    marginTop: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.small,
   },
   whatToDoTitle: {
     fontSize: 14,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     letterSpacing: 0.5,
-    marginBottom: space[2],
+    marginBottom: Spacing.md,
   },
   checklistRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: space[2],
-    marginTop: space[2],
+    gap: Spacing.md,
+    marginTop: Spacing.md,
   },
   checklistText: {
     flex: 1,
     fontSize: 15,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.text,
   },
 });

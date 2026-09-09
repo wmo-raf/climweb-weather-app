@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { ThemeColors, fonts, radius, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 type HourlyTableProps = {
   title: string;
@@ -17,7 +17,7 @@ type HourlyTableProps = {
 
 function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const isSameDay = props.day.hasSame(DateTime.local(), "day");
@@ -70,51 +70,51 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   titleBand: {
-    marginHorizontal: space[4],
-    marginTop: space[4],
-    paddingVertical: space[3],
-    paddingHorizontal: space[4],
-    borderRadius: radius.lg,
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.lg,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.medium,
     backgroundColor: colors.bgTint,
   },
   titleText: {
     fontSize: 16,
     color: colors.primary,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
   },
   list: {
     flex: 1,
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[3],
-    paddingVertical: space[3],
-    paddingHorizontal: space[4],
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   leftGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     minWidth: 84,
   },
   time: {
     fontSize: 15,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
   description: {
     flex: 1,
     fontSize: 14,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textSubtle,
   },
   temp: {
     fontSize: 18,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
     minWidth: 44,
     textAlign: 'right',

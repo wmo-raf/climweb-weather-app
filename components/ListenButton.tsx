@@ -4,7 +4,7 @@ import { Icon, Portal, Snackbar } from 'react-native-paper';
 import * as Speech from 'expo-speech';
 import { useTranslation } from 'react-i18next';
 
-import { radius } from '@/lib/theme';
+import { Radius } from '@/lib/theme';
 
 // Maps i18next locale codes to expo-speech voice locales. Only English is a
 // real locale today — Swahili is added here once Step 6 registers it so this
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 40,
     height: 40,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
   },
 });
 

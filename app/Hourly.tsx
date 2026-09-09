@@ -11,14 +11,14 @@ import Alerts from '@/components/Alerts';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { ThemeColors, fonts, space } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 function HourlyScreen(): JSX.Element {
   const { location: location_name, dayString, startAtCurrentTime, title } =
           useLocalSearchParams<{location: string, dayString: string, startAtCurrentTime: string, title: string}>()
 
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const store_location_name = useLocationStore(s => s.name);
   const lat = useLocationStore(s => s.lat);
@@ -48,7 +48,7 @@ function HourlyScreen(): JSX.Element {
     );
   } else {
     mainContent = (
-      <Text style={{ color: colors.text, fontFamily: fonts.regular, fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
+      <Text style={{ color: colors.text, fontFamily: Fonts.sans.regular, fontSize: 16, padding: 40 }}>Something unforseen has happened and the forecast table can not be presented. Go back and please try again later!</Text>
     );
   }
 
@@ -82,9 +82,9 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   alertsWrapper: {
-    marginLeft: space[4],
-    marginRight: space[4],
-    marginTop: space[4],
+    marginLeft: Spacing.lg,
+    marginRight: Spacing.lg,
+    marginTop: Spacing.lg,
   },
   container: {
     flexDirection: 'column',
@@ -92,7 +92,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   header: {
     fontSize: 20,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
     paddingRight: 20,
     paddingLeft: 20,
