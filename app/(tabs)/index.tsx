@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { ActivityIndicator } from 'react-native';
-import { useRouter, useNavigation, Href, Redirect } from 'expo-router';
+import { useRouter, Href, Redirect } from 'expo-router';
 import { isUndefined } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,6 @@ let hasShownStartPageThisLaunch = false;
 
 const MainScreen = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const router = useRouter();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -119,9 +118,17 @@ const MainScreen = () => {
   // Waits until welcomeDecision has settled, and skips entirely when it's
   // 'show', so this can't race a forced Welcome redirect for the same
   // navigation.
+  //
+  // router.canGoBack() (expo-router's own history), not useNavigation() —
+  // this screen sits inside the (tabs) navigator, so useNavigation() here
+  // would resolve to the tabs navigator (nearest enclosing one), not the
+  // root stack. The tabs navigator keeps its own visited-tab history
+  // (default backBehavior: 'history'), so its canGoBack() answers "does
+  // the tab bar remember a prior tab" rather than "did the user actually
+  // navigate back to Home" — see the same fix in AppBar.tsx.
   useEffect(() => {
     if (welcomeDecision !== 'skip') return;
-    if (locationError && !navigation.canGoBack() && !favouritesLoading) {
+    if (locationError && !router.canGoBack() && !favouritesLoading) {
       resetLocationError();
       router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }

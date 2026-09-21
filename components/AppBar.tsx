@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 
-import { useNavigation, useRouter, Href } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,6 @@ import { ThemedView } from '@/components/themed-view';
 const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const navigation = useNavigation();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -43,8 +42,19 @@ const AppBar = (props: AppBarProps) => {
   return (
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
-        {navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={styles.backButton}>
+        {router.canGoBack() &&
+          // router.canGoBack()/back() (expo-router's own history), not
+          // useNavigation() — AppBar renders inside the (tabs) navigator on
+          // Home/FiveDays/Warnings/Places, so useNavigation() there resolves
+          // to the *tabs* navigator (nearest enclosing one), not the root
+          // stack. The tabs navigator keeps its own visited-tab history
+          // (default backBehavior: 'history'), so its canGoBack() answers
+          // "does the tab bar remember a prior tab" rather than "is there
+          // really a screen behind this one" — reporting true (and throwing
+          // on press) even back on the landing tab with nothing left above
+          // it. router.canGoBack() tracks the actual root navigation
+          // history instead.
+          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => router.back()} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         {props.isPlace
