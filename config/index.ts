@@ -12,3 +12,6 @@ export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
 // not for production traffic (see OSM's tile usage policy) — deployments
 // should point this at their own OSM tile server instead.
 export const OSM_TILE_URL = process.env.EXPO_PUBLIC_OSM_TILE_URL ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+// Base URL of the alerts backend (see backend/) — device registration is
+// POSTed to `${DEVICES_API_URL}/api/devices/register`.
+export const DEVICES_API_URL = process.env.EXPO_PUBLIC_DEVICES_API_URL as string;

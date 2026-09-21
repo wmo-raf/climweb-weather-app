@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, RefreshControl } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
 import { ActivityIndicator } from 'react-native';
-import { useRouter, useNavigation, Href, Redirect } from 'expo-router';
+import { useRouter, Href, Redirect } from 'expo-router';
 import { isUndefined } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -38,12 +38,11 @@ let hasShownStartPageThisLaunch = false;
 
 const MainScreen = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
   const router = useRouter();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const [onboardingLoading, hasOnboarded] = useOnboarding();
+  const [, hasOnboarded] = useOnboarding();
   const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const [favouritesLoading, favourites] = useFavourites();
   const breakpoint = useBreakpoint();
@@ -62,27 +61,31 @@ const MainScreen = () => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   // Whether to force Welcome, decided ONCE per mount as real state rather
-  // than re-derived every render from onboarding/alwaysShow — onboarding/
-  // alwaysShow resolve synchronously from storage, but GPS location
-  // resolution is still async, and re-deriving "should show welcome" fresh
-  // on every render meant the locationError-triggered re-render that
-  // follows could see a freshly-mutated hasShownStartPageThisLaunch and
-  // flip the decision to false before the Redirect ever actually took
-  // hold — silently cancelling it. Storing the decision in state makes it
-  // stick for the lifetime of this mount once made.
-  const [welcomeDecision, setWelcomeDecision] = React.useState<'pending' | 'show' | 'skip'>('pending');
-
-  useEffect(() => {
-    if (onboardingLoading) return;
+  // than re-derived every render from onboarding/alwaysShow — both resolve
+  // synchronously from storage, but re-deriving "should show welcome" fresh
+  // on every render would let a later, unrelated re-render (e.g. the
+  // locationError-triggered one below) see a freshly-mutated
+  // hasShownStartPageThisLaunch and flip the decision to false before the
+  // Redirect ever actually took hold — silently cancelling it.
+  //
+  // Computed in the useState initializer itself, not a useEffect that runs
+  // after mount: the underlying reads are already synchronous, so there's
+  // no real async gap to wait out — deferring to an effect just meant this
+  // component's first render returned null before a second render actually
+  // carried the Redirect, and on a slow device that gap between "blank
+  // landing shell paints" and "effect fires" was long enough to see.
+  // Computing it here means the very first render already returns the
+  // right thing.
+  const [welcomeDecision] = React.useState<'show' | 'skip'>(() => {
     if (!hasOnboarded) {
-      setWelcomeDecision('show');
-    } else if (alwaysShowStartPage && !hasShownStartPageThisLaunch) {
-      hasShownStartPageThisLaunch = true;
-      setWelcomeDecision('show');
-    } else {
-      setWelcomeDecision('skip');
+      return 'show';
     }
-  }, [onboardingLoading, hasOnboarded, alwaysShowStartPage]);
+    if (alwaysShowStartPage && !hasShownStartPageThisLaunch) {
+      hasShownStartPageThisLaunch = true;
+      return 'show';
+    }
+    return 'skip';
+  });
 
   const onRefresh = async () => {
     if (isUndefined(lat) || isUndefined(lon)) {
@@ -115,17 +118,21 @@ const MainScreen = () => {
   // Waits until welcomeDecision has settled, and skips entirely when it's
   // 'show', so this can't race a forced Welcome redirect for the same
   // navigation.
+  //
+  // router.canGoBack() (expo-router's own history), not useNavigation() —
+  // this screen sits inside the (tabs) navigator, so useNavigation() here
+  // would resolve to the tabs navigator (nearest enclosing one), not the
+  // root stack. The tabs navigator keeps its own visited-tab history
+  // (default backBehavior: 'history'), so its canGoBack() answers "does
+  // the tab bar remember a prior tab" rather than "did the user actually
+  // navigate back to Home" — see the same fix in AppBar.tsx.
   useEffect(() => {
     if (welcomeDecision !== 'skip') return;
-    if (locationError && !navigation.canGoBack() && !favouritesLoading) {
+    if (locationError && !router.canGoBack() && !favouritesLoading) {
       resetLocationError();
       router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }
   }, [locationError, favouritesLoading, favourites, welcomeDecision]);
-
-  if (welcomeDecision === 'pending') {
-    return null;
-  }
 
   if (welcomeDecision === 'show') {
     return <Redirect href="/Welcome" />;
@@ -225,8 +232,17 @@ const MainScreen = () => {
     )
   }
 
+  // On phones the custom bottom tab bar (components/AppTabBar.tsx) already
+  // reserves its own flex space below this screen and pads itself by
+  // insets.bottom — this screen never actually reaches the device's true
+  // bottom edge, so SafeAreaView's default bottom inset here just adds a
+  // second, redundant chunk of empty padding, shrinking the usable content
+  // area for no reason. At the XL breakpoint the tab bar becomes a
+  // left-side rail (position: absolute) that doesn't reserve flex space,
+  // so the screen DOES extend to the true bottom edge there and needs the
+  // normal bottom inset.
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={isXL ? undefined : ['top', 'right', 'left']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />

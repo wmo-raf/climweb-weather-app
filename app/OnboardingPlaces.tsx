@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { Text } from 'react-native-paper';
-import { useRouter, Redirect } from 'expo-router';
+import { useRouter, Redirect, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import FavouritePlacesPicker from '@/components/FavouritePlacesPicker';
@@ -11,18 +11,20 @@ import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 import { useFavourites } from '@/lib/hooks/favourites.hook';
 import { Place } from '@/lib/geo/places';
+import { SCREENS } from '@/lib/layout/constants';
 // Fixed to the light palette — same reasoning as Welcome.tsx: this screen's
 // dark-navy hero doesn't retint with the app's dark-mode setting.
 import { Fonts, Colors, Spacing } from '@/lib/theme';
 
 const colors = Colors.light;
-// Second and final onboarding step, reached from Welcome's language
-// screen. Selecting places is optional — finishing with none selected
-// is how a user skips this step.
+// Second onboarding step, reached from Welcome's language screen, and
+// followed by OnboardingNotifications (which is the one that actually
+// marks onboarding complete). Selecting places is optional — finishing
+// with none selected is how a user skips this step.
 function OnboardingPlacesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [onboardingLoading, hasOnboarded, markOnboarded] = useOnboarding();
+  const [onboardingLoading, hasOnboarded] = useOnboarding();
   const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const [favouritesLoading, favourites, saveFavourites] = useFavourites();
 
@@ -30,8 +32,7 @@ function OnboardingPlacesScreen() {
 
   const onFinish = async (places: Place[]) => {
     await saveFavourites(places);
-    await markOnboarded();
-    router.replace('/');
+    router.replace(SCREENS.OnboardingNotifications.toString() as Href);
   };
 
   // Same stale-navigation/deep-link guard as Welcome — see its comment.

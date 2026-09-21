@@ -95,6 +95,21 @@ export default function PrivacyPolicyScreen(): JSX.Element {
             </ThemedText>
           </ThemedView>
 
+          {/* Weather Alert Notifications */}
+          <ThemedView type="bgAlt" style={styles.card}>
+            <View style={styles.sectionHeaderContainer}>
+              <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
+                <Ionicons name="notifications-outline" size={22} color={theme.primary} />
+              </View>
+              <ThemedText type="smallBold" style={styles.sectionTitle}>
+                {t('privacy.notifications.title')}
+              </ThemedText>
+            </View>
+            <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>
+              {t('privacy.notifications.text')}
+            </ThemedText>
+          </ThemedView>
+
           {/* Security */}
           <ThemedView type="bgAlt" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>

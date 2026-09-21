@@ -23,13 +23,27 @@ type FavouritePlacesPickerProps = {
   // 'dark' matches Welcome's language-selection screen (onboarding); the
   // default 'light' matches the rest of the app (editing favourites later).
   theme?: 'light' | 'dark';
+  // Reused for other "pick up to N places" flows (e.g. notification alert
+  // areas — see app/OnboardingAlertAreas.tsx) that share this cap/UX but
+  // want different copy than the favourites-specific defaults below.
+  max?: number;
+  subtitleKey?: string;
+  maxReachedKey?: string;
 };
 
 function isSamePlace(a: Place, b: Place): boolean {
   return a.name === b.name && a.latitude === b.latitude && a.longitude === b.longitude;
 }
 
-function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, theme = 'light' }: FavouritePlacesPickerProps): JSX.Element {
+function FavouritePlacesPicker({
+  initialSelected = [],
+  finishLabel,
+  onFinish,
+  theme = 'light',
+  max = MAX_FAVOURITE_PLACES,
+  subtitleKey = 'places.pickerSubtitle',
+  maxReachedKey = 'places.maxReached',
+}: FavouritePlacesPickerProps): JSX.Element {
   const isDark = theme === 'dark';
   const { t } = useTranslation();
   const themeColors = useTheme();
@@ -44,14 +58,14 @@ function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, th
   const [selected, setSelected] = useState<Place[]>(initialSelected);
   const controllerRef = useRef<AutocompleteDropdownRef | null>(null);
 
-  const atMax = selected.length >= MAX_FAVOURITE_PLACES;
+  const atMax = selected.length >= max;
 
   const handleSelect = (item: TAutocompleteDropdownItem) => {
     if (!item) return;
     const place: Place = geonames[item.id];
 
     setSelected(prev => {
-      if (prev.some(p => isSamePlace(p, place)) || prev.length >= MAX_FAVOURITE_PLACES) {
+      if (prev.some(p => isSamePlace(p, place)) || prev.length >= max) {
         return prev;
       }
       return [...prev, place];
@@ -65,10 +79,10 @@ function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, th
 
   return (
     <ScrollView style={styles.wrapper} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <Text style={[styles.subtitle, isDark && styles.subtitleDark]}>{t('places.pickerSubtitle')}</Text>
+      <Text style={[styles.subtitle, isDark && styles.subtitleDark]}>{t(subtitleKey)}</Text>
 
       {atMax ? (
-        <Text style={styles.maxReachedText}>{t('places.maxReached')}</Text>
+        <Text style={styles.maxReachedText}>{t(maxReachedKey)}</Text>
       ) : (
         <View style={styles.searchContainer}>
           <AutocompleteDropdown

@@ -11,5 +11,8 @@
     WeatherWarning = "WeatherWarning",
     Settings = "/settings",
     OnboardingPlaces = "OnboardingPlaces",
-    EditFavourites = "EditFavourites"
+    OnboardingNotifications = "OnboardingNotifications",
+    OnboardingAlertAreas = "OnboardingAlertAreas",
+    EditFavourites = "EditFavourites",
+    EditAlertAreas = "EditAlertAreas"
   };

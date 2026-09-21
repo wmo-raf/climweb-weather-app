@@ -1,15 +1,8 @@
 import { DateTime } from 'luxon'
 import { parseString } from 'xml2js';
-import Axios, { AxiosError, AxiosRequestConfig, HttpStatusCode } from 'axios';
+import Axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
 
-import {
-  ConsecutiveBreaker,
-  handleAll,
-  circuitBreaker,
-  CircuitBreakerPolicy,
-  CircuitState,
-} from 'cockatiel';
-
+import { createPolicy } from '@/lib/http/resilience';
 import { PRIMARY_ALERTS_URL, FALLBACK_ALERTS_URL, APP_USER_AGENT } from '@/config';
 
 /**
@@ -22,76 +15,73 @@ export interface CAPReference {
   pubDate: DateTime
 }
 
-function initBreaker(breaker: CircuitBreakerPolicy): void {
-  breaker.onBreak(() => {
-    console.warn('💥 Breaker tripped after consecutive failures');
-  });
-
-  breaker.onReset(() => {
-    console.log('✅ Breaker reset — primary API re-enabled');
-  });
-
-  breaker.onStateChange((state) => {
-    console.info(`⚡ Breaker state changed to: ${state}`);
-  });
+// Shared by both the primary and fallback fetches — a plain, unconditional
+// request unless extraHeaders adds something like If-Modified-Since (only
+// the primary ever passes that).
+function buildRequestConfig(extraHeaders?: Record<string, string>): AxiosRequestConfig {
+  return {
+    headers: { 'User-Agent': APP_USER_AGENT, ...extraHeaders },
+    responseType: 'text',
+    timeout: 5_000,
+  };
 }
 
-// Stop calling the executed function for 15 seconds if it fails 3 times in a row
-const breakerPolicy = circuitBreaker(handleAll, {
-  halfOpenAfter: 15_000,
-  breaker: new ConsecutiveBreaker(2),
-});
-initBreaker(breakerPolicy);
+// 304 handling lives here, scoped to the primary only: a 304 is only ever a
+// valid response to a *conditional* request (one carrying If-Modified-Since
+// or similar), which only the primary ever sends (see download() below).
+// Axios's default validateStatus only treats 2xx as success, so without
+// this override a 304 would reject the promise before it could be
+// recognized as "no changes" rather than a failure.
+async function fetchPrimaryFeed(url: string, config: AxiosRequestConfig): Promise<string | null> {
+  const response = await Axios.get(url, {
+    ...config,
+    validateStatus: (status) => (status >= 200 && status < 300) || status === HttpStatusCode.NotModified,
+  });
+  return response.status === HttpStatusCode.NotModified ? null : response.data;
+}
+
+// Retries the primary feed up to 3 times (through the breaker, so each
+// attempt counts toward tripping it), then falls back to
+// FALLBACK_ALERTS_URL once both are exhausted. See lib/http/resilience.ts.
+// The primary's If-Modified-Since reflects the primary resource's history,
+// not the fallback's — reusing it here isn't meaningful, so the fallback
+// gets its own plain, unconditional request, and whatever it returns is
+// taken as-is: since this request carries no conditional header
+const resilience = createPolicy('Primary Alerts Feed')
+  .withFallback(async () => {
+    console.warn('🚨 [fallback] Falling back to secondary alerts feed...');
+    const response = await Axios.get(FALLBACK_ALERTS_URL, buildRequestConfig());
+    console.log('✅ [fallback] Secondary alerts feed request succeeded');
+    return response.data;
+  })
+  .withRetry()
+  .withBreaker()
+  .compose();
 
 /**
- * Download something via http.
+ * Downloads the CAP RSS feed at `url`, conditionally (via `If-Modified-Since`)
+ * if `ifModifiedSince` is given. Retries the primary up to 3 times
+ * (breaker-guarded — 3 consecutive failures trips the breaker, so once
+ * tripped, further attempts within the retry fail fast instead of hitting
+ * a known-down host) before falling back to `FALLBACK_ALERTS_URL`. If the
+ * fallback also fails, the error propagates. Returns `null` for a 304 from
+ * the primary (no changes since `ifModifiedSince`) — the fallback is always
+ * unconditional and never produces one.
  */
 async function download(url: string, ifModifiedSince?: DateTime): Promise<string | null> {
-  const config: AxiosRequestConfig = {
-    headers: {
-      'User-Agent': APP_USER_AGENT
-    },
-    responseType: 'text'
-  };
-  if (config.headers && ifModifiedSince) config.headers['If-Modified-Since'] = ifModifiedSince.toHTTP();
+  const config = buildRequestConfig(
+    ifModifiedSince ? { 'If-Modified-Since': ifModifiedSince.toHTTP()! } : undefined
+  );
 
-  try {
-    console.log(`Querying primary alerts feed alerts with breaker in state ${breakerPolicy.state}...`);
-    const response = await breakerPolicy.execute(() => Axios.get(url, config));
-    console.log('✅ Successfully got response from primary alerts feed.');
-
-    if (response.status === HttpStatusCode.NotModified) {
-      console.log(`Alerts feed from ${url} has not been modified since ${ifModifiedSince}. Returning. null...`);
-      return null;
+  return resilience.execute(async () => {
+    const data = await fetchPrimaryFeed(url, config);
+    if (data === null) {
+      console.log(`Alerts feed from ${url} has not been modified since ${ifModifiedSince}. Returning null...`);
+    } else {
+      console.info('✅ Successfully got response from primary alerts feed.');
     }
-
-    return response.data;
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    console.warn('⚠️ Error from primary alerts feed:', axiosError.message);
-
-    if (breakerPolicy.state === CircuitState.Open) {
-      console.warn('🚨 Breaker is OPEN. Using fallback alerts feed...');
-      const { data } = await Axios.get(FALLBACK_ALERTS_URL, config);
-      return data;
-    }
-
-    throw axiosError;
-  }
-}
-
-/**
- * Read a CAP RSS feed, but do nothing if it has not been modified since the given time.
- * @param rssURL 
- * @param ifModifiedSince 
- * @returns A list of CAPReference objects, or null if no changes have been made.
- */
-export async function readCapFeedIfModified(ifModifiedSince: DateTime): Promise<CAPReference[] | null> {
-  const doc = await download(PRIMARY_ALERTS_URL, ifModifiedSince)
-  if (!doc) {
-    return null
-  }
-  return parseRssFeed(doc)
+    return data;
+  });
 }
 
 function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]> {
@@ -103,7 +93,7 @@ function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]>
       }
       let ret: CAPReference[] = [];
 
-      for (const item of result.rss.channel[0].item) {
+      for (const item of result.rss.channel[0].item ?? []) {
         ret.push({
           title: item.title[0],
           link: item.link[0],
@@ -114,4 +104,18 @@ function parseRssFeed(doc: string): CAPReference[] | PromiseLike<CAPReference[]>
       resolve(ret);
     });
   });
+}
+
+/**
+ * Reads the primary CAP RSS feed, but does nothing if it has not been
+ * modified since the given time.
+ * @param ifModifiedSince
+ * @returns A list of CAPReference objects, or null if no changes have been made.
+ */
+export async function readCapFeedIfModified(ifModifiedSince: DateTime): Promise<CAPReference[] | null> {
+  const doc = await download(PRIMARY_ALERTS_URL, ifModifiedSince)
+  if (!doc) {
+    return null
+  }
+  return parseRssFeed(doc)
 }

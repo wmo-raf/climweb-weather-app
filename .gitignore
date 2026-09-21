@@ -28,3 +28,13 @@ expo-env.d.ts
 .expo
 dist/
 web-build/
+app.json
+
+# FCM
+google-services.json
+
+# Firebase Admin SDK service account keys (contain a private key)
+*firebase-adminsdk*.json
+
+# Backend logs
+app.*.log
