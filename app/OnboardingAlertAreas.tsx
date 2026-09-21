@@ -8,15 +8,16 @@ import { useTranslation } from 'react-i18next';
 
 import FavouritePlacesPicker from '@/components/FavouritePlacesPicker';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
+import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 import { useAlertAreas, MAX_ALERT_AREAS } from '@/lib/hooks/alert-areas.hook';
 import { usePushStore } from '@/lib/store/push.store';
 import { Place } from '@/lib/geo/places';
 // Fixed to the light palette — same reasoning as Welcome/OnboardingPlaces:
 // this screen's dark-navy hero doesn't retint with the app's dark-mode
 // setting.
-import { fonts, lightColors as colors, space } from '@/lib/theme';
+import { Fonts, Colors, Spacing } from '@/lib/theme';
 
+const colors = Colors.light;
 // Fourth and final onboarding step, reached from OnboardingNotifications
 // only after notification permission was granted — this is the one that
 // marks onboarding complete. Lets the user pick which areas (up to
@@ -27,10 +28,10 @@ function OnboardingAlertAreasScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [onboardingLoading, hasOnboarded, markOnboarded] = useOnboarding();
-  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
+  const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const [areasLoading, areas, saveAreas] = useAlertAreas();
 
-  const loading = onboardingLoading || alwaysShowLoading || areasLoading;
+  const loading = onboardingLoading || areasLoading;
 
   const onFinish = async (places: Place[]) => {
     await saveAreas(places);
@@ -75,12 +76,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgOverlay,
   },
   header: {
-    paddingHorizontal: space[4],
-    paddingTop: space[4],
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.lg,
   },
   title: {
     fontSize: 22,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
 });

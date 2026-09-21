@@ -10,7 +10,7 @@ import { useAlertAreas, MAX_ALERT_AREAS } from '@/lib/hooks/alert-areas.hook';
 import { usePushStore } from '@/lib/store/push.store';
 import { Place } from '@/lib/geo/places';
 import { ThemeColors } from '@/lib/theme';
-import { useThemeColors } from '@/lib/theme/ThemeContext';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 // Reached from Settings ("Manage alert areas") to add/remove which places
 // the user wants severe weather warnings for after onboarding — same picker
@@ -21,7 +21,7 @@ import { useThemeColors } from '@/lib/theme/ThemeContext';
 function EditAlertAreasScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const colors = useThemeColors();
+  const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const [loading, areas, saveAreas] = useAlertAreas();
 

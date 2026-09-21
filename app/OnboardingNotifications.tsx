@@ -7,14 +7,15 @@ import { useRouter, Redirect, Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
-import { useAlwaysShowStartPage } from '@/lib/hooks/always-show-start-page.hook';
+import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
 import { usePushStore } from '@/lib/store/push.store';
 import { SCREENS } from '@/lib/layout/constants';
 // Fixed to the light palette — same reasoning as Welcome/OnboardingPlaces:
 // this screen's dark-navy hero doesn't retint with the app's dark-mode
 // setting.
-import { fonts, lightColors as colors, radius, space, touchTarget } from '@/lib/theme';
+import { Fonts, Colors, Radius, Spacing, touchTarget } from '@/lib/theme';
 
+const colors = Colors.light;
 // Third onboarding step, reached from OnboardingPlaces. "Not Now" marks
 // onboarding complete immediately, same as before. Enabling notifications
 // instead moves on to OnboardingAlertAreas (which is the step that actually
@@ -25,7 +26,7 @@ function OnboardingNotificationsScreen(): JSX.Element {
   const { t } = useTranslation();
   const router = useRouter();
   const [onboardingLoading, hasOnboarded, markOnboarded] = useOnboarding();
-  const [alwaysShowLoading, alwaysShowStartPage] = useAlwaysShowStartPage();
+  const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
   const setNotificationsEnabled = usePushStore(s => s.setNotificationsEnabled);
   const [requesting, setRequesting] = useState(false);
 
@@ -48,7 +49,7 @@ function OnboardingNotificationsScreen(): JSX.Element {
 
   // Guards against reaching this screen once onboarding is already done —
   // same stale-navigation/deep-link case as Welcome/OnboardingPlaces.
-  if (!onboardingLoading && !alwaysShowLoading && hasOnboarded && !alwaysShowStartPage) {
+  if (!onboardingLoading && hasOnboarded && !alwaysShowStartPage) {
     return <Redirect href="/" />;
   }
 
@@ -98,46 +99,46 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: space[8],
+    paddingHorizontal: Spacing.xxl,
   },
   iconBadge: {
     width: 88,
     height: 88,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
     backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: space[6],
+    marginBottom: Spacing.xl,
   },
   title: {
     fontSize: 32,
-    fontFamily: fonts.extraBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: fonts.regular,
+    fontFamily: Fonts.sans.regular,
     color: colors.textInverse,
     textAlign: 'center',
-    marginTop: space[3],
+    marginTop: Spacing.md,
   },
   footer: {
-    padding: space[6],
-    gap: space[3],
+    padding: Spacing.xl,
+    gap: Spacing.md,
   },
   enableButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: space[2],
+    gap: Spacing.md,
     minHeight: touchTarget.nav,
-    borderRadius: radius.lg,
+    borderRadius: Radius.large,
     backgroundColor: colors.bg,
   },
   enableText: {
     fontSize: 16,
-    fontFamily: fonts.bold,
+    fontFamily: Fonts.sans.bold,
     color: colors.primary,
   },
   skipButton: {
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    fontFamily: fonts.semiBold,
+    fontFamily: Fonts.sans.bold,
     color: colors.textInverse,
   },
 });

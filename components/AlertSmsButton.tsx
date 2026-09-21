@@ -6,7 +6,7 @@ import * as SMS from 'expo-sms';
 
 import { CAPAlert } from '@/lib/alerts/providers/cap-alerts/alert';
 import { buildSmsText } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { radius } from '@/lib/theme';
+import { Radius } from '@/lib/theme';
 
 type AlertSmsButtonProps = {
   alert: CAPAlert;
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 40,
     height: 40,
-    borderRadius: radius.full,
+    borderRadius: Radius.extraLarge,
   },
 });
 
