@@ -7,6 +7,15 @@ import { SCREENS, TAB_ROUTES } from '@/lib/layout/constants';
 // Kept out of app/ so expo-router doesn't treat it as a route.
 
 const mockPush = jest.fn();
+const mockListeners: Record<string, () => void> = {};
+const mockNavigation = {
+  canGoBack: jest.fn(() => false),
+  goBack: jest.fn(),
+  addListener: jest.fn((event: string, cb: () => void) => {
+    mockListeners[event] = cb;
+    return () => {};
+  }),
+};
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -15,7 +24,7 @@ jest.mock('react-i18next', () => ({
 }));
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush }),
-  useNavigation: () => ({ canGoBack: () => false, goBack: jest.fn() }),
+  useNavigation: () => mockNavigation,
 }));
 jest.mock('react-native-safe-area-context', () => require('react-native-safe-area-context/jest/mock').default);
 jest.mock('@/lib/hooks/use-color-scheme', () => ({ useColorScheme: () => 'light' }));
@@ -25,6 +34,8 @@ jest.mock('@/lib/hooks/alerts.hook', () => ({ useAlertsQuery: () => ({ data: [] 
 import AppTabBar from '@/components/AppTabBar';
 // eslint-disable-next-line import/first
 import MoreConditionsScreen from '@/app/(tabs)/More/index';
+// eslint-disable-next-line import/first
+import AppBar from '@/components/AppBar';
 
 const textOf = (node: ReactTestInstance): string =>
   node.children.map(c => (typeof c === 'string' ? c : textOf(c))).join('');
@@ -102,5 +113,31 @@ describe('More conditions screen', () => {
 
     expect(mockPush).toHaveBeenCalledWith(SCREENS.Favourites);
     expect(SCREENS.Favourites).toBe('/More/Favourites');
+  });
+});
+
+describe('AppBar back arrow', () => {
+  beforeEach(() => {
+    mockNavigation.canGoBack.mockReset();
+    mockNavigation.goBack.mockClear();
+  });
+
+  // Regression: a screen re-rendered while covered (Today, on a language
+  // change while Settings was open) kept a stale back arrow after the cover
+  // was popped; tapping it threw "GO_BACK was not handled by any navigator".
+  test('hides once there is nowhere to go back to, and never calls goBack then', () => {
+    mockNavigation.canGoBack.mockReturnValue(true);
+    const { root } = render(<AppBar location="Today" />);
+    const backButtons = () => root.findAll(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Go back' && !!n.props.onPress);
+    expect(backButtons().length).toBeGreaterThan(0);
+    const staleOnPress = backButtons()[0].props.onPress;
+
+    // Settings popped: Today regains focus with no history behind it.
+    mockNavigation.canGoBack.mockReturnValue(false);
+    act(() => mockListeners.focus());
+
+    expect(backButtons()).toHaveLength(0);
+    act(() => staleOnPress());
+    expect(mockNavigation.goBack).not.toHaveBeenCalled();
   });
 });
