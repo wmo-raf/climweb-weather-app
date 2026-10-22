@@ -280,5 +280,6 @@
   "legend.green.description": "Hakuna tahadhari kwa sasa.",
   "placeholder_lorem_ipsum": "[Nakala ya muda — itabadilishwa na maelezo kamili baadaye.]",
   "placeholder_app_title": "Programu ya Hali ya Hewa ClimWeb",
-  "placeholder_app_description": "Programu ya Hali ya Hewa ClimWeb inatoa utabiri sahihi na wa kisasa wa hali ya hewa kwa maeneo duniani kote."
+  "placeholder_app_description": "Programu ya Hali ya Hewa ClimWeb inatoa utabiri sahihi na wa kisasa wa hali ya hewa kwa maeneo duniani kote.",
+  "settings.rateApp": "Kadiria programu hii"
 }

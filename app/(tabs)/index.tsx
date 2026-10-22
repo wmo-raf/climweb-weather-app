@@ -28,6 +28,7 @@ import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { getDayParts } from '@/lib/forecast/day-parts';
 import { ThemeColors, Fonts, navRailWidth, Spacing, tempSize } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useReviewPrompt } from '@/lib/hooks/use-review';
 
 // Module-level, not component state — persists only for the lifetime of
 // the JS process. Resets on a real app relaunch (cold start), but not
@@ -56,7 +57,7 @@ const MainScreen = () => {
   const locationError = useLocationStore(s => s.error);
   const getPreciseLocation = useLocationStore(s => s.getPreciseLocation);
   const resetLocationError = useLocationStore(s => s.resetError);
-  const { data: forecast, isLoading: loading, error: forecastErrorObj, refetch: refetchForecast } = useForecastQuery(lat, lon);
+  const { data: forecast, isLoading: loading, error: forecastErrorObj, refetch: refetchForecast, dataUpdatedAt: forecastUpdatedAt } = useForecastQuery(lat, lon);
   const forecastError = forecastErrorObj?.message;
   const { data: alerts = [], refetch: refetchAlerts } = useAlertsQuery();
   const [refreshing, setRefreshing] = React.useState(false);
@@ -122,6 +123,16 @@ const MainScreen = () => {
       router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
     }
   }, [locationError, favouritesLoading, favourites, welcomeDecision]);
+
+  // Store review prompt: only after a fresh forecast has loaded on this
+  // screen, and never while a warning covers the user's location.
+  const hasActiveWarning = !!lat && !!lon && alerts.some(alert => alertInLocation(alert, { latitude: lat, longitude: lon }));
+  useReviewPrompt({
+    enabled: welcomeDecision === 'skip',
+    hasForecast: !!forecast && !forecastErrorObj,
+    forecastUpdatedAt,
+    hasActiveWarning,
+  });
 
   if (welcomeDecision === 'pending') {
     return null;
