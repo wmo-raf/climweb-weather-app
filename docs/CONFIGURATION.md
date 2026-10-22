@@ -552,6 +552,57 @@ The default points at OpenStreetMap's public tile server, which is fine for deve
 
 ---
 
+## In-app Review Prompt
+
+The app occasionally asks users to rate it, using the platform's native review prompt ([expo-store-review](https://docs.expo.dev/versions/latest/sdk/storereview/)). The logic lives in [lib/review/](lib/review/); the rules are in [lib/review/policy.ts](lib/review/policy.ts).
+
+### When the app asks
+
+All of these must hold, checked a few seconds after Today shows a freshly loaded forecast:
+
+- The app was first opened at least `EXPO_PUBLIC_REVIEW_MIN_DAYS_SINCE_INSTALL` days ago, and has been opened on at least `EXPO_PUBLIC_REVIEW_MIN_DAYS_USED` distinct days.
+- The forecast just loaded successfully (not an error or a stale cached copy, which also means the device is online).
+- **No warning is active for the user's location.**
+- It hasn't asked in this app version, hasn't asked in the last `EXPO_PUBLIC_REVIEW_MIN_DAYS_BETWEEN_PROMPTS` days, and has asked fewer than `EXPO_PUBLIC_REVIEW_MAX_PROMPTS` times in total.
+- At most one attempt per session.
+
+The OS then decides whether the prompt actually appears (iOS shows it at most 3 times a year; Android has its own quota), and never reports back whether it did. The app never asks a question before the prompt — both Apple and Google prohibit that.
+
+```env
+EXPO_PUBLIC_REVIEW_MIN_DAYS_USED=5
+EXPO_PUBLIC_REVIEW_MIN_DAYS_SINCE_INSTALL=7
+EXPO_PUBLIC_REVIEW_MIN_DAYS_BETWEEN_PROMPTS=90
+EXPO_PUBLIC_REVIEW_MAX_PROMPTS=3
+```
+
+All optional; the values above are the defaults.
+
+### "Rate this app" in Settings
+
+Settings › About shows a **Rate this app** row that opens the store's review page, once the store links are set in `app.json`:
+
+```json
+{
+  "expo": {
+    "ios": { "appStoreUrl": "https://apps.apple.com/app/id<APP_STORE_ID>" },
+    "android": { "playStoreUrl": "https://play.google.com/store/apps/details?id=<PACKAGE_NAME>" }
+  }
+}
+```
+
+Without them the row is hidden (the automatic prompt doesn't need them).
+
+### Testing
+
+`expo-store-review` is a native module: rebuild the development client after pulling this change.
+
+1. **Rules:** `npx jest lib/review` covers every condition.
+2. **Timing, in a development build:** set `EXPO_PUBLIC_REVIEW_DEBUG=true` and the thresholds to `0` in `.env`, restart Metro, and open Today. Instead of the real prompt you get an alert when all conditions are met; skipped checks are logged as `[review] not asking: …`. **Settings › Reset review prompt (dev)** clears the counters. `EXPO_PUBLIC_REVIEW_DEBUG` is ignored in release builds.
+3. **Real prompt, iOS:** with debug off and thresholds at `0`, a development build always shows the prompt (submitting is disabled). TestFlight builds never show it — that's expected.
+4. **Real prompt, Android:** the prompt only appears when the app is installed from Google Play — use internal app sharing or an internal testing track, signed in with a tester account that hasn't already reviewed the app. Development builds and sideloaded APKs silently show nothing.
+
+---
+
 ## Default Locations (No-Permission Screen)
 
 When the app has not been granted location permission, it displays the **No Location** screen ([app/NoLocation.tsx](app/NoLocation.tsx)). This screen shows a list of pre-configured cities that the user can tap to load a forecast without needing device location access.
