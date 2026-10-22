@@ -10,6 +10,7 @@ import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
 import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useUnits } from '@/lib/hooks/use-units';
 import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
 
 
@@ -25,6 +26,7 @@ type LocationRowProps = {
 };
 function LocationRow(props: LocationRowProps): JSX.Element | null {
   const { t } = useTranslation();
+  const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const { district, onPress, id, onErrorChange } = props;
@@ -56,7 +58,7 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
                 <Text style={styles.header}>{district.name}</Text>
               </View>
               <View style={styles.smallContainer}>
-                <Text style={styles.small}>&uarr;{Math.round(today.maxTemperature || 0)}&deg;  &darr;{Math.round(today.minTemperature || 0)}&deg;</Text>
+                <Text style={styles.small}>&uarr;{units.temp(today.maxTemperature || 0)}  &darr;{units.temp(today.minTemperature || 0)}</Text>
               </View>
             </View>
             <View style={styles.right}>
