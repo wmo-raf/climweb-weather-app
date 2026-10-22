@@ -280,5 +280,19 @@
   "legend.green.description": "No warnings right now.",
   "placeholder_lorem_ipsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
   "placeholder_app_title": "ClimWeb Weather App",
-  "placeholder_app_description": "ClimWeb Weather App provides accurate and up-to-date weather forecasts for locations across the globe."
+  "placeholder_app_description": "ClimWeb Weather App provides accurate and up-to-date weather forecasts for locations across the globe.",
+  "units.title": "Units",
+  "units.temperature": "Temperature",
+  "units.wind": "Wind speed",
+  "units.precipitation": "Rain",
+  "units.celsius": "Celsius (°C)",
+  "units.fahrenheit": "Fahrenheit (°F)",
+  "units.kmh": "Kilometres per hour (km/h)",
+  "units.ms": "Metres per second (m/s)",
+  "units.knots": "Knots (kn)",
+  "units.mph": "Miles per hour (mph)",
+  "units.mm": "Millimetres (mm)",
+  "units.in": "Inches (in)",
+  "units.spoken.celsius": "{{value}} degrees Celsius",
+  "units.spoken.fahrenheit": "{{value}} degrees Fahrenheit"
 }

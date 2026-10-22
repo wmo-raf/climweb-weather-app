@@ -12,3 +12,10 @@ export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
 // not for production traffic (see OSM's tile usage policy) — deployments
 // should point this at their own OSM tile server instead.
 export const OSM_TILE_URL = process.env.EXPO_PUBLIC_OSM_TILE_URL ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+// Default display units for a fresh install, per deployment. Users can
+// change them in Settings > Units. Values: temperature celsius|fahrenheit;
+// wind kmh|ms|knots|mph; precipitation mm|in. Invalid values fall back to
+// celsius / kmh / mm (see lib/store/units-store.ts).
+export const DEFAULT_TEMPERATURE_UNIT = process.env.EXPO_PUBLIC_DEFAULT_TEMPERATURE_UNIT ?? 'celsius';
+export const DEFAULT_WIND_UNIT = process.env.EXPO_PUBLIC_DEFAULT_WIND_UNIT ?? 'kmh';
+export const DEFAULT_PRECIPITATION_UNIT = process.env.EXPO_PUBLIC_DEFAULT_PRECIPITATION_UNIT ?? 'mm';

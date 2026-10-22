@@ -11,6 +11,7 @@ import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
 import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from "@/lib/hooks/use-theme";
+import { useUnits } from "@/lib/hooks/use-units";
 
 type DayRowProps = {
   summary: ForecastDayRecord | undefined;
@@ -24,6 +25,7 @@ type DayRowProps = {
 
 const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const { t } = useTranslation();
+  const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -37,8 +39,8 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
     );
   }
 
-  const minTemp = Math.round(summary.minTemperature || 0);
-  const maxTemp = Math.round(summary.maxTemperature || 0);
+  const minTemp = units.tempValue(summary.minTemperature || 0);
+  const maxTemp = units.tempValue(summary.maxTemperature || 0);
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
   const dayAbbrev = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
@@ -55,7 +57,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
       <View
         style={[styles.card, alertInfo && styles.cardWithChip]}
         accessible={true}
-        accessibilityLabel={`${dayLabel}: ${description} ${minTemp} to ${maxTemp} degrees.`}
+        accessibilityLabel={`${dayLabel}: ${description} ${minTemp} to ${units.tempSpoken(summary.maxTemperature || 0)}.`}
       >
         {iconSource && <Icon source={iconSource} size={40} />}
         <View style={styles.textBlock}>
