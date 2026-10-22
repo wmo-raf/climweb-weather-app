@@ -131,7 +131,10 @@ export function buildTodaySummary(
   t: Translate,
   location: string,
   nowStep: ForecastStepRecord | undefined,
-  dayParts: Partial<Record<DayPart, DayPartSummary>>
+  dayParts: Partial<Record<DayPart, DayPartSummary>>,
+  // Converts a °C value to the user's display unit (rounded); the 2-degree
+  // "cooler" threshold below stays in °C so it's the same real difference.
+  toDisplayTemp: (celsius: number) => number = Math.round
 ): TodaySummaryParts {
   const nowCondition = t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]);
   const lead = t('summary.lead', { condition: nowCondition, location });
@@ -167,7 +170,7 @@ export function buildTodaySummary(
     nowStep?.temperature !== undefined &&
     nowStep.temperature - night.temperature >= 2
   ) {
-    trailing = t('summary.coolertonight', { temp: Math.round(night.temperature) });
+    trailing = t('summary.coolertonight', { temp: toDisplayTemp(night.temperature) });
   }
 
   return { lead, predictive, trailing };

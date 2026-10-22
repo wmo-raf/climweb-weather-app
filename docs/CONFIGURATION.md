@@ -309,6 +309,20 @@ Forecast days are grouped and daily summaries are calculated in the configured t
 EXPO_PUBLIC_APP_TIMEZONE=Africa/Dar_es_Salaam
 ```
 
+#### Units
+
+The app reads the units the API declares in `properties.meta.units` (for example `celsius`, `m/s`, `mm`) and converts every value to its internal units — °C, m/s and mm — when the forecast is fetched. A backend that sends Fahrenheit, km/h, knots or inches therefore works without code changes. A unit the app doesn't recognise is used as-is, with a console warning.
+
+What users *see* is a separate choice: users change it in **Settings → Units**, and each deployment sets the default for a fresh install:
+
+```env
+EXPO_PUBLIC_DEFAULT_TEMPERATURE_UNIT=celsius   # celsius | fahrenheit
+EXPO_PUBLIC_DEFAULT_WIND_UNIT=kmh              # kmh | ms | knots | mph
+EXPO_PUBLIC_DEFAULT_PRECIPITATION_UNIT=mm      # mm | in
+```
+
+All three are optional; unset or invalid values fall back to `celsius`, `kmh` and `mm`.
+
 ---
 
 ### 2. Using a different forecast API
@@ -325,7 +339,7 @@ export interface ForecastProviderInterface {
 }
 ```
 
-`ForecastRecord` is the app’s internal forecast representation. It is provider-agnostic and stored directly in Redux. Its structure is defined in [lib/forecast/types.ts](lib/forecast/types.ts):
+`ForecastRecord` is the app’s internal forecast representation. It is provider-agnostic and stored directly in Redux. Its values must be in canonical units — temperatures in °C, wind speed in m/s, precipitation in mm — so a custom provider should convert with the helpers in [lib/units/index.ts](lib/units/index.ts) (`toCelsius`, `toMetresPerSecond`, `toMillimetres`). Its structure is defined in [lib/forecast/types.ts](lib/forecast/types.ts):
 
 ```ts
 export interface ForecastRecord {

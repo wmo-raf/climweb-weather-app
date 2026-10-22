@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, View, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, Href } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -9,6 +9,8 @@ import { BottomTabInset, MaxContentWidth, Spacing, Radius } from "@/lib/theme";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { useThemeToggle } from "@/lib/hooks/use-theme-toggle";
 import { useLanguage } from "@/lib/hooks/use-language";
+import { useUnitsStore } from "@/lib/store/units-store";
+import { TEMPERATURE_SYMBOLS, WIND_SYMBOLS, PRECIPITATION_SYMBOLS } from "@/lib/units";
 import AppBar from "@/components/AppBar";
 import { useTranslation } from "react-i18next";
 import { useOnboardingToggle } from "@/lib/hooks/use-onboarding-toggle";
@@ -18,6 +20,9 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const { isDarkMode, setIsDarkMode } = useThemeToggle();
   const { currentLanguage } = useLanguage();
+  const temperatureUnit = useUnitsStore((s) => s.temperature);
+  const windUnit = useUnitsStore((s) => s.wind);
+  const precipitationUnit = useUnitsStore((s) => s.precipitation);
   const { alwaysShowOnboarding, setAlwaysShowOnboarding } = useOnboardingToggle();
   const theme = useTheme();
   const router = useRouter();
@@ -79,6 +84,23 @@ export default function SettingsScreen() {
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
               rightText={currentLanguage.nativeName}
               onPress={() => router.push("/settings/language")}
+            />
+
+            <View
+              style={[
+                styles.separator,
+                { backgroundColor: theme.bgMuted },
+              ]}
+            />
+
+            {/* Units Row */}
+            <SettingItem
+              label={t("units.title")}
+              leftIcon="speedometer"
+              leftIconColor="#0b8043"
+              leftIconBgColor="rgba(11, 128, 67, 0.15)"
+              rightText={`${TEMPERATURE_SYMBOLS[temperatureUnit]} · ${WIND_SYMBOLS[windUnit]} · ${PRECIPITATION_SYMBOLS[precipitationUnit]}`}
+              onPress={() => router.push("/settings/units" as Href)}
             />
 
             <View

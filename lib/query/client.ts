@@ -40,6 +40,10 @@ export const queryClient = new QueryClient({
 export const persistOptions = {
   persister: createAsyncStoragePersister({ storage: jsonStorage, key: 'query-cache' }),
   maxAge: PERSIST_MAX_AGE,
+  // Bump when the shape or units of cached data change, so caches saved by
+  // an older build are discarded instead of misread. v2: forecast values
+  // stored in canonical units (wind in m/s, previously km/h).
+  buster: 'v2-canonical-units',
 };
 
 // React Native has no browser "window focus" event; Query's web default

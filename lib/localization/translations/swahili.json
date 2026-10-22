@@ -281,5 +281,19 @@
   "placeholder_lorem_ipsum": "[Nakala ya muda — itabadilishwa na maelezo kamili baadaye.]",
   "placeholder_app_title": "Programu ya Hali ya Hewa ClimWeb",
   "placeholder_app_description": "Programu ya Hali ya Hewa ClimWeb inatoa utabiri sahihi na wa kisasa wa hali ya hewa kwa maeneo duniani kote.",
-  "settings.rateApp": "Kadiria programu hii"
+  "settings.rateApp": "Kadiria programu hii",
+  "units.title": "Vipimo",
+  "units.temperature": "Halijoto",
+  "units.wind": "Kasi ya upepo",
+  "units.precipitation": "Mvua",
+  "units.celsius": "Selsiasi (°C)",
+  "units.fahrenheit": "Farenhaiti (°F)",
+  "units.kmh": "Kilomita kwa saa (km/h)",
+  "units.ms": "Mita kwa sekunde (m/s)",
+  "units.knots": "Noti (kn)",
+  "units.mph": "Maili kwa saa (mph)",
+  "units.mm": "Milimita (mm)",
+  "units.in": "Inchi (in)",
+  "units.spoken.celsius": "nyuzi {{value}} za Selsiasi",
+  "units.spoken.fahrenheit": "nyuzi {{value}} za Farenhaiti"
 }
