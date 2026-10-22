@@ -3,6 +3,15 @@ import { parseYrForecast } from "./providers";
 import { YrForecast } from "./types";
 import { APP_TIMEZONE } from "@/config";
 
+// The fixture is a Lilongwe forecast and the expectations below (day
+// boundaries, "+02:00" offsets, steps per day) are in Malawi time. Pin the
+// timezone here so the tests don't depend on whatever the local .env sets
+// EXPO_PUBLIC_APP_TIMEZONE to (e.g. a UTC+3 deployment).
+jest.mock("@/config", () => ({
+  ...jest.requireActual("@/config"),
+  APP_TIMEZONE: "Africa/Blantyre",
+}));
+
 describe("parseYrForecast", () => {
   const sampleForecast: YrForecast = require("./weatherData.test.json");
 
