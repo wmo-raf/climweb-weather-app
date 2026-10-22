@@ -87,7 +87,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // Deliberately no card chrome (border/shadow/background) here, unlike
   // the loaded-row wrapper above — matches the plain floating spinner used
   // for the whole-page loading state on the Today tab, since this is the
-  // spinner shown while Places/NoLocation's rows are individually loading.
+  // spinner shown while Favourites/NoLocation's rows are individually loading.
   loadingWrapper: {
     width: '100%',
     marginTop: Spacing.lg,

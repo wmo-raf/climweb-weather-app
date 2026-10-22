@@ -10,7 +10,7 @@ import { APP_TIMEZONE } from '@/config';
 import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-// Shown at the bottom of Today, 5 Days, Places and Alerts — a single,
+// Shown at the bottom of Today, Five Days, Alerts and Favourites — a single,
 // app-wide "how fresh is this data" indicator tied to the last time the
 // current location's forecast query actually received data, not to
 // whatever's currently rendered on screen. Reads the same query cache entry
