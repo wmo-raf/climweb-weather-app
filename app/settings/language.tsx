@@ -35,7 +35,7 @@ export default function LanguageScreen() {
             themeColor="textSubtle"
             style={[styles.sectionHeader, { marginTop: 16 }]}
           >
-            Select Language
+            {t("language.select")}
           </ThemedText>
 
           <ThemedView type="bg" style={styles.card}>

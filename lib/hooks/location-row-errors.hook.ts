@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 type RetryMap = Record<string, () => void>;
 
-// Shared by Places and NoLocation: each renders a list of LocationRow
+// Shared by Favourites and NoLocation: each renders a list of LocationRow
 // cards that fetch independently, and a failed fetch should surface as
 // ONE consolidated error card for the screen rather than one per row.
 // Rows report their error state here instead of rendering their own card.

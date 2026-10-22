@@ -18,6 +18,11 @@ type AppBarProps = {
   // as a plain screen title (e.g. "Settings", "Warnings").
   isPlace?: boolean,
   hideSettings?: boolean,
+  // Top-level tab screens that must never show a back arrow.
+  hideBack?: boolean,
+  // Icon shown before a plain (non-place) title, same size/colour as the
+  // place pin.
+  titleIcon?: string,
 };
 
 import { ThemedText } from '@/components/themed-text';
@@ -32,7 +37,7 @@ const AppBar = (props: AppBarProps) => {
 
   const titleBlock = (
     <>
-      {props.isPlace && <Icon size={18} color={colors.primary} source="map-marker" />}
+      {(props.isPlace || props.titleIcon) && <Icon size={18} color={colors.primary} source={props.titleIcon ?? 'map-marker'} />}
       <View style={styles.titleTextBlock}>
         <ThemedText type="default" themeColor="textStrong" style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</ThemedText>
         {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t('Tap to change place')}</ThemedText>}
@@ -43,8 +48,8 @@ const AppBar = (props: AppBarProps) => {
   return (
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
-        {navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={styles.backButton}>
+        {!props.hideBack && navigation.canGoBack() &&
+          <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         {props.isPlace

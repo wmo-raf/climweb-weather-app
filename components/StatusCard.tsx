@@ -21,7 +21,7 @@ type StatusCardProps = {
 
 // Shared "nothing to show" / "something went wrong" card. Mirrors the
 // visual pattern already used for Warnings' empty state, with an optional
-// action button for error/unknown-state cases (Today, Places, Alerts,
+// action button for error/unknown-state cases (Today, Favourites, Alerts,
 // NoLocation, 5 Days).
 function StatusCard({ icon, iconColor, title, text, onRetry, actionLabel }: StatusCardProps): JSX.Element {
   const { t } = useTranslation();
