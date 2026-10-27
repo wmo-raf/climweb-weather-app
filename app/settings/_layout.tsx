@@ -7,6 +7,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="index" options={{ title: 'Settings' }} />
       <Stack.Screen name="about-us" options={{ title: 'About Us' }} />
       <Stack.Screen name="language" options={{ title: 'Language' }} />
+      <Stack.Screen name="units" options={{ title: 'Units' }} />
     </Stack>
   );
 }

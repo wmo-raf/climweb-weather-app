@@ -30,3 +30,11 @@ export const REVIEW_MAX_PROMPTS = nonNegativeInt(process.env.EXPO_PUBLIC_REVIEW_
 // Development builds only: log why each check didn't ask, and show an alert
 // instead of the real prompt when it would ask. Ignored in release builds.
 export const REVIEW_DEBUG = process.env.EXPO_PUBLIC_REVIEW_DEBUG === 'true';
+
+// Default display units for a fresh install, per deployment. Users can
+// change them in Settings > Units. Values: temperature celsius|fahrenheit;
+// wind kmh|ms|knots|mph; precipitation mm|in. Invalid values fall back to
+// celsius / kmh / mm (see lib/store/units-store.ts).
+export const DEFAULT_TEMPERATURE_UNIT = process.env.EXPO_PUBLIC_DEFAULT_TEMPERATURE_UNIT ?? 'celsius';
+export const DEFAULT_WIND_UNIT = process.env.EXPO_PUBLIC_DEFAULT_WIND_UNIT ?? 'kmh';
+export const DEFAULT_PRECIPITATION_UNIT = process.env.EXPO_PUBLIC_DEFAULT_PRECIPITATION_UNIT ?? 'mm';

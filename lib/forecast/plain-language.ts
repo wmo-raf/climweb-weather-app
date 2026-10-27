@@ -1,17 +1,23 @@
 // Buckets raw wind/rain measurements into plain-language levels so the UI
-// never shows a bare km/h or mm figure — every number gets a word next to it.
+// never shows a bare wind or rain figure — every number gets a word next to it.
 // Thresholds are simple, UI-facing categories (not a meteorological product),
 // tuned for a lake-fishing safety context per DCCMS guidance in the design reference.
 
 export type WindLevel = 'calm' | 'gentle' | 'breezy' | 'strong' | 'severe';
 export type RainLevel = 'none' | 'light' | 'moderate' | 'heavy';
 
-export function windLevel(windSpeedKmh: number | undefined): WindLevel {
-  const speed = windSpeedKmh ?? 0;
-  if (speed < 5) return 'calm';
-  if (speed < 20) return 'gentle';
-  if (speed < 35) return 'breezy';
-  if (speed < 50) return 'strong';
+// Thresholds were set in km/h (5 / 20 / 35 / 50); wind speeds are now
+// canonical m/s, so they're converted here rather than re-picked — the same
+// physical wind gets the same word whatever unit the user displays.
+const KMH = 1 / 3.6;
+const WIND_THRESHOLDS_MS = { calm: 5 * KMH, gentle: 20 * KMH, breezy: 35 * KMH, strong: 50 * KMH };
+
+export function windLevel(windSpeedMs: number | undefined): WindLevel {
+  const speed = windSpeedMs ?? 0;
+  if (speed < WIND_THRESHOLDS_MS.calm) return 'calm';
+  if (speed < WIND_THRESHOLDS_MS.gentle) return 'gentle';
+  if (speed < WIND_THRESHOLDS_MS.breezy) return 'breezy';
+  if (speed < WIND_THRESHOLDS_MS.strong) return 'strong';
   return 'severe';
 }
 
