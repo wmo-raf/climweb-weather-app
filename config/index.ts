@@ -12,3 +12,21 @@ export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
 // not for production traffic (see OSM's tile usage policy) — deployments
 // should point this at their own OSM tile server instead.
 export const OSM_TILE_URL = process.env.EXPO_PUBLIC_OSM_TILE_URL ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+// In-app store review prompt (lib/review). The OS decides whether the prompt
+// actually appears; these only control when the app asks. All optional.
+const nonNegativeInt = (value: string | undefined, fallback: number): number => {
+  const n = parseInt(value ?? '', 10);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+};
+// Distinct days the app must have been opened on before asking.
+export const REVIEW_MIN_DAYS_USED = nonNegativeInt(process.env.EXPO_PUBLIC_REVIEW_MIN_DAYS_USED, 5);
+// Days since first launch before asking.
+export const REVIEW_MIN_DAYS_SINCE_INSTALL = nonNegativeInt(process.env.EXPO_PUBLIC_REVIEW_MIN_DAYS_SINCE_INSTALL, 7);
+// Minimum gap between two asks.
+export const REVIEW_MIN_DAYS_BETWEEN_PROMPTS = nonNegativeInt(process.env.EXPO_PUBLIC_REVIEW_MIN_DAYS_BETWEEN_PROMPTS, 90);
+// Lifetime cap on asks (the OS has its own cap on top of this).
+export const REVIEW_MAX_PROMPTS = nonNegativeInt(process.env.EXPO_PUBLIC_REVIEW_MAX_PROMPTS, 3);
+// Development builds only: log why each check didn't ask, and show an alert
+// instead of the real prompt when it would ask. Ignored in release builds.
+export const REVIEW_DEBUG = process.env.EXPO_PUBLIC_REVIEW_DEBUG === 'true';

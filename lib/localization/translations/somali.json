@@ -20,7 +20,8 @@
     },
     "about": {
       "appVersion": "App Version"
-    }
+    },
+    "rateApp": "Rate this app"
   },
   "common": {
     "actions": {

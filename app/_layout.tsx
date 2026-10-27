@@ -18,9 +18,10 @@ import {
 import '../lib/localization/i18n';
 import { AutocompleteDropdownContextProvider } from "@/lib/autocomplete";
 import { Fonts } from '@/lib/theme';
-import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { ThemeProvider, DarkTheme, DefaultTheme } from 'expo-router/react-navigation';
 import { useColorScheme } from '@/lib/hooks/use-color-scheme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useRecordAppOpens } from '@/lib/hooks/use-review';
 
 global.Buffer = global.Buffer || Buffer;
 
@@ -34,6 +35,8 @@ SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
   const scheme = useColorScheme();
+  // Counts days used, for deciding when to ask for a store review.
+  useRecordAppOpens();
   const colors = useTheme();
 
   const theme = {
