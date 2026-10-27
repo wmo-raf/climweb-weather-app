@@ -22,7 +22,7 @@ import { ForecastRecord } from '@/lib/forecast/types';
 import { ThemeColors, Fonts, navRailWidth, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-const PlacesScreen = () => {
+const FavouritesScreen = () => {
   const { t } = useTranslation();
   const setLocation = useLocationStore(s => s.setLocation);
   const queryClient = useQueryClient();
@@ -48,10 +48,12 @@ const PlacesScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t("places.title")} />
+          <AppBar location={t('Favourites')} />
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
             {favouritesLoading ? (
               <View style={styles.loader}>
@@ -106,7 +108,7 @@ const PlacesScreen = () => {
   );
 };
 
-export default PlacesScreen;
+export default FavouritesScreen;
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {

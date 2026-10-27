@@ -12,6 +12,7 @@ import AlertLegend from '@/components/AlertLegend';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
 
+import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
@@ -57,10 +58,12 @@ const WarningsScreen = () => {
     : (alerts.length > 0 ? [{ data: alerts }] : []);
 
   const onSelectAlert = (alert: CAPAlert) =>
-    router.push({ pathname: '/WeatherWarning', params: { location, alertID: alert.identifier } } as Href);
+    router.push({ pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier } } as Href);
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={t("warnings.title")} />

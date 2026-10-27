@@ -124,7 +124,7 @@
     },
     "favourites": {
       "title": "Your Favourite Places",
-      "text": "If you save favourite places, they are stored only on your device. This information is never sent to us or shared with anyone else. You can add, change, or remove your favourite places at any time from the Places tab."
+      "text": "If you save favourite places, they are stored only on your device. This information is never sent to us or shared with anyone else. You can add, change, or remove your favourite places at any time from Favourites on the More tab."
     },
     "security": {
       "title": "Data Security",
@@ -149,7 +149,7 @@
   },
   "time": {
     "today": "Today",
-    "fiveDays": "5 days",
+    "fiveDays": "Five Days",
     "nextFiveDays": "Next 5 days",
     "time": "Time",
     "days": {
@@ -190,7 +190,7 @@
     },
     "setFavourites": "Set favourite places",
     "edit": "Edit favourite places",
-    "yourPlaces": "Your places",
+    "yourPlaces": "Your favourite places",
     "searchLocation": "Search location",
     "locationError": {
       "message": "Not able to use your location to find the closest place."
@@ -481,6 +481,16 @@
     "spoken": {
       "celsius": "{{value}} degrees Celsius",
       "fahrenheit": "{{value}} degrees Fahrenheit"
+    }
+  },
+  "More": "More",
+  "More conditions": "More conditions",
+  "Favourites": "Favourites",
+  "Go back": "Go back",
+  "more": {
+    "intro": "More weather details for your work.",
+    "favourites": {
+      "description": "Your saved places"
     }
   }
 }
