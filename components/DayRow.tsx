@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
-import { describeDaySummary } from "@/lib/forecast/day-parts";
+import { describeDaySummary, WEEKDAY_LABEL_KEYS } from "@/lib/forecast/day-parts";
 import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
 import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
@@ -31,7 +31,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
     return (
       <View style={styles.dayRow}>
         <View style={styles.card}>
-          <Text style={styles.whiteText}>{t('Forecast unavailable')}.</Text>
+          <Text style={styles.whiteText}>{t("forecast.states.unavailable")}.</Text>
         </View>
       </View>
     );
@@ -41,8 +41,8 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const maxTemp = Math.round(summary.maxTemperature || 0);
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
-  const dayAbbrev = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
-  const weekday = t(dayAbbrev);
+  const day = DateTime.fromISO(summary.day);
+  const weekday = t(WEEKDAY_LABEL_KEYS[day.weekday] ?? '');
   const dayLabel = isTomorrow ? `${t('today.tomorrow')} — ${weekday}` : weekday;
   const description = describeDaySummary(t, summary);
 

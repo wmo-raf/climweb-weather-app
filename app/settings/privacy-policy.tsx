@@ -24,7 +24,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("Privacy Policy")} hideSettings />
+        <AppBar location={t("privacy.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -42,7 +42,7 @@ export default function PrivacyPolicyScreen(): JSX.Element {
                 <Ionicons name="information-circle-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('Privacy Policy')}
+                {t("privacy.title")}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>

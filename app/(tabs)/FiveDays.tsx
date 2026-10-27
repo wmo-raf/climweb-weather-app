@@ -68,7 +68,7 @@ const FiveDaysScreen = () => {
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t('Next 5 days')} />
+          <AppBar location={t("time.nextFiveDays")} />
           <ScrollView showsVerticalScrollIndicator={false}>
             {!hasLocation ? (
               <View style={styles.alertsWrapper}>

@@ -35,7 +35,7 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
             return (
                 <View style={styles.noForecast}>
                     <Text>
-                        {t('Forecast not available at the moment. Please try again later.')}
+                        {t("forecast.error.unavailable")}
                     </Text>
                 </View>
             );
@@ -62,7 +62,7 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
 
     return (
         <View style={styles.loading}>
-            <Text>{t('Loading')}...</Text>
+            <Text>{t("common.states.loading")}...</Text>
         </View>
     );
 };

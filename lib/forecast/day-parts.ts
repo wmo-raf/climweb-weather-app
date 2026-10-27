@@ -8,10 +8,21 @@ export type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 export const DAY_PARTS: DayPart[] = ['morning', 'afternoon', 'evening', 'night'];
 
 export const DAY_PART_LABEL_KEYS: Record<DayPart, string> = {
-  morning: 'Morning',
-  afternoon: 'Afternoon',
-  evening: 'Evening',
-  night: 'Night',
+  morning: 'time.periods.morning',
+  afternoon: 'time.periods.afternoon',
+  evening: 'time.periods.evening',
+  night: 'time.periods.night',
+};
+
+// Maps Luxon weekday numbers (1 = Monday, 7 = Sunday) to translation keys.
+export const WEEKDAY_LABEL_KEYS: Record<number, string> = {
+  1: 'time.days.mon',
+  2: 'time.days.tue',
+  3: 'time.days.wed',
+  4: 'time.days.thu',
+  5: 'time.days.fri',
+  6: 'time.days.sat',
+  7: 'time.days.sun',
 };
 
 const RANGE: Record<DayPart, [number, number]> = {

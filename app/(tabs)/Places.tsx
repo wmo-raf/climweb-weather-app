@@ -51,7 +51,7 @@ const PlacesScreen = () => {
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t('Places')} />
+          <AppBar location={t("places.title")} />
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
             {favouritesLoading ? (
               <View style={styles.loader}>
@@ -83,7 +83,7 @@ const PlacesScreen = () => {
                     icon="cloud-off-outline"
                     iconColor={colors.danger}
                     title={t('forecast.error.title')}
-                    text={t('There was an error getting the forecast') + '.'}
+                    text={t("forecast.error.generic") + '.'}
                     onRetry={retryAll}
                   />
                 )}

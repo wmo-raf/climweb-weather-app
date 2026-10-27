@@ -38,7 +38,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
       location,
       dayString: daySummary.day,
       startAtCurrentTime: 'yes',
-      title: t('Today'),
+      title: t("time.today"),
     },
   } as Href);
 

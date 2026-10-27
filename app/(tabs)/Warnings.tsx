@@ -63,7 +63,7 @@ const WarningsScreen = () => {
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t('Warnings')} />
+          <AppBar location={t("warnings.title")} />
           <SectionList
             sections={sections}
             keyExtractor={(alert, idx) => alert.identifier ?? String(idx)}

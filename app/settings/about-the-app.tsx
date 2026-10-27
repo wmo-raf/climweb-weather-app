@@ -34,7 +34,7 @@ export default function AboutTheAppScreen(): JSX.Element {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("About the app")} hideSettings />
+        <AppBar location={t("aboutApp.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -47,11 +47,11 @@ export default function AboutTheAppScreen(): JSX.Element {
                 <Ionicons name="information-circle-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('app.and.forecasts')}
+                {t('aboutApp.forecasts.title')}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>
-              {t('app.and.forecasts.desc')}
+              {t('aboutApp.forecasts.description')}
             </ThemedText>
           </ThemedView>
 
@@ -62,7 +62,7 @@ export default function AboutTheAppScreen(): JSX.Element {
                 <Ionicons name="people-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('partners')}
+                {t("aboutApp.partners")}
               </ThemedText>
             </View>
             <View style={styles.partnersList}>
@@ -84,7 +84,7 @@ export default function AboutTheAppScreen(): JSX.Element {
                 <Ionicons name="images-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('Icons')}
+                {t("aboutApp.icons")}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>
@@ -108,7 +108,7 @@ export default function AboutTheAppScreen(): JSX.Element {
                 <Ionicons name="map-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('Geographical Data')}
+                {t("aboutApp.geographicalData")}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>

@@ -65,7 +65,7 @@ export const Search = ({ setLocation }: SearchProps) => {
           clearOnFocus={true}
           closeOnBlur={false}
           closeOnSubmit={true}
-          textInputProps={{ placeholder: t('Search location'), placeholderTextColor: colors.textMuted, style: styles.textStyle }}
+          textInputProps={{ placeholder: t("places.searchLocation"), placeholderTextColor: colors.textMuted, style: styles.textStyle }}
           onSelectItem={handleSelect}
           inputContainerStyle={styles.searchBar}
           debounce={100}
@@ -83,12 +83,12 @@ export const Search = ({ setLocation }: SearchProps) => {
       </View>
       <Portal>
         <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialogStyle}>
-          <Dialog.Title style={styles.whiteText}>Alert</Dialog.Title>
+          <Dialog.Title style={styles.whiteText}>{t("common.alerts.title")}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium" style={styles.whiteText}>Not able to use your location to find the closest place.</Text>
+            <Text variant="bodyMedium" style={styles.whiteText}>{t("places.locationError.message")}</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={hideDialog} style={styles.dialogButton}><Text style={styles.whiteText}>Dismiss</Text></Button>
+            <Button onPress={hideDialog} style={styles.dialogButton}><Text style={styles.whiteText}>{t("common.actions.dismiss")}</Text></Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

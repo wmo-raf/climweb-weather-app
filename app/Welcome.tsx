@@ -11,6 +11,7 @@ import { LANGUAGES, LanguageKey } from '@/lib/localization/translations';
 import { SCREENS } from '@/lib/layout/constants';
 import { useOnboarding } from '@/lib/hooks/onboarding.hook';
 import { useOnboardingToggle } from '@/lib/hooks/use-onboarding-toggle';
+import { useLanguage } from '@/lib/hooks/use-language';
 // Fixed to the light palette, not the active theme: Welcome always renders
 // its own dark-navy hero (see SystemBars override below) regardless of the
 // user's in-app dark-mode setting — the design brief keeps this colored
@@ -21,31 +22,17 @@ const colors = Colors.light;
 const appName = Constants.expoConfig?.name ?? 'Weather App';
 
 function WelcomeScreen(): JSX.Element {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const router = useRouter();
 
   const [onboardingLoading, hasOnboarded] = useOnboarding();
   const { alwaysShowOnboarding: alwaysShowStartPage } = useOnboardingToggle();
 
-  const [selectedLang, setSelectedLang] = useState<LanguageKey>((i18n.language as LanguageKey) ?? 'en');
+  const { languageCode: selectedLang, setLanguageCode: onSelectLanguage } = useLanguage();
   const [menuVisible, setMenuVisible] = useState(false);
   
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
-
-  // i18n's own language detection now resolves synchronously from storage,
-  // but i18next itself still finalizes init() on a microtask — re-sync
-  // once it does so a previously chosen language shows as selected
-  // instead of getting stuck on whatever i18n.language happened to be at
-  // mount time.
-  useEffect(() => {
-    setSelectedLang((i18n.language as LanguageKey) ?? 'en');
-  }, [i18n.language]);
-
-  const onSelectLanguage = (lang: LanguageKey) => {
-    setSelectedLang(lang);
-    i18n.changeLanguage(lang);
-  };
 
   // Language is chosen here; favourite places are chosen on the next
   // onboarding step (OnboardingPlaces), which is the one that actually
@@ -78,7 +65,7 @@ function WelcomeScreen(): JSX.Element {
             <TouchableOpacity onPress={openMenu} style={styles.languageSelector}>
               <Icon source="earth" size={20} color={colors.textInverse} />
               <Text style={styles.languageSelectorText}>
-                {LANGUAGES[selectedLang]?.nativeName || LANGUAGES[selectedLang]?.label || 'English'}
+                {LANGUAGES[selectedLang as LanguageKey]?.nativeName || LANGUAGES[selectedLang as LanguageKey]?.label || 'English'}
               </Text>
               <Icon source="chevron-down" size={20} color={colors.textInverse} />
             </TouchableOpacity>
@@ -102,7 +89,7 @@ function WelcomeScreen(): JSX.Element {
         <View style={styles.iconBadge}>
           <Icon source="weather-partly-cloudy" size={44} color={colors.bgOverlay} />
         </View>
-        <Text style={styles.title}>{appName}</Text>
+        <Text style={styles.title}>{t('welcome.title')}</Text>
         <Text style={styles.subtitle}>{t('welcome.subtitle')}</Text>
       </View>
 

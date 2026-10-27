@@ -23,7 +23,7 @@ export default function AboutUsScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("About Us")} hideSettings />
+        <AppBar location={t("aboutUs.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -41,7 +41,7 @@ export default function AboutUsScreen() {
                 <Ionicons name="business" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                Ethiopian Meteorological Institute
+                {t("aboutUs.emi.title")}
               </ThemedText>
             </View>
 
@@ -50,14 +50,12 @@ export default function AboutUsScreen() {
               type="default"
               style={styles.paragraph}
             >
-              The Ethiopian Meteorological Institute (EMI) is the state
-              authority responsible for providing weather, climate, and early
-              warning services across Ethiopia.
+              {t("aboutUs.emi.description")}
             </ThemedText>
 
             <InfoItem
-              title="Mission"
-              description="To monitor, analyze, and forecast weather, climate, and agro-meteorological conditions to support sustainable national development and ensure public safety.."
+              title={t("aboutUs.emi.mission.title")}
+              description={t("aboutUs.emi.mission.description")}
               icon="ribbon-outline"
               iconColor={theme.primary}
             />
@@ -69,7 +67,7 @@ export default function AboutUsScreen() {
             themeColor="textSubtle"
             style={styles.groupHeader}
           >
-            Forecast Services
+            {t("aboutUs.forecastServices.title")}
           </ThemedText>
 
           <ThemedView type="bg" style={styles.card}>
@@ -87,7 +85,7 @@ export default function AboutUsScreen() {
                 />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                Meteorological Products
+                {t("aboutUs.forecastServices.products.title")}
               </ThemedText>
             </View>
 
@@ -96,14 +94,13 @@ export default function AboutUsScreen() {
               type="default"
               style={styles.paragraph}
             >
-              EMI uses advanced meteorological stations, satellite data, and
-              numerical models to deliver tailored forecasts:
+              {t("aboutUs.forecastServices.products.description")}
             </ThemedText>
 
             {/* Nowcast Item */}
             <InfoItem
-              title="Nowcasting & Hourly"
-              description="Real-time alerts for sudden changes in weather conditions."
+              title={t("aboutUs.forecastServices.nowcasting.title")}
+              description={t("aboutUs.forecastServices.nowcasting.description")}
               icon="time-outline"
               iconColor={theme.primary}
             />
@@ -112,8 +109,8 @@ export default function AboutUsScreen() {
 
             {/* Daily Item */}
             <InfoItem
-              title="Daily & Medium Range"
-              description="1 to 10-day outlooks for travel, public safety, and general planning."
+              title={t("aboutUs.forecastServices.daily.title")}
+              description={t("aboutUs.forecastServices.daily.description")}
               icon="today-outline"
               iconColor={theme.primary}
             />
@@ -122,8 +119,8 @@ export default function AboutUsScreen() {
 
             {/* Seasonal Item */}
             <InfoItem
-              title="Seasonal Outlooks"
-              description="Critical forecasts for agricultural seasons like Belg and Kiremt."
+              title={t("aboutUs.forecastServices.seasonal.title")}
+              description={t("aboutUs.forecastServices.seasonal.description")}
               icon="calendar-outline"
               iconColor={theme.primary}
             />

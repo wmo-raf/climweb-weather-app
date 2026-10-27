@@ -24,7 +24,7 @@ export default function LanguageScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("Language")} hideSettings />
+        <AppBar location={t("settings.language.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -35,7 +35,7 @@ export default function LanguageScreen() {
             themeColor="textSubtle"
             style={[styles.sectionHeader, { marginTop: 16 }]}
           >
-            Select Language
+            {t("settings.language.title")}
           </ThemedText>
 
           <ThemedView type="bg" style={styles.card}>

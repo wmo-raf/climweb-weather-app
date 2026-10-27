@@ -39,7 +39,7 @@ const NoLocationScreen = () => {
                 icon="cloud-off-outline"
                 iconColor={colors.danger}
                 title={t('forecast.error.title')}
-                text={t('There was an error getting the forecast') + '.'}
+                text={t("forecast.error.generic") + '.'}
                 onRetry={retryAll}
               />
             )}

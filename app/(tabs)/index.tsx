@@ -198,7 +198,7 @@ const MainScreen = () => {
           <View style={styles.xlRightPane}>
             <DayPartsGrid dayParts={getDayParts(todaySummary)} columns={4} />
             <View style={styles.xlFiveDaysSection}>
-              <Text style={styles.xlSectionHeader}>{t('Next 5 days')}</Text>
+              <Text style={styles.xlSectionHeader}>{t("time.nextFiveDays")}</Text>
               <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
             </View>
           </View>

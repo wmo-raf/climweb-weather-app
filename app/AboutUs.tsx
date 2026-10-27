@@ -8,7 +8,7 @@ import Alerts from '@/components/Alerts';
 
 import { useLocationStore } from '@/lib/store/location.store';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Spacing, Radius } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 function AboutUsScreen(): JSX.Element {
@@ -22,7 +22,7 @@ function AboutUsScreen(): JSX.Element {
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t("About us")} />
+          <AppBar location={t("aboutUs.title")} />
           <Alerts lat={lat} lon={lon} location={"About us"} />
           <View style={styles.container}>
             <View style={styles.opacity}>
@@ -31,31 +31,31 @@ function AboutUsScreen(): JSX.Element {
                   <View style={styles.card}>
                     <Text variant="bodyMedium">
                       <Text style={styles.title}>
-                        {t('placeholder_app_title')}
+                        {t("placeholders.appTitle")}
                       </Text>{"\n"}
                     </Text>
                     <Text variant="bodyMedium">
                       <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
                       <Text style={styles.whiteText}>
-                        {t('placeholder_lorem_ipsum')}
+                        {t('how.we.started.desc')}
                       </Text>
                     </Text>
                     <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
                       <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
                       <Text style={styles.whiteText}>
-                        {t('placeholder_lorem_ipsum')}
+                        {t('our.mandate.desc')}
                       </Text>
                     </Text>
                     <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
                       <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
                       <Text style={styles.whiteText}>
-                        {t('placeholder_lorem_ipsum')}
+                        {t('our.mission.desc')}
                       </Text>
                     </Text>
                     <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
                       <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
                       <Text style={styles.whiteText}>
-                        {t('placeholder_lorem_ipsum')}
+                        {t('our.vision.desc')}
                       </Text>
                     </Text>
                   </View>

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
+import { WEEKDAY_LABEL_KEYS } from '@/lib/forecast/day-parts';
 import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -21,9 +22,9 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const isSameDay = props.day.hasSame(DateTime.local(), "day");
-  const dayName = isSameDay ? t('Today') : props.day.toFormat('cccc');
-  const rainWord = t('Rain').toLowerCase();
-  const windWord = t('Wind').toLowerCase();
+  const dayName = isSameDay ? t("time.today") : t(WEEKDAY_LABEL_KEYS[props.day.weekday] ?? '');
+  const rainWord = t("weather.rain").toLowerCase();
+  const windWord = t("weather.wind").toLowerCase();
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>

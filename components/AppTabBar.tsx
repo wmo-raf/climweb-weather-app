@@ -26,10 +26,10 @@ const ICONS: Record<string, string> = {
 };
 
 const LABEL_KEYS: Record<string, string> = {
-  index: 'Today',
-  FiveDays: '5 days',
-  Warnings: 'Alerts',
-  Places: 'Places',
+  index: 'time.today',
+  FiveDays: 'time.fiveDays',
+  Warnings: 'alerts.title',
+  Places: 'places.title',
 };
 
 // Renders as a bottom bar on phones and a left nav rail at the XL

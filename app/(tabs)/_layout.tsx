@@ -6,6 +6,7 @@ import AppTabBar from '@/components/AppTabBar';
 export default function TabsLayout() {
   return (
     <Tabs
+      backBehavior="none"
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <AppTabBar {...props} />}
     >

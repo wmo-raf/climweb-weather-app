@@ -28,7 +28,7 @@ function DayPartsGrid({ dayParts, columns = 2 }: DayPartsGridProps): JSX.Element
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionHeader}>{t('Today')}</Text>
+      <Text style={styles.sectionHeader}>{t("time.today")}</Text>
       <View style={styles.grid}>
         {partsWithData.map(part => (
           <DayPartCard key={part} part={part} summary={dayParts[part]!} style={{ width: cardWidth }} />

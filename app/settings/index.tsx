@@ -24,7 +24,7 @@ export default function SettingsScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("Settings")} hideSettings />
+        <AppBar location={t("settings.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -37,13 +37,13 @@ export default function SettingsScreen() {
             themeColor="textSubtle"
             style={styles.sectionHeader}
           >
-            Preferences
+            {t("settings.sections.preferences")}
           </ThemedText>
 
           <ThemedView type="bg" style={styles.card}>
             {/* Dark Mode Row */}
             <SettingItem
-              label="Dark Mode"
+              label={t("settings.preferences.appearance.darkMode")}
               leftIcon="moon"
               leftIconColor="#f9ab00"
               leftIconBgColor="rgba(249, 171, 0, 0.15)"
@@ -70,7 +70,7 @@ export default function SettingsScreen() {
 
             {/* Language Row */}
             <SettingItem
-              label="Language"
+              label={t("settings.language.title")}
               leftIcon="language"
               leftIconColor="#1a73e8"
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
@@ -87,7 +87,7 @@ export default function SettingsScreen() {
 
             {/* Onboarding Toggle Row */}
             <SettingItem
-              label={t("Show Onboarding")}
+              label={t("settings.preferences.showOnboarding")}
               leftIcon="flag"
               leftIconColor={theme.primary}
               leftIconBgColor={theme.primary + "26"}
@@ -112,13 +112,13 @@ export default function SettingsScreen() {
             themeColor="textSubtle"
             style={styles.sectionHeader}
           >
-            About
+            {t("settings.sections.about")}
           </ThemedText>
 
           <ThemedView type="bg" style={styles.card}>
             {/* About EMI Row */}
             <SettingItem
-              label="About Us"
+              label={t("aboutUs.title")}
               leftIcon="business"
               leftIconColor="#0B2C54"
               leftIconBgColor="rgba(11, 44, 84, 0.15)"
@@ -134,7 +134,7 @@ export default function SettingsScreen() {
 
             {/* About the App Row */}
             <SettingItem
-              label={t("About the App")}
+              label={t("aboutApp.title")}
               leftIcon="information-circle"
               leftIconColor="#1a73e8"
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
@@ -150,7 +150,7 @@ export default function SettingsScreen() {
 
             {/* Privacy Row */}
             <SettingItem
-              label="Privacy Policy"
+              label={t("privacy.title")}
               leftIcon="shield-checkmark"
               leftIconColor="#c5221f"
               leftIconBgColor="rgba(197, 34, 31, 0.15)"
@@ -166,7 +166,7 @@ export default function SettingsScreen() {
 
             {/* App Version Row */}
             <SettingItem
-              label="App Version"
+              label={t("settings.about.appVersion")}
               leftIcon="information-circle"
               leftIconColor="#5f6368"
               leftIconBgColor="rgba(95, 99, 104, 0.15)"

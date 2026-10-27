@@ -53,7 +53,7 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
         <View style={styles.windCard}>
           <Icon source="weather-windy" size={20} color={colors.text} />
           <Text style={styles.windText}>
-            <Text style={styles.windLabel}>{t('Wind')}: </Text>{windSentence}
+            <Text style={styles.windLabel}>{t("weather.wind")}: </Text>{windSentence}
           </Text>
         </View>
       }

@@ -27,7 +27,7 @@ function StatusCard({ icon, iconColor, title, text, onRetry, actionLabel }: Stat
   const { t } = useTranslation();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const label = actionLabel ?? t('Retry');
+  const label = actionLabel ?? t("common.actions.retry");
 
   return (
     <View style={styles.card}>

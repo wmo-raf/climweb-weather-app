@@ -31,7 +31,7 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, compact }:
   if (!daySummary) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.todaysHeader}>{t('Forecast unavailable')}</Text>
+        <Text style={styles.todaysHeader}>{t("forecast.states.unavailable")}</Text>
       </View>
     )
   }
