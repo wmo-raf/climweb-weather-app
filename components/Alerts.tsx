@@ -3,6 +3,7 @@ import React from "react";
 import { useRouter, Href } from "expo-router";
 
 import { useAlertsQuery } from "@/lib/hooks/alerts.hook";
+import { SCREENS } from "@/lib/layout/constants";
 import { CAPAlert, alertInLocation, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_SEVERITY_RANK } from "@/lib/alerts/providers/cap-alerts/icons";
 import WeatherAlert from "./WeatherAlert";
@@ -21,7 +22,7 @@ const Alerts = (props: AlertsProps) => {
   const router = useRouter();
 
   const onSelectWarning = (location: string, alertID: string) => router.push({
-        pathname: "/WeatherWarning", params: { location, alertID }
+        pathname: SCREENS.WeatherWarning, params: { location, alertID }
       });
 
   let relevantAlerts: CAPAlert[] = []

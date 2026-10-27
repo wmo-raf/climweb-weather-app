@@ -120,7 +120,7 @@ const MainScreen = () => {
     if (welcomeDecision !== 'skip') return;
     if (locationError && !navigation.canGoBack() && !favouritesLoading) {
       resetLocationError();
-      router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
+      router.replace((favourites.length > 0 ? SCREENS.Favourites : SCREENS.NoLocation).toString() as Href);
     }
   }, [locationError, favouritesLoading, favourites, welcomeDecision]);
 
@@ -145,7 +145,7 @@ const MainScreen = () => {
   const today = DateTime.now();
   const onSelectDay = (day: DateTime) =>
     router.push({
-      pathname: "/Hourly", params: {
+      pathname: SCREENS.Hourly, params: {
         location: location,
         dayString: day.toISO(),
         startAtCurrentTime: "no",
@@ -155,7 +155,7 @@ const MainScreen = () => {
 
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({
-      pathname: "/WeatherWarning", params: { location, alertID: alert.identifier }
+      pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier }
     });
 
   let relevantAlerts: CAPAlert[] = [];
@@ -183,7 +183,7 @@ const MainScreen = () => {
 
   // Reachable whenever this screen renders with no coordinates and nothing
   // in flight — e.g. GPS was denied and the user tab-navigated here
-  // directly instead of picking a place on NoLocation/Places.
+  // directly instead of picking a place on NoLocation/Favourites.
   if (!loading && !locationLoading && (isUndefined(lat) || isUndefined(lon))) {
     mainContent = (
       <StatusCard
@@ -237,7 +237,9 @@ const MainScreen = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />

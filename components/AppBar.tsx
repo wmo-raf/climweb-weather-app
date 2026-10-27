@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 
@@ -18,7 +18,11 @@ type AppBarProps = {
   // as a plain screen title (e.g. "Settings", "Warnings").
   isPlace?: boolean,
   hideSettings?: boolean,
+  // Top-level tab screens that must never show a back arrow.
   hideBack?: boolean,
+  // Icon shown before a plain (non-place) title, same size/colour as the
+  // place pin.
+  titleIcon?: string,
 };
 
 import { ThemedText } from '@/components/themed-text';
@@ -31,7 +35,25 @@ const AppBar = (props: AppBarProps) => {
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const handleGoBack = () => {
+  // Whether there's anywhere to go back to, kept in state and refreshed on
+  // focus / navigation changes. Reading navigation.canGoBack() during render
+  // went stale: a screen re-rendered while covered (e.g. Today re-rendering
+  // on a language change while Settings was open on top) kept a back arrow
+  // after the cover was popped, and tapping it threw "GO_BACK was not
+  // handled by any navigator".
+  const [canGoBack, setCanGoBack] = useState(() => navigation.canGoBack());
+  useEffect(() => {
+    const update = () => setCanGoBack(navigation.canGoBack());
+    update();
+    const unsubscribeFocus = navigation.addListener('focus', update);
+    const unsubscribeState = navigation.addListener('state', update);
+    return () => {
+      unsubscribeFocus();
+      unsubscribeState();
+    };
+  }, [navigation]);
+
+  const onBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     }
@@ -39,7 +61,7 @@ const AppBar = (props: AppBarProps) => {
 
   const titleBlock = (
     <>
-      {props.isPlace && <Icon size={18} color={colors.primary} source="map-marker" />}
+      {(props.isPlace || props.titleIcon) && <Icon size={18} color={colors.primary} source={props.titleIcon ?? 'map-marker'} />}
       <View style={styles.titleTextBlock}>
         <ThemedText type="default" themeColor="textStrong" style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</ThemedText>
         {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t("places.tapToChange")}</ThemedText>}
@@ -50,8 +72,8 @@ const AppBar = (props: AppBarProps) => {
   return (
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
-        {!props.hideBack && navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={handleGoBack} style={styles.backButton}>
+        {!props.hideBack && canGoBack &&
+          <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={onBack} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         {props.isPlace

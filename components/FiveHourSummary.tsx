@@ -10,6 +10,7 @@ import { ForecastDayRecord } from '@/lib/forecast/types';
 import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useUnits } from '@/lib/hooks/use-units';
+import { SCREENS } from '@/lib/layout/constants';
 
 type FiveHourSummaryProps = {
   daySummary: ForecastDayRecord;
@@ -35,7 +36,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
   }
 
   const onPress = () => router.push({
-    pathname: '/Hourly',
+    pathname: SCREENS.Hourly,
     params: {
       location,
       dayString: daySummary.day,

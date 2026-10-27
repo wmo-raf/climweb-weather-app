@@ -9,17 +9,17 @@
       "placeholder": "Chagua lugha"
     },
     "sections": {
-      "preferences": "Preferences",
-      "about": "About"
+      "preferences": "Mapendeleo",
+      "about": "Kuhusu"
     },
     "preferences": {
       "appearance": {
-        "darkMode": "Dark Mode"
+        "darkMode": "Hali ya giza"
       },
-      "showOnboarding": "Show Onboarding"
+      "showOnboarding": "Onyesha ukurasa wa mwanzo"
     },
     "about": {
-      "appVersion": "App Version"
+      "appVersion": "Toleo la programu"
     },
     "rateApp": "Kadiria programu hii"
   },
@@ -74,30 +74,30 @@
       "dccms": "Idara ya Mabadiliko ya Tabianchi na Huduma za Hali ya Hewa (DCCMS)"
     },
     "emi": {
-      "title": "Ethiopian Meteorological Institute",
-      "description": "The Ethiopian Meteorological Institute (EMI) is the state authority responsible for providing weather, climate, and early warning services across Ethiopia.",
+      "title": "Taasisi ya Hali ya Hewa ya Ethiopia",
+      "description": "Taasisi ya Hali ya Hewa ya Ethiopia (EMI) ni mamlaka ya serikali inayohusika na kutoa huduma za hali ya hewa, tabianchi na tahadhari za mapema kote Ethiopia.",
       "mission": {
-        "title": "Mission",
-        "description": "To monitor, analyze, and forecast weather, climate, and agro-meteorological conditions to support sustainable national development and ensure public safety."
+        "title": "Dhamira",
+        "description": "Kufuatilia, kuchambua na kutabiri hali ya hewa, tabianchi na hali ya hewa kwa kilimo ili kusaidia maendeleo endelevu ya taifa na kuhakikisha usalama wa umma."
       }
     },
     "forecastServices": {
-      "title": "Forecast Services",
+      "title": "Huduma za Utabiri",
       "products": {
-        "title": "Meteorological Products",
-        "description": "EMI uses advanced meteorological stations, satellite data, and numerical models to deliver tailored forecasts:"
+        "title": "Bidhaa za Hali ya Hewa",
+        "description": "EMI hutumia vituo vya kisasa vya hali ya hewa, data ya satelaiti na mifumo ya kihesabu kutoa utabiri unaolenga mahitaji yako:"
       },
       "nowcasting": {
-        "title": "Nowcasting & Hourly",
-        "description": "Real-time alerts for sudden changes in weather conditions."
+        "title": "Utabiri wa sasa na wa kila saa",
+        "description": "Tahadhari za papo hapo kwa mabadiliko ya ghafla ya hali ya hewa."
       },
       "daily": {
-        "title": "Daily & Medium Range",
-        "description": "1 to 10-day outlooks for travel, public safety, and general planning."
+        "title": "Kila siku na muda wa kati",
+        "description": "Mwelekeo wa siku 1 hadi 10 kwa safari, usalama wa umma na mipango ya jumla."
       },
       "seasonal": {
-        "title": "Seasonal Outlooks",
-        "description": "Critical forecasts for agricultural seasons like Belg and Kiremt."
+        "title": "Mwelekeo wa Msimu",
+        "description": "Utabiri muhimu kwa misimu ya kilimo kama Belg na Kiremt."
       }
     }
   },
@@ -124,7 +124,7 @@
     },
     "favourites": {
       "title": "Maeneo Yako Uyapendayo",
-      "text": "Ukihifadhi maeneo unayoyapenda, yanahifadhiwa kwenye kifaa chako pekee. Taarifa hii haitumwi kwetu wala kushirikiwa na mtu mwingine yeyote. Unaweza kuongeza, kubadilisha, au kuondoa maeneo yako uyapendayo wakati wowote kutoka kwenye kichupo cha Maeneo."
+      "text": "Ukihifadhi maeneo unayoyapenda, yanahifadhiwa kwenye kifaa chako pekee. Taarifa hii haitumwi kwetu wala kushirikiwa na mtu mwingine yeyote. Unaweza kuongeza, kubadilisha, au kuondoa maeneo yako uyapendayo wakati wowote kutoka kwenye Maeneo Uyapendayo katika kichupo cha Zaidi."
     },
     "security": {
       "title": "Usalama wa Data",
@@ -190,7 +190,7 @@
     },
     "setFavourites": "Weka maeneo uyapendayo",
     "edit": "Hariri maeneo uliyoyapenda",
-    "yourPlaces": "Maeneo yako",
+    "yourPlaces": "Maeneo yako uyapendayo",
     "searchLocation": "Tafuta mahali",
     "locationError": {
       "message": "Not able to use your location to find the closest place."
@@ -481,6 +481,16 @@
     "spoken": {
       "celsius": "nyuzi {{value}} za Selsiasi",
       "fahrenheit": "nyuzi {{value}} za Farenhaiti"
+    }
+  },
+  "More": "Zaidi",
+  "More conditions": "Taarifa zaidi",
+  "Favourites": "Maeneo Uyapendayo",
+  "Go back": "Rudi nyuma",
+  "more": {
+    "intro": "Maelezo zaidi ya hali ya hewa kwa ajili ya kazi yako.",
+    "favourites": {
+      "description": "Maeneo uliyohifadhi"
     }
   }
 }

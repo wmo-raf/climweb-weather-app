@@ -22,14 +22,14 @@ const ICONS: Record<string, string> = {
   index: 'weather-sunny',
   FiveDays: 'calendar-month',
   Warnings: 'alert',
-  Places: 'map-marker-multiple',
+  More: 'tune',
 };
 
 const LABEL_KEYS: Record<string, string> = {
   index: 'time.today',
   FiveDays: 'time.fiveDays',
   Warnings: 'alerts.title',
-  Places: 'places.title',
+  More: 'More',
 };
 
 // Renders as a bottom bar on phones and a left nav rail at the XL
@@ -47,15 +47,21 @@ function AppTabBar({ state, navigation }: TabBarProps) {
 
   const { data: alerts = [] } = useAlertsQuery();
 
-  const items = state.routes.map((route: { key: string; name: string }, index: number) => {
+  const items = state.routes.map((route: { key: string; name: string; state?: { key: string; index?: number } }, index: number) => {
     const focused = state.index === index;
     const label = t(LABEL_KEYS[route.name] ?? route.name);
     const showAlertBadge = route.name === 'Warnings' && alerts.length > 0;
 
     const onPress = () => {
       const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-      if (!focused && !event.defaultPrevented) {
+      if (event.defaultPrevented) return;
+      if (!focused) {
         navigation.navigate(route.name);
+      } else if (route.state && (route.state.index ?? 0) > 0) {
+        // Re-tapping the current tab while on a sub-page (e.g. a warning's
+        // details, Favourites) returns to that tab's first screen, as the
+        // standard tab bar does.
+        navigation.dispatch({ type: 'POP_TO_TOP', target: route.state.key });
       }
     };
 

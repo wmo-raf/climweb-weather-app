@@ -124,7 +124,7 @@
     },
     "favourites": {
       "title": "ተወዳጅ ቦታዎችዎ",
-      "text": "ተወዳጅ ቦታዎችን ካስቀመጡ በመሳሪያዎ ላይ ብቻ ይቀመጣሉ። ይህ መረጃ መቼም ቢሆን ለእኛ አይላክም ወይም ለሌላ ለማንም አይጋራም። ተወዳጅ ቦታዎችዎን በማንኛውም ጊዜ ከቦታዎች ትር ማከል፣ መለወጥ ወይም ማስወገድ ይችላሉ።"
+      "text": "If you save favourite places, they are stored only on your device. This information is never sent to us or shared with anyone else. You can add, change, or remove your favourite places at any time from Favourites on the More tab."
     },
     "security": {
       "title": "የውሂብ ደህንነት",
@@ -481,6 +481,16 @@
     "spoken": {
       "celsius": "{{value}} degrees Celsius",
       "fahrenheit": "{{value}} degrees Fahrenheit"
+    }
+  },
+  "More": "More",
+  "More conditions": "More conditions",
+  "Favourites": "Favourites",
+  "Go back": "Go back",
+  "more": {
+    "intro": "More weather details for your work.",
+    "favourites": {
+      "description": "Your saved places"
     }
   }
 }
