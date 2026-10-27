@@ -7,6 +7,7 @@ import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { DayPart, DayPartSummary, DAY_PART_LABEL_KEYS, CONDITION_LABEL_KEYS, conditionBucket } from '@/lib/forecast/day-parts';
 import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useUnits } from '@/lib/hooks/use-units';
 
 type DayPartCardProps = {
   part: DayPart;
@@ -16,6 +17,7 @@ type DayPartCardProps = {
 
 function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const { t } = useTranslation();
+  const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -23,10 +25,10 @@ function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const conditionLabel = t(CONDITION_LABEL_KEYS[conditionBucket(summary.weatherSymbol)]);
 
   return (
-    <View style={[styles.card, style]} accessible={true} accessibilityLabel={`${t(DAY_PART_LABEL_KEYS[part])}: ${Math.round(summary.temperature || 0)} degrees, ${conditionLabel}`}>
+    <View style={[styles.card, style]} accessible={true} accessibilityLabel={`${t(DAY_PART_LABEL_KEYS[part])}: ${units.tempSpoken(summary.temperature || 0)}, ${conditionLabel}`}>
       <View style={styles.leftCol}>
         <Text style={styles.partLabel}>{t(DAY_PART_LABEL_KEYS[part])}</Text>
-        <Text style={styles.temp}>{Math.round(summary.temperature || 0)}&deg;</Text>
+        <Text style={styles.temp}>{units.temp(summary.temperature || 0)}</Text>
         <Text style={styles.condition} numberOfLines={1}>{conditionLabel}</Text>
       </View>
       <View style={styles.rightCol}>

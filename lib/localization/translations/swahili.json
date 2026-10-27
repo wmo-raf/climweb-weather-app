@@ -20,7 +20,8 @@
     },
     "about": {
       "appVersion": "App Version"
-    }
+    },
+    "rateApp": "Kadiria programu hii"
   },
   "common": {
     "actions": {
@@ -463,5 +464,23 @@
     "loremIpsum": "[Nakala ya muda — itabadilishwa na maelezo kamili baadaye.]",
     "appTitle": "Programu ya Hali ya Hewa ClimWeb",
     "appDescription": "Programu ya Hali ya Hewa ClimWeb inatoa utabiri sahihi na wa kisasa wa hali ya hewa kwa maeneo duniani kote."
+  },
+  "units": {
+    "title": "Vipimo",
+    "temperature": "Halijoto",
+    "wind": "Kasi ya upepo",
+    "precipitation": "Mvua",
+    "celsius": "Selsiasi (°C)",
+    "fahrenheit": "Farenhaiti (°F)",
+    "kmh": "Kilomita kwa saa (km/h)",
+    "ms": "Mita kwa sekunde (m/s)",
+    "knots": "Noti (kn)",
+    "mph": "Maili kwa saa (mph)",
+    "mm": "Milimita (mm)",
+    "in": "Inchi (in)",
+    "spoken": {
+      "celsius": "nyuzi {{value}} za Selsiasi",
+      "fahrenheit": "nyuzi {{value}} za Farenhaiti"
+    }
   }
 }

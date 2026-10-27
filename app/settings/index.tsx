@@ -1,6 +1,6 @@
-import { StyleSheet, View, ScrollView, Switch } from "react-native";
+import { Alert, StyleSheet, View, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, Href } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -9,17 +9,25 @@ import { BottomTabInset, MaxContentWidth, Spacing, Radius } from "@/lib/theme";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { useThemeToggle } from "@/lib/hooks/use-theme-toggle";
 import { useLanguage } from "@/lib/hooks/use-language";
+import { useUnitsStore } from "@/lib/store/units-store";
+import { TEMPERATURE_SYMBOLS, WIND_SYMBOLS, PRECIPITATION_SYMBOLS } from "@/lib/units";
 import AppBar from "@/components/AppBar";
 import { useTranslation } from "react-i18next";
 import { useOnboardingToggle } from "@/lib/hooks/use-onboarding-toggle";
+import { openReviewPage, resetReviewState, reviewPageUrl } from "@/lib/review";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { isDarkMode, setIsDarkMode } = useThemeToggle();
   const { currentLanguage } = useLanguage();
+  const temperatureUnit = useUnitsStore((s) => s.temperature);
+  const windUnit = useUnitsStore((s) => s.wind);
+  const precipitationUnit = useUnitsStore((s) => s.precipitation);
   const { alwaysShowOnboarding, setAlwaysShowOnboarding } = useOnboardingToggle();
   const theme = useTheme();
   const router = useRouter();
+  // Hidden until the store links are set in app.json.
+  const canRateApp = reviewPageUrl() !== null;
 
   return (
     <ThemedView style={styles.container}>
@@ -76,6 +84,23 @@ export default function SettingsScreen() {
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
               rightText={currentLanguage.nativeName}
               onPress={() => router.push("/settings/language")}
+            />
+
+            <View
+              style={[
+                styles.separator,
+                { backgroundColor: theme.bgMuted },
+              ]}
+            />
+
+            {/* Units Row */}
+            <SettingItem
+              label={t("units.title")}
+              leftIcon="speedometer"
+              leftIconColor="#0b8043"
+              leftIconBgColor="rgba(11, 128, 67, 0.15)"
+              rightText={`${TEMPERATURE_SYMBOLS[temperatureUnit]} · ${WIND_SYMBOLS[windUnit]} · ${PRECIPITATION_SYMBOLS[precipitationUnit]}`}
+              onPress={() => router.push("/settings/units" as Href)}
             />
 
             <View
@@ -157,6 +182,27 @@ export default function SettingsScreen() {
               onPress={() => router.push("/settings/privacy-policy")}
             />
 
+            {canRateApp && (
+              <>
+                <View
+                  style={[
+                    styles.separator,
+                    { backgroundColor: theme.bgMuted },
+                  ]}
+                />
+
+                {/* Rate App Row: always-available route to the store's review
+                    page, alongside the occasional automatic prompt. */}
+                <SettingItem
+                  label={t("settings.rateApp")}
+                  leftIcon="star"
+                  leftIconColor="#f9ab00"
+                  leftIconBgColor="rgba(249, 171, 0, 0.15)"
+                  onPress={() => openReviewPage()}
+                />
+              </>
+            )}
+
             <View
               style={[
                 styles.separator,
@@ -173,6 +219,31 @@ export default function SettingsScreen() {
               rightText="1.0.0 (Build 42)"
               showChevron={false}
             />
+
+            {__DEV__ && (
+              <>
+                <View
+                  style={[
+                    styles.separator,
+                    { backgroundColor: theme.bgMuted },
+                  ]}
+                />
+
+                {/* Development builds only: start the review-prompt
+                    counters over, for testing the prompt timing. */}
+                <SettingItem
+                  label="Reset review prompt (dev)"
+                  leftIcon="refresh"
+                  leftIconColor="#5f6368"
+                  leftIconBgColor="rgba(95, 99, 104, 0.15)"
+                  showChevron={false}
+                  onPress={() => {
+                    resetReviewState();
+                    Alert.alert("Review prompt reset", "Counters cleared. Reopen the app to start counting again.");
+                  }}
+                />
+              </>
+            )}
           </ThemedView>
         </ScrollView>
       </SafeAreaView>

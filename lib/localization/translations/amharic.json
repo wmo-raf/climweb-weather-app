@@ -20,7 +20,8 @@
     },
     "about": {
       "appVersion": "የመተግበሪያ ስሪት"
-    }
+    },
+    "rateApp": "Rate this app"
   },
   "common": {
     "actions": {
@@ -463,5 +464,23 @@
     "loremIpsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
     "appTitle": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ",
     "appDescription": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ በመላው ዓለም ላሉ ቦታዎች ትክክለኛ እና ወቅታዊ የአየር ሁኔታ ትንበያዎችን ያቀርባል።"
+  },
+  "units": {
+    "title": "Units",
+    "temperature": "Temperature",
+    "wind": "Wind speed",
+    "precipitation": "Rain",
+    "celsius": "Celsius (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "kmh": "Kilometres per hour (km/h)",
+    "ms": "Metres per second (m/s)",
+    "knots": "Knots (kn)",
+    "mph": "Miles per hour (mph)",
+    "mm": "Millimetres (mm)",
+    "in": "Inches (in)",
+    "spoken": {
+      "celsius": "{{value}} degrees Celsius",
+      "fahrenheit": "{{value}} degrees Fahrenheit"
+    }
   }
 }

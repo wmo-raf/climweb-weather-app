@@ -9,6 +9,8 @@ import { ForecastDayRecord } from '@/lib/forecast/types';
 import { WEEKDAY_LABEL_KEYS } from '@/lib/forecast/day-parts';
 import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useUnits } from '@/lib/hooks/use-units';
+import { PRECIPITATION_SYMBOLS } from '@/lib/units';
 
 type HourlyTableProps = {
   title: string;
@@ -18,6 +20,7 @@ type HourlyTableProps = {
 
 function HourlyTable(props: HourlyTableProps): JSX.Element {
   const { t } = useTranslation();
+  const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -36,17 +39,17 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
           const stepTime = DateTime.fromISO(step.time);
           const timeLabel = stepTime.toFormat('h a').toLowerCase();
           const precipText = typeof step.precipitation === 'number' && step.precipitation > 0
-            ? `${step.precipitation.toFixed(1)} mm`
-            : '— mm';
-          const windText = `${Math.round(step.windSpeed || 0)} km/h`;
-          const temp = step.temperature !== undefined ? Math.round(step.temperature) : undefined;
+            ? units.rain(step.precipitation)
+            : `— ${PRECIPITATION_SYMBOLS[units.prefs.precipitation]}`;
+          const windText = units.wind(step.windSpeed);
+          const temp = step.temperature !== undefined ? units.tempValue(step.temperature) : undefined;
 
           return (
             <View
               key={step.time}
               style={[styles.row, idx === props.daySummary.steps.length - 1 && styles.rowLast]}
               accessible={true}
-              accessibilityLabel={`${timeLabel}: ${step.weatherSymbol.split('_').join(' ')}, ${precipText} ${rainWord}, ${windText} ${windWord}${temp !== undefined ? `, ${temp} degrees` : ''}.`}
+              accessibilityLabel={`${timeLabel}: ${step.weatherSymbol.split('_').join(' ')}, ${precipText} ${rainWord}, ${windText} ${windWord}${step.temperature !== undefined ? `, ${units.tempSpoken(step.temperature)}` : ''}.`}
             >
               <View style={styles.leftGroup}>
                 <Icon source={weatherIcons[step.weatherSymbol]} size={26} />
