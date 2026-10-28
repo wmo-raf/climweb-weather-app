@@ -28,19 +28,19 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
   const styles = useMemo(() => makeStyles(colors, tempTextColor[scheme]), [colors, scheme]);
 
   const nowStep = daySummary.steps[0];
-  const nowTemp = units.tempValue(nowStep?.temperature || 0);
+  const nowTemp = units.temp(nowStep?.temperature || 0);
   const nowIconSource = nowStep?.weatherSymbol ? weatherIcons[nowStep.weatherSymbol] : undefined;
   const nowConditionLabel = t('condition.now', { condition: t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]) });
 
   const dayParts = getDayParts(daySummary);
-  const summary = buildTodaySummary(t, location, nowStep, dayParts, units.tempValue);
+  const summary = buildTodaySummary(t, location, nowStep, dayParts, units.temp);
   const windSentence = t(WIND_LEVEL_SENTENCE_KEYS[windLevel(daySummary.windSpeed)]);
 
   return (
     <View style={[styles.currentCard, compact && styles.currentCardCompact]}>
       <View style={styles.currentRow}>
         <View style={styles.currentTempBlock}>
-          <Text style={[styles.large, { fontSize: tempFontSize }]}>{nowTemp}&deg;</Text>
+          <Text style={[styles.large, { fontSize: tempFontSize }]}>{nowTemp}</Text>
           <Text style={styles.nowCondition}>{nowConditionLabel}</Text>
         </View>
         <View style={styles.iconBlock}>

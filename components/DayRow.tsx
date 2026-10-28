@@ -40,7 +40,8 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   }
 
   const minTemp = units.tempValue(summary.minTemperature || 0);
-  const maxTemp = units.tempValue(summary.maxTemperature || 0);
+  const minTempText = units.temp(summary.minTemperature || 0);
+  const maxTempText = units.temp(summary.maxTemperature || 0);
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
   const day = DateTime.fromISO(summary.day);
@@ -65,7 +66,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
           <Text style={styles.description}>{description}</Text>
         </View>
         <View style={styles.rightBlock}>
-          <Text style={styles.tempRange}>{minTemp}&deg; – {maxTemp}&deg;</Text>
+          <Text style={styles.tempRange}>{minTempText} – {maxTempText}</Text>
           <Icon source="chevron-right" size={20} color={colors.textSubtle} />
         </View>
       </View>
