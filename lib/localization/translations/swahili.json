@@ -405,7 +405,7 @@
     "lead": "{{condition}} huko {{location}}.",
     "morerain": "Mvua zaidi inakuja {{part}} hii.",
     "raineasing": "Mvua itapungua kufikia {{part}} hii.",
-    "coolertonight": "Baridi zaidi usiku wa leo, karibu {{temp}}°."
+    "coolertonight": "Baridi zaidi usiku wa leo, karibu {{temp}}."
   },
   "alert": {
     "lead": {

@@ -52,8 +52,8 @@ describe('converting canonical to display units', () => {
 
 describe('formatting', () => {
   test('temperature', () => {
-    expect(formatTemperature(24.3, 'celsius')).toBe('24°');
-    expect(formatTemperature(24.3, 'fahrenheit')).toBe('76°');
+    expect(formatTemperature(24.3, 'celsius')).toBe('24°C');
+    expect(formatTemperature(24.3, 'fahrenheit')).toBe('76°F');
     expect(formatTemperature(undefined, 'celsius')).toBe('');
     expect(roundTemperature(-0.4, 'celsius')).toBe(0);
     expect(Object.is(roundTemperature(-0.4, 'celsius'), -0)).toBe(false);
