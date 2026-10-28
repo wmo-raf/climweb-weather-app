@@ -52,6 +52,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    rowGap: Spacing.lg,
   },
 });
 

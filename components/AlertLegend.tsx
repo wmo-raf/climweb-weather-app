@@ -44,13 +44,16 @@ function AlertLegend() {
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: Radius.large,
     padding: Spacing.lg,
-    elevation: 1,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   title: {
     fontSize: 16,

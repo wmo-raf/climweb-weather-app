@@ -281,15 +281,16 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
   },
   contentWrapper: {
-    marginRight: Spacing.lg,
-    marginLeft: Spacing.lg,
-    marginTop: Spacing.lg,
-    marginBottom: Spacing.xxxl,
+    paddingRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.xxxl,
   },
   alertsWrapper: {
-    marginRight: Spacing.lg,
-    marginLeft: Spacing.lg,
-    marginTop: Spacing.lg,
+    paddingRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
   opacity: {},
   loader: {

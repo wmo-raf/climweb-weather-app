@@ -121,12 +121,13 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: Radius.large,
-    overflow: "hidden",
-    elevation: 1,
+    borderWidth: 1,
+    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.05)",
   },
   row: {
     flexDirection: "row",

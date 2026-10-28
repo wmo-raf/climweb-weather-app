@@ -50,22 +50,18 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
 
   if (forecast && today) {
     return (
-      <TouchableOpacity style={styles.wrapper} onPress={() => onPress(forecast)}>
-        <View style={styles.glassWrapper}>
-          <View style={styles.opacity}>
-            <View style={styles.left}>
-              <View>
-                <Text style={styles.header}>{district.name}</Text>
-              </View>
-              <View style={styles.smallContainer}>
-                <Text style={styles.small}>&uarr;{units.temp(today.maxTemperature || 0)}  &darr;{units.temp(today.minTemperature || 0)}</Text>
-              </View>
-            </View>
-            <View style={styles.right}>
-              <Icon source={weatherIcons[today.weatherSymbol || 'fair_day']} size={90} />
-              <Text style={styles.small}>{t(CONDITION_LABEL_KEYS[conditionBucket(today.weatherSymbol)])}</Text>
-            </View>
+      <TouchableOpacity style={styles.opacity} onPress={() => onPress(forecast)}>
+        <View style={styles.left}>
+          <View>
+            <Text style={styles.header}>{district.name}</Text>
           </View>
+          <View style={styles.smallContainer}>
+            <Text style={styles.small}>&uarr;{units.temp(today.maxTemperature || 0)}  &darr;{units.temp(today.minTemperature || 0)}</Text>
+          </View>
+        </View>
+        <View style={styles.right}>
+          <Icon source={weatherIcons[today.weatherSymbol || 'fair_day']} size={90} />
+          <Text style={styles.small}>{t(CONDITION_LABEL_KEYS[conditionBucket(today.weatherSymbol)])}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -80,12 +76,6 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
 
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: Spacing.lg,
-  },
   // Deliberately no card chrome (border/shadow/background) here, unlike
   // the loaded-row wrapper above — matches the plain floating spinner used
   // for the whole-page loading state on the Today tab, since this is the
@@ -97,26 +87,26 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  glassWrapper: {
-    width: '100%',
-    borderRadius: Radius.large,
-  },
   opacity: {
     backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
     flex: 1,
     flexDirection: 'row',
     width: '100%',
+    marginTop: Spacing.lg,
     paddingRight: Spacing.lg,
     paddingLeft: Spacing.lg,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
     zIndex: 1,
     borderRadius: Radius.large,
-    elevation: 1,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   left: {
     flex: 1,

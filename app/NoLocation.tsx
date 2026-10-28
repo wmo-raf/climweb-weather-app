@@ -78,8 +78,9 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginLeft: Spacing.lg,
-    marginRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingRight: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
   bg: {
     height: '100%',

@@ -69,7 +69,7 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
   ].filter(Boolean).join('. ');
 
   return (
-    <View>
+    <View style={styles.card}>
       <View style={[styles.band, { backgroundColor: bandColor }]}>
         <View style={styles.bandLeft}>
           <Icon source="alert" size={22} color={bandTextColor} />
@@ -130,6 +130,18 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // band and the top of the body both go square so the whole card reads as
   // a single rounded rectangle, in both compact (list) and full (detail)
   // modes.
+  card: {
+    borderRadius: Radius.large,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
+  },
   band: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -161,11 +173,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     backgroundColor: colors.bg,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
   },
   headline: {
     fontSize: 20,

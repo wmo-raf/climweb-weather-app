@@ -74,7 +74,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.sm,
+    paddingTop: Spacing.md,
     paddingBottom: Spacing.xxl,
   },
   card: {
@@ -82,11 +82,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingVertical: Spacing.sm,
     borderRadius: Radius.large,
     backgroundColor: colors.bg,
-    elevation: 1,
+    borderWidth: 1,
+    borderColor: colors.border,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   header: {
     flexDirection: 'row',

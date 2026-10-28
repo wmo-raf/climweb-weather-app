@@ -92,7 +92,17 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   dayRow: {
     fontFamily: Fonts.sans.regular,
     width: "100%",
-    marginTop: Spacing.md,
+    marginTop: Spacing.lg,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: Radius.large,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   card: {
     flexDirection: 'row',
@@ -103,11 +113,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     padding: Spacing.lg,
     borderRadius: Radius.large,
     minHeight: touchTarget.nav,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
   },
   cardWithChip: {
     borderBottomWidth: 0,
@@ -116,6 +121,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   textBlock: {
     flex: 1,
+    gap: 6,
   },
   rightBlock: {
     flexDirection: 'row',
@@ -138,7 +144,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     color: colors.text,
     fontFamily: Fonts.sans.regular,
     fontSize: 14,
-    marginTop: Spacing.sm,
   },
   tempRange: {
     color: colors.textStrong,
@@ -150,9 +155,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderColor: colors.border,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
     borderBottomLeftRadius: Radius.large,
     borderBottomRightRadius: Radius.large,
     minHeight: touchTarget.nav,

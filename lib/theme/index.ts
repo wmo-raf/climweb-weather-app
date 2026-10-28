@@ -148,17 +148,14 @@ export const type = {
   label: { fontSize: 14, fontFamily: Fonts.sans.bold },
 } as const;
 
-const elevation = (elev: number) =>
-  Platform.select({
-    ios: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: elev / 2 },
-      shadowOpacity: 0.1 + elev * 0.005,
-      shadowRadius: elev * 1.5,
-    },
-    android: { elevation: elev },
-    default: {},
-  });
+const elevation = (elev: number) => ({
+  elevation: elev,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: Number((0.04 + elev * 0.01).toFixed(2)),
+  shadowRadius: elev * 2,
+  boxShadow: `0px 1px ${elev * 2}px 0px rgba(0, 0, 0, ${Number((0.03 + elev * 0.01).toFixed(2))})`,
+});
 
 export const shadow = {
   sm: elevation(2),

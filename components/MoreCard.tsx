@@ -53,7 +53,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     // Same border/radius/shadow as DayRow and the other forecast cards.
     ...shadow.sm,
   },
