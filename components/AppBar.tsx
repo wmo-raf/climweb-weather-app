@@ -44,7 +44,7 @@ const AppBar = (props: AppBarProps) => {
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
         {navigation.canGoBack() &&
-          <TouchableOpacity accessible={true} accessibilityLabel='Go back' onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         {props.isPlace
