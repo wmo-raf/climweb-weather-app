@@ -137,7 +137,7 @@ export function roundTemperature(celsius: number, unit: TemperatureUnit): number
 }
 
 export function formatTemperature(celsius: number | undefined, unit: TemperatureUnit): string {
-  return celsius === undefined ? '' : `${roundTemperature(celsius, unit)}°`;
+  return celsius === undefined ? '' : `${roundTemperature(celsius, unit)}${TEMPERATURE_SYMBOLS[unit]}`;
 }
 
 export function formatWind(metresPerSecond: number | undefined, unit: WindUnit): string {

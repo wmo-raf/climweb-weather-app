@@ -13,7 +13,7 @@ import {
 // values passed in are always canonical (°C, m/s, mm — see lib/units).
 //
 //   const units = useUnits();
-//   units.temp(24.3)        // "24°"  (or "76°" in Fahrenheit)
+//   units.temp(24.3)        // "24°C" (or "76°F" in Fahrenheit)
 //   units.tempValue(24.3)   // 24     (number, for custom layouts)
 //   units.tempSpoken(24.3)  // "24 degrees Celsius" (screen readers)
 //   units.wind(6.1)         // "22 km/h"

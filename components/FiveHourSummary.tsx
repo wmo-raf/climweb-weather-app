@@ -59,7 +59,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
       {upcomingSteps.map((step, idx) => {
         const iconSource = step.weatherSymbol ? weatherIcons[step.weatherSymbol] : undefined;
         const timeLabel = DateTime.fromISO(step.time).toFormat('h a').toLowerCase();
-        const temp = step.temperature !== undefined ? units.tempValue(step.temperature) : undefined;
+        const temp = units.temp(step.temperature);
 
         return (
           <View
@@ -69,7 +69,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
           >
             <Text style={styles.time}>{timeLabel}</Text>
             {iconSource && <Icon source={iconSource} size={24} />}
-            <Text style={styles.temp}>{temp !== undefined ? `${temp}°` : ''}</Text>
+            <Text style={styles.temp}>{temp}</Text>
           </View>
         );
       })}

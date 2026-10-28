@@ -405,7 +405,7 @@
     "lead": "{{condition}} በ {{location}}።",
     "morerain": "በዚህ {{part}} ተጨማሪ ዝናብ ይመጣል።",
     "raineasing": "ዝናቡ በዚህ {{part}} ይቀንሳል ተብሎ ይጠበቃል።",
-    "coolertonight": "ዛሬ ማታ ይቀዘቅዛል፣ ወደ {{temp}}° ገደማ።"
+    "coolertonight": "ዛሬ ማታ ይቀዘቅዛል፣ ወደ {{temp}} ገደማ።"
   },
   "alert": {
     "lead": {
