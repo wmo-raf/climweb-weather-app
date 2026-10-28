@@ -2,6 +2,7 @@ import { DateTime } from 'luxon';
 
 import { ForecastDayRecord, ForecastRecord, ForecastStepRecord } from './types';
 import { rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
+import { formatTemperature } from '@/lib/units';
 
 export type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 
@@ -132,9 +133,10 @@ export function buildTodaySummary(
   location: string,
   nowStep: ForecastStepRecord | undefined,
   dayParts: Partial<Record<DayPart, DayPartSummary>>,
-  // Converts a °C value to the user's display unit (rounded); the 2-degree
-  // "cooler" threshold below stays in °C so it's the same real difference.
-  toDisplayTemp: (celsius: number) => number = Math.round
+  // Formats a °C value in the user's unit, with the unit ("17°C"); the
+  // 2-degree "cooler" threshold below stays in °C so it's the same real
+  // difference.
+  formatTemp: (celsius: number) => string = celsius => formatTemperature(celsius, 'celsius')
 ): TodaySummaryParts {
   const nowCondition = t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]);
   const lead = t('summary.lead', { condition: nowCondition, location });
@@ -170,7 +172,7 @@ export function buildTodaySummary(
     nowStep?.temperature !== undefined &&
     nowStep.temperature - night.temperature >= 2
   ) {
-    trailing = t('summary.coolertonight', { temp: toDisplayTemp(night.temperature) });
+    trailing = t('summary.coolertonight', { temp: formatTemp(night.temperature) });
   }
 
   return { lead, predictive, trailing };

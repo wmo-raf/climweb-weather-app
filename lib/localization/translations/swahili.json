@@ -236,7 +236,7 @@
   "summary.lead": "{{condition}} huko {{location}}.",
   "summary.morerain": "Mvua zaidi inakuja {{part}} hii.",
   "summary.raineasing": "Mvua itapungua kufikia {{part}} hii.",
-  "summary.coolertonight": "Baridi zaidi usiku wa leo, karibu {{temp}}°.",
+  "summary.coolertonight": "Baridi zaidi usiku wa leo, karibu {{temp}}.",
   "alert.lead.red": "Hatari",
   "alert.lead.orange": "Onyo",
   "alert.lead.yellow": "Tahadhari",

@@ -236,7 +236,7 @@
   "summary.lead": "{{condition}} in {{location}}.",
   "summary.morerain": "More rain is coming this {{part}}.",
   "summary.raineasing": "The rain should ease by this {{part}}.",
-  "summary.coolertonight": "Cooler tonight, about {{temp}}°.",
+  "summary.coolertonight": "Cooler tonight, about {{temp}}.",
   "alert.lead.red": "Danger",
   "alert.lead.orange": "Warning",
   "alert.lead.yellow": "Caution",

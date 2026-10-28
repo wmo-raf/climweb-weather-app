@@ -136,8 +136,10 @@ export function roundTemperature(celsius: number, unit: TemperatureUnit): number
   return Math.round(convertTemperature(celsius, unit)) || 0;
 }
 
+// Always with the explicit unit ("24°C", "76°F"), never a bare "°", so a
+// reading can't be mistaken for the other scale.
 export function formatTemperature(celsius: number | undefined, unit: TemperatureUnit): string {
-  return celsius === undefined ? '' : `${roundTemperature(celsius, unit)}°`;
+  return celsius === undefined ? '' : `${roundTemperature(celsius, unit)}${TEMPERATURE_SYMBOLS[unit]}`;
 }
 
 export function formatWind(metresPerSecond: number | undefined, unit: WindUnit): string {
