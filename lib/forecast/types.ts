@@ -78,20 +78,22 @@ export interface YrForecastTimestep {
 
 // App-facing serializable forecast types stored in Redux
 
+// Values are in canonical units — °C, m/s, mm — whatever the source API
+// sent (see lib/units). Convert for display with useUnits().
 export interface ForecastStepRecord {
   time: string;                 // ISO string — Redux-safe
-  temperature?: number;
-  windSpeed?: number;
-  precipitation: number | "-";  // pre-computed
+  temperature?: number;         // °C
+  windSpeed?: number;           // m/s
+  precipitation: number | "-";  // mm, pre-computed
   weatherSymbol: string;        // pre-computed
 }
 
 export interface ForecastDayRecord {
   day: string;                  // ISO date string (start of day in configured timezone)
   weatherSymbol?: string;
-  maxTemperature?: number;
-  minTemperature?: number;
-  windSpeed?: number;
+  maxTemperature?: number;       // °C
+  minTemperature?: number;       // °C
+  windSpeed?: number;            // m/s, the day's highest
   steps: ForecastStepRecord[];
 }
 

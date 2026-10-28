@@ -9,6 +9,7 @@ import { CONDITION_LABEL_KEYS, conditionBucket, getDayParts, buildTodaySummary }
 import { windLevel, WIND_LEVEL_SENTENCE_KEYS } from '@/lib/forecast/plain-language';
 import { ThemeColors, Fonts, Radius, Spacing, tempTextColor } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useUnits } from '@/lib/hooks/use-units';
 import { useColorScheme } from '@/lib/hooks/use-color-scheme';
 
 type CurrentConditionsCardProps = {
@@ -24,17 +25,17 @@ type CurrentConditionsCardProps = {
 
 function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSummary, compact }: CurrentConditionsCardProps): JSX.Element {
   const { t } = useTranslation();
+  const units = useUnits();
   const scheme = useColorScheme();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors, tempTextColor[scheme]), [colors, scheme]);
 
   const nowStep = daySummary.steps[0];
-  const nowTemp = Math.round(nowStep?.temperature || 0);
   const nowIconSource = nowStep?.weatherSymbol ? weatherIcons[nowStep.weatherSymbol] : undefined;
   const nowConditionLabel = t('condition.now', { condition: t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]) });
 
   const dayParts = getDayParts(daySummary);
-  const summary = buildTodaySummary(t, location, nowStep, dayParts);
+  const summary = buildTodaySummary(t, location, nowStep, dayParts, units.temp);
   const windSentence = t(WIND_LEVEL_SENTENCE_KEYS[windLevel(daySummary.windSpeed)]);
 
   return (
@@ -42,7 +43,14 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
       <View style={styles.currentRow}>
         {nowIconSource && <Icon source={nowIconSource} size={64} />}
         <View style={styles.currentTempBlock}>
-          <Text style={[styles.large, { fontSize: tempFontSize }]}>{nowTemp}&deg;</Text>
+          <Text
+            style={[styles.large, { fontSize: tempFontSize }]}
+            accessibilityLabel={units.tempSpoken(nowStep?.temperature || 0)}
+          >
+            {units.tempValue(nowStep?.temperature || 0)}
+            {/* Explicit unit, smaller so the number stays the focus. */}
+            <Text style={{ fontSize: Math.round(tempFontSize * 0.5) }}>{units.tempSymbol}</Text>
+          </Text>
           <Text style={styles.nowCondition}>{nowConditionLabel}</Text>
         </View>
       </View>

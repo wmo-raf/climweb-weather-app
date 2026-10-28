@@ -1,6 +1,6 @@
 import { Alert, StyleSheet, View, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, Href } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -9,6 +9,8 @@ import { BottomTabInset, MaxContentWidth, Spacing, Radius } from "@/lib/theme";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { useThemeToggle } from "@/lib/hooks/use-theme-toggle";
 import { useLanguage } from "@/lib/hooks/use-language";
+import { useUnitsStore } from "@/lib/store/units-store";
+import { TEMPERATURE_SYMBOLS, WIND_SYMBOLS, PRECIPITATION_SYMBOLS } from "@/lib/units";
 import AppBar from "@/components/AppBar";
 import { useTranslation } from "react-i18next";
 import { useOnboardingToggle } from "@/lib/hooks/use-onboarding-toggle";
@@ -18,6 +20,9 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const { isDarkMode, setIsDarkMode } = useThemeToggle();
   const { currentLanguage } = useLanguage();
+  const temperatureUnit = useUnitsStore((s) => s.temperature);
+  const windUnit = useUnitsStore((s) => s.wind);
+  const precipitationUnit = useUnitsStore((s) => s.precipitation);
   const { alwaysShowOnboarding, setAlwaysShowOnboarding } = useOnboardingToggle();
   const theme = useTheme();
   const router = useRouter();
@@ -40,13 +45,13 @@ export default function SettingsScreen() {
             themeColor="textSubtle"
             style={styles.sectionHeader}
           >
-            Preferences
+            {t("settings.section.preferences")}
           </ThemedText>
 
           <ThemedView type="bgAlt" style={styles.card}>
             {/* Dark Mode Row */}
             <SettingItem
-              label="Dark Mode"
+              label={t("settings.darkMode")}
               leftIcon="moon"
               leftIconColor="#f9ab00"
               leftIconBgColor="rgba(249, 171, 0, 0.15)"
@@ -73,7 +78,7 @@ export default function SettingsScreen() {
 
             {/* Language Row */}
             <SettingItem
-              label="Language"
+              label={t("Language")}
               leftIcon="language"
               leftIconColor="#1a73e8"
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
@@ -88,9 +93,26 @@ export default function SettingsScreen() {
               ]}
             />
 
+            {/* Units Row */}
+            <SettingItem
+              label={t("units.title")}
+              leftIcon="speedometer"
+              leftIconColor="#0b8043"
+              leftIconBgColor="rgba(11, 128, 67, 0.15)"
+              rightText={`${TEMPERATURE_SYMBOLS[temperatureUnit]} · ${WIND_SYMBOLS[windUnit]} · ${PRECIPITATION_SYMBOLS[precipitationUnit]}`}
+              onPress={() => router.push("/settings/units" as Href)}
+            />
+
+            <View
+              style={[
+                styles.separator,
+                { backgroundColor: theme.bgMuted },
+              ]}
+            />
+
             {/* Onboarding Toggle Row */}
             <SettingItem
-              label={t("Show Onboarding")}
+              label={t("settings.showOnboarding")}
               leftIcon="flag"
               leftIconColor={theme.primary}
               leftIconBgColor={theme.primary + "26"}
@@ -115,13 +137,13 @@ export default function SettingsScreen() {
             themeColor="textSubtle"
             style={styles.sectionHeader}
           >
-            About
+            {t("settings.section.about")}
           </ThemedText>
 
           <ThemedView type="bgAlt" style={styles.card}>
             {/* About EMI Row */}
             <SettingItem
-              label="About Us"
+              label={t("About us")}
               leftIcon="business"
               leftIconColor="#0B2C54"
               leftIconBgColor="rgba(11, 44, 84, 0.15)"
@@ -137,7 +159,7 @@ export default function SettingsScreen() {
 
             {/* About the App Row */}
             <SettingItem
-              label={t("About the App")}
+              label={t("About the app")}
               leftIcon="information-circle"
               leftIconColor="#1a73e8"
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
@@ -153,7 +175,7 @@ export default function SettingsScreen() {
 
             {/* Privacy Row */}
             <SettingItem
-              label="Privacy Policy"
+              label={t("Privacy Policy")}
               leftIcon="shield-checkmark"
               leftIconColor="#c5221f"
               leftIconBgColor="rgba(197, 34, 31, 0.15)"
@@ -190,7 +212,7 @@ export default function SettingsScreen() {
 
             {/* App Version Row */}
             <SettingItem
-              label="App Version"
+              label={t("settings.appVersion")}
               leftIcon="information-circle"
               leftIconColor="#5f6368"
               leftIconBgColor="rgba(95, 99, 104, 0.15)"

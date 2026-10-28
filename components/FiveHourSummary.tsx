@@ -9,6 +9,7 @@ import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
 import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useUnits } from '@/lib/hooks/use-units';
 
 type FiveHourSummaryProps = {
   daySummary: ForecastDayRecord;
@@ -22,6 +23,7 @@ const HOURS_SHOWN = 5;
 // starting from the current time.
 function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.Element | null {
   const { t } = useTranslation();
+  const units = useUnits();
   const router = useRouter();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -56,17 +58,16 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
       {upcomingSteps.map((step, idx) => {
         const iconSource = step.weatherSymbol ? weatherIcons[step.weatherSymbol] : undefined;
         const timeLabel = DateTime.fromISO(step.time).toFormat('h a').toLowerCase();
-        const temp = step.temperature !== undefined ? Math.round(step.temperature) : undefined;
 
         return (
           <View
             key={step.time}
             style={[styles.row, idx === upcomingSteps.length - 1 && styles.rowLast]}
-            accessibilityLabel={`${timeLabel}${temp !== undefined ? `: ${temp} degrees` : ''}.`}
+            accessibilityLabel={`${timeLabel}${step.temperature !== undefined ? `: ${units.tempSpoken(step.temperature)}` : ''}.`}
           >
             <Text style={styles.time}>{timeLabel}</Text>
             {iconSource && <Icon source={iconSource} size={24} />}
-            <Text style={styles.temp}>{temp !== undefined ? `${temp}°` : ''}</Text>
+            <Text style={styles.temp}>{units.temp(step.temperature)}</Text>
           </View>
         );
       })}
