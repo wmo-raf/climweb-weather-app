@@ -405,7 +405,7 @@
     "lead": "{{condition}} in {{location}}.",
     "morerain": "More rain is coming this {{part}}.",
     "raineasing": "The rain should ease by this {{part}}.",
-    "coolertonight": "Cooler tonight, about {{temp}}°."
+    "coolertonight": "Cooler tonight, about {{temp}}."
   },
   "alert": {
     "lead": {

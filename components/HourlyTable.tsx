@@ -42,7 +42,7 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
             ? units.rain(step.precipitation)
             : `— ${PRECIPITATION_SYMBOLS[units.prefs.precipitation]}`;
           const windText = units.wind(step.windSpeed);
-          const temp = step.temperature !== undefined ? units.tempValue(step.temperature) : undefined;
+          const temp = units.temp(step.temperature);
 
           return (
             <View
@@ -58,7 +58,7 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
               <Text style={styles.description} numberOfLines={2}>
                 {precipText} {rainWord} · {windText} {windWord}
               </Text>
-              <Text style={styles.temp}>{temp !== undefined ? `${temp}°` : ''}</Text>
+              <Text style={styles.temp}>{temp}</Text>
             </View>
           );
         })}
