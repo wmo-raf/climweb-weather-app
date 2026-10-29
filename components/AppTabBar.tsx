@@ -12,11 +12,15 @@ import { useTheme } from '@/lib/hooks/use-theme';
 
 // Loosely typed on purpose: this is assigned the real BottomTabBarProps at
 // the call site (app/(tabs)/_layout.tsx), whose exact shape isn't reliably
-// importable across expo-router versions. Only state/navigation fields are
-// read, both structurally compatible with the real prop at runtime.
+// importable across expo-router versions. Since expo-router 58 the tab bar
+// gets no `navigation` prop — tab presses go through emitter/navigateToTab,
+// and each tab's own navigation object (in descriptors) dispatches to its
+// nested stack.
 type TabBarProps = {
   state: any;
-  navigation: any;
+  descriptors: Record<string, { navigation: any }>;
+  emitter: any;
+  navigateToTab: (routeKey: string) => void;
 };
 
 const ICONS: Record<string, string> = {
@@ -38,7 +42,7 @@ const LABEL_KEYS: Record<string, string> = {
 // rail is absolutely positioned over the left edge — screens are
 // responsible for adding paddingLeft: navRailWidth at the XL breakpoint so
 // content doesn't render underneath it (see useBreakpoint() call sites).
-function AppTabBar({ state, navigation }: TabBarProps) {
+function AppTabBar({ state, descriptors, emitter, navigateToTab }: TabBarProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const globalParams = useGlobalSearchParams<{ startAtCurrentTime?: string }>();
@@ -69,36 +73,40 @@ function AppTabBar({ state, navigation }: TabBarProps) {
     startAtCurrentTime === 'yes';
   const focusedRouteName = isTodayHourly ? 'index' : activeTabRoute?.name;
 
+  // Returns a tab's nested stack to its first screen.
+  const popToTop = (stackKey: string) =>
+    descriptors[activeTabRoute.key]?.navigation.dispatch({ type: 'POP_TO_TOP', target: stackKey });
+
   const items = state.routes.map((route: { key: string; name: string; state?: { key: string; index?: number } }) => {
     const focused = route.name === focusedRouteName;
     const label = t(LABEL_KEYS[route.name] ?? route.name);
     const showAlertBadge = route.name === 'Warnings' && alerts.length > 0;
 
     const onPress = () => {
-      const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+      const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
       if (event.defaultPrevented) return;
       if (isTodayHourly) {
         if (route.name === 'FiveDays') {
           if (activeTabRoute?.state?.key && (activeTabRoute.state.index ?? 0) > 0) {
-            navigation.dispatch({ type: 'POP_TO_TOP', target: activeTabRoute.state.key });
+            popToTop(activeTabRoute.state.key);
           } else {
             router.replace('/FiveDays' as Href);
           }
         } else {
           if (activeTabRoute?.state?.key && (activeTabRoute.state.index ?? 0) > 0) {
-            navigation.dispatch({ type: 'POP_TO_TOP', target: activeTabRoute.state.key });
+            popToTop(activeTabRoute.state.key);
           }
-          navigation.navigate(route.name);
+          navigateToTab(route.key);
         }
         return;
       }
       if (!focused) {
-        navigation.navigate(route.name);
+        navigateToTab(route.key);
       } else if (route.state && (route.state.index ?? 0) > 0) {
         // Re-tapping the current tab while on a sub-page (e.g. a warning's
         // details, Favourites) returns to that tab's first screen, as the
         // standard tab bar does.
-        navigation.dispatch({ type: 'POP_TO_TOP', target: route.state.key });
+        popToTop(route.state.key);
       }
     };
 

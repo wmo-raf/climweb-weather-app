@@ -70,12 +70,24 @@ const render = (element: React.ReactElement) => {
   return renderer;
 };
 
+// expo-router 58 tab bar props; every tab's descriptor shares one dispatch
+// mock so tests can assert on the POP_TO_TOP sent to a nested stack.
+const tabBarProps = (state: { routes: { key: string }[] }) => {
+  const dispatch = jest.fn();
+  const descriptors = Object.fromEntries(state.routes.map(r => [r.key, { navigation: { dispatch } }]));
+  return {
+    state,
+    descriptors,
+    emitter: { emit: () => ({ defaultPrevented: false }) },
+    navigateToTab: jest.fn(),
+    dispatch,
+  };
+};
+
 describe('bottom tab bar', () => {
   test('tabs read Today, Five Days, Alerts, More in that order', () => {
     const state = { index: 0, routes: TAB_ROUTES.map(name => ({ key: `${name}-key`, name })) };
-    const navigation = { emit: () => ({ defaultPrevented: false }), navigate: jest.fn() };
-
-    const { root } = render(<AppTabBar state={state} navigation={navigation} />);
+    const { root } = render(<AppTabBar {...tabBarProps(state)} />);
     const labels = root
       .findAll(n => n.props.accessibilityRole === 'button' && typeof n.type !== 'string')
       .filter((n, i, all) => all.findIndex(m => m.props.accessibilityLabel === n.props.accessibilityLabel) === i)
@@ -92,14 +104,14 @@ describe('bottom tab bar', () => {
       ...(name === 'Warnings' ? { state: { key: 'warnings-stack', index: 1 } } : {}),
     }));
     const state = { index: TAB_ROUTES.indexOf('Warnings'), routes };
-    const navigation = { emit: () => ({ defaultPrevented: false }), navigate: jest.fn(), dispatch: jest.fn() };
+    const props = tabBarProps(state);
 
-    const { root } = render(<AppTabBar state={state} navigation={navigation} />);
+    const { root } = render(<AppTabBar {...props} />);
     const alertsTab = root.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Alerts' && !!n.props.onPress);
     act(() => alertsTab.props.onPress());
 
-    expect(navigation.dispatch).toHaveBeenCalledWith({ type: 'POP_TO_TOP', target: 'warnings-stack' });
-    expect(navigation.navigate).not.toHaveBeenCalled();
+    expect(props.dispatch).toHaveBeenCalledWith({ type: 'POP_TO_TOP', target: 'warnings-stack' });
+    expect(props.navigateToTab).not.toHaveBeenCalled();
   });
 });
 
@@ -207,8 +219,6 @@ describe('Hourly details navigation', () => {
   });
 
   test('highlights Today tab when viewing Today hourly details and Five Days tab when viewing 24h hourly forecast', () => {
-    const navigation = { emit: () => ({ defaultPrevented: false }), navigate: jest.fn(), dispatch: jest.fn() };
-
     // Hourly opened from Today (startAtCurrentTime === 'yes'): Today tab should be highlighted
     const todayHourlyState = {
       index: TAB_ROUTES.indexOf('FiveDays'),
@@ -229,7 +239,7 @@ describe('Hourly details navigation', () => {
           : {}),
       })),
     };
-    const { root: todayRoot } = render(<AppTabBar state={todayHourlyState} navigation={navigation} />);
+    const { root: todayRoot } = render(<AppTabBar {...tabBarProps(todayHourlyState)} />);
     const todayTab = todayRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Today' && !!n.props.onPress);
     const fiveDaysTabOnToday = todayRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Five Days' && !!n.props.onPress);
     expect(todayTab.props.accessibilityState).toEqual({ selected: true });
@@ -248,7 +258,7 @@ describe('Hourly details navigation', () => {
           : {}),
       })),
     };
-    const { root: initialRoot } = render(<AppTabBar state={initialMountTodayHourlyState} navigation={navigation} />);
+    const { root: initialRoot } = render(<AppTabBar {...tabBarProps(initialMountTodayHourlyState)} />);
     const initialTodayTab = initialRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Today' && !!n.props.onPress);
     const initialFiveDaysTab = initialRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Five Days' && !!n.props.onPress);
     expect(initialTodayTab.props.accessibilityState).toEqual({ selected: true });
@@ -274,7 +284,7 @@ describe('Hourly details navigation', () => {
           : {}),
       })),
     };
-    const { root: fiveDaysRoot } = render(<AppTabBar state={fiveDaysHourlyState} navigation={navigation} />);
+    const { root: fiveDaysRoot } = render(<AppTabBar {...tabBarProps(fiveDaysHourlyState)} />);
     const todayTabOnFiveDays = fiveDaysRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Today' && !!n.props.onPress);
     const fiveDaysTab = fiveDaysRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Five Days' && !!n.props.onPress);
     expect(fiveDaysTab.props.accessibilityState).toEqual({ selected: true });
