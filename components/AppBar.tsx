@@ -23,6 +23,7 @@ type AppBarProps = {
   // Icon shown before a plain (non-place) title, same size/colour as the
   // place pin.
   titleIcon?: string,
+  onBack?: () => void,
 };
 
 import { ThemedText } from '@/components/themed-text';
@@ -54,6 +55,10 @@ const AppBar = (props: AppBarProps) => {
   }, [navigation]);
 
   const onBack = () => {
+    if (props.onBack) {
+      props.onBack();
+      return;
+    }
     if (navigation.canGoBack()) {
       navigation.goBack();
     }
@@ -72,7 +77,7 @@ const AppBar = (props: AppBarProps) => {
   return (
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
-        {!props.hideBack && canGoBack &&
+        {!props.hideBack && (canGoBack || !!props.onBack) &&
           <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={onBack} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}

@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge, Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useGlobalSearchParams, useRouter, Href } from 'expo-router';
 
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
@@ -39,6 +40,8 @@ const LABEL_KEYS: Record<string, string> = {
 // content doesn't render underneath it (see useBreakpoint() call sites).
 function AppTabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const globalParams = useGlobalSearchParams<{ startAtCurrentTime?: string }>();
   const insets = useSafeAreaInsets();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -47,14 +50,48 @@ function AppTabBar({ state, navigation }: TabBarProps) {
 
   const { data: alerts = [] } = useAlertsQuery();
 
-  const items = state.routes.map((route: { key: string; name: string; state?: { key: string; index?: number } }, index: number) => {
-    const focused = state.index === index;
+  const activeTabRoute = state.routes[state.index];
+  const activeNestedRoute = activeTabRoute?.state?.routes?.[activeTabRoute.state.index ?? 0];
+  const nestedScreenName =
+    activeNestedRoute?.name ??
+    activeTabRoute?.params?.screen;
+  const startAtCurrentTime =
+    activeNestedRoute?.params?.startAtCurrentTime ??
+    activeTabRoute?.params?.params?.startAtCurrentTime ??
+    activeTabRoute?.params?.startAtCurrentTime ??
+    globalParams?.startAtCurrentTime;
+
+  // When Hourly is opened from Today ("Today, hour by hour", startAtCurrentTime === 'yes'),
+  // highlight Today in the bottom bar instead of Five Days.
+  const isTodayHourly =
+    activeTabRoute?.name === 'FiveDays' &&
+    (nestedScreenName === 'Hourly' || activeTabRoute?.state === undefined) &&
+    startAtCurrentTime === 'yes';
+  const focusedRouteName = isTodayHourly ? 'index' : activeTabRoute?.name;
+
+  const items = state.routes.map((route: { key: string; name: string; state?: { key: string; index?: number } }) => {
+    const focused = route.name === focusedRouteName;
     const label = t(LABEL_KEYS[route.name] ?? route.name);
     const showAlertBadge = route.name === 'Warnings' && alerts.length > 0;
 
     const onPress = () => {
       const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
       if (event.defaultPrevented) return;
+      if (isTodayHourly) {
+        if (route.name === 'FiveDays') {
+          if (activeTabRoute?.state?.key && (activeTabRoute.state.index ?? 0) > 0) {
+            navigation.dispatch({ type: 'POP_TO_TOP', target: activeTabRoute.state.key });
+          } else {
+            router.replace('/FiveDays' as Href);
+          }
+        } else {
+          if (activeTabRoute?.state?.key && (activeTabRoute.state.index ?? 0) > 0) {
+            navigation.dispatch({ type: 'POP_TO_TOP', target: activeTabRoute.state.key });
+          }
+          navigation.navigate(route.name);
+        }
+        return;
+      }
       if (!focused) {
         navigation.navigate(route.name);
       } else if (route.state && (route.state.index ?? 0) > 0) {

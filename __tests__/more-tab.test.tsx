@@ -28,12 +28,20 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ push: mockPush }),
+
+  useRouter: () => ({ push: mockPush, replace: jest.fn(), navigate: jest.fn() }),
   useNavigation: () => mockNavigation,
+  useGlobalSearchParams: () => ({}),
 }));
 jest.mock('react-native-safe-area-context', () => require('react-native-safe-area-context/jest/mock').default);
 jest.mock('@/lib/hooks/use-color-scheme', () => ({ useColorScheme: () => 'light' }));
 jest.mock('@/lib/hooks/alerts.hook', () => ({ useAlertsQuery: () => ({ data: [] }) }));
+jest.mock('@/lib/hooks/use-units', () => ({
+  useUnits: () => ({
+    temp: (v?: number) => `${v ?? 0}°C`,
+    tempSpoken: (v?: number) => `${v ?? 0} degrees Celsius`,
+  }),
+}));
 
 // eslint-disable-next-line import/first
 import AppTabBar from '@/components/AppTabBar';
@@ -41,6 +49,8 @@ import AppTabBar from '@/components/AppTabBar';
 import MoreConditionsScreen from '@/app/(tabs)/More/index';
 // eslint-disable-next-line import/first
 import AppBar from '@/components/AppBar';
+import FiveHourSummary from '@/components/FiveHourSummary';
+import { DateTime } from 'luxon';
 
 const textOf = (node: ReactTestInstance): string =>
   node.children.map(c => (typeof c === 'string' ? c : textOf(c))).join('');
@@ -143,6 +153,131 @@ describe('AppBar back arrow', () => {
 
     expect(backButtons()).toHaveLength(0);
     act(() => staleOnPress());
+    expect(backButtons()).toHaveLength(0);
+    act(() => staleOnPress());
     expect(mockNavigation.goBack).not.toHaveBeenCalled();
+  });
+
+  test('shows back button and invokes custom onBack even when navigation.canGoBack() is false (e.g. Today hourly details)', () => {
+    mockNavigation.canGoBack.mockReturnValue(false);
+    const customOnBack = jest.fn();
+    const { root } = render(<AppBar location="Addis Ababa" onBack={customOnBack} />);
+    const backButtons = root.findAll(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Go back' && !!n.props.onPress);
+
+    expect(backButtons.length).toBeGreaterThan(0);
+    act(() => backButtons[0].props.onPress());
+    expect(customOnBack).toHaveBeenCalledTimes(1);
+    expect(mockNavigation.goBack).not.toHaveBeenCalled();
+  });
+});
+
+describe('Hourly details navigation', () => {
+  beforeEach(() => mockPush.mockClear());
+
+  test('tapping FiveHourSummary navigates to Hourly with startAtCurrentTime=yes', () => {
+    const futureStepTime = DateTime.now().plus({ hours: 2 }).toISO()!;
+    const daySummary = {
+      day: DateTime.now().toISODate()!,
+      steps: [
+        {
+          time: futureStepTime,
+          temperature: 24,
+          weatherSymbol: 'clearsky_day',
+          precipitation: 0,
+          windSpeed: 3,
+        },
+      ],
+    };
+
+    const { root } = render(<FiveHourSummary daySummary={daySummary as any} location="Addis Ababa" />);
+    const card = root.find(n => typeof n.type !== 'string' && !!n.props.onPress);
+
+    act(() => card.props.onPress());
+
+    expect(SCREENS.Hourly).toBe('/FiveDays/Hourly');
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/FiveDays/Hourly',
+      params: {
+        location: 'Addis Ababa',
+        dayString: daySummary.day,
+        startAtCurrentTime: 'yes',
+        title: en.time.today,
+      },
+    });
+  });
+
+  test('highlights Today tab when viewing Today hourly details and Five Days tab when viewing 24h hourly forecast', () => {
+    const navigation = { emit: () => ({ defaultPrevented: false }), navigate: jest.fn(), dispatch: jest.fn() };
+
+    // Hourly opened from Today (startAtCurrentTime === 'yes'): Today tab should be highlighted
+    const todayHourlyState = {
+      index: TAB_ROUTES.indexOf('FiveDays'),
+      routes: TAB_ROUTES.map(name => ({
+        key: `${name}-key`,
+        name,
+        ...(name === 'FiveDays'
+          ? {
+              state: {
+                key: 'fivedays-stack',
+                index: 1,
+                routes: [
+                  { key: 'index-key', name: 'index' },
+                  { key: 'hourly-key', name: 'Hourly', params: { startAtCurrentTime: 'yes' } },
+                ],
+              },
+            }
+          : {}),
+      })),
+    };
+    const { root: todayRoot } = render(<AppTabBar state={todayHourlyState} navigation={navigation} />);
+    const todayTab = todayRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Today' && !!n.props.onPress);
+    const fiveDaysTabOnToday = todayRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Five Days' && !!n.props.onPress);
+    expect(todayTab.props.accessibilityState).toEqual({ selected: true });
+    expect(fiveDaysTabOnToday.props.accessibilityState).toEqual({});
+
+    // Initial mount of FiveDays when opened from Today (state is undefined, params has startAtCurrentTime: 'yes')
+    const initialMountTodayHourlyState = {
+      index: TAB_ROUTES.indexOf('FiveDays'),
+      routes: TAB_ROUTES.map(name => ({
+        key: `${name}-key`,
+        name,
+        ...(name === 'FiveDays'
+          ? {
+              params: { screen: 'Hourly', params: { startAtCurrentTime: 'yes' } },
+            }
+          : {}),
+      })),
+    };
+    const { root: initialRoot } = render(<AppTabBar state={initialMountTodayHourlyState} navigation={navigation} />);
+    const initialTodayTab = initialRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Today' && !!n.props.onPress);
+    const initialFiveDaysTab = initialRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Five Days' && !!n.props.onPress);
+    expect(initialTodayTab.props.accessibilityState).toEqual({ selected: true });
+    expect(initialFiveDaysTab.props.accessibilityState).toEqual({});
+
+    // Hourly opened for 24h full forecast (startAtCurrentTime === 'no'): Five Days tab should be highlighted
+    const fiveDaysHourlyState = {
+      index: TAB_ROUTES.indexOf('FiveDays'),
+      routes: TAB_ROUTES.map(name => ({
+        key: `${name}-key`,
+        name,
+        ...(name === 'FiveDays'
+          ? {
+              state: {
+                key: 'fivedays-stack',
+                index: 1,
+                routes: [
+                  { key: 'index-key', name: 'index' },
+                  { key: 'hourly-key', name: 'Hourly', params: { startAtCurrentTime: 'no' } },
+                ],
+              },
+            }
+          : {}),
+      })),
+    };
+    const { root: fiveDaysRoot } = render(<AppTabBar state={fiveDaysHourlyState} navigation={navigation} />);
+    const todayTabOnFiveDays = fiveDaysRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Today' && !!n.props.onPress);
+    const fiveDaysTab = fiveDaysRoot.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Five Days' && !!n.props.onPress);
+    expect(fiveDaysTab.props.accessibilityState).toEqual({ selected: true });
+    expect(todayTabOnFiveDays.props.accessibilityState).toEqual({});
   });
 });

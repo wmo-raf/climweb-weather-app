@@ -1,13 +1,14 @@
-import React, { JSX, useMemo } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { JSX, useCallback, useEffect, useMemo } from 'react';
+import { BackHandler, StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter, Href } from 'expo-router';
 
 import AppBar from '@/components/AppBar';
 import HourlyTable from '@/components/HourlyTable';
 import Alerts from '@/components/Alerts';
 
+import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { ForecastDayRecord } from '@/lib/forecast/types';
@@ -19,6 +20,8 @@ function HourlyScreen(): JSX.Element {
   const { location: location_name, dayString, startAtCurrentTime, title } =
           useLocalSearchParams<{location: string, dayString: string, startAtCurrentTime: string, title: string}>()
 
+  const navigation = useNavigation();
+  const router = useRouter();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
@@ -26,6 +29,62 @@ function HourlyScreen(): JSX.Element {
   const lat = useLocationStore(s => s.lat);
   const lon = useLocationStore(s => s.lon);
   const { data: forecast } = useForecastQuery(lat, lon);
+
+  const resetFiveDaysStack = useCallback(() => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof (navigation as any).dispatch === 'function') {
+      (navigation as any).dispatch({ type: 'RESET', payload: { index: 0, routes: [{ name: 'index' }] } });
+    }
+  }, [navigation]);
+
+  const handleBack = useCallback(() => {
+    if (startAtCurrentTime === 'yes') {
+      resetFiveDaysStack();
+      router.navigate(SCREENS.Home as Href);
+    } else if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      router.replace('/FiveDays' as Href);
+    }
+  }, [navigation, resetFiveDaysStack, router, startAtCurrentTime]);
+
+  // When opened from Today's "Today, hour by hour" card (startAtCurrentTime === "yes"):
+  // 1. Hardware back / swipe-back returns to Today instead of landing on Five Days.
+  // 2. Switching to another tab resets the Five Days stack in the background
+  //    so Five Days isn't left showing Today's hourly view.
+  useEffect(() => {
+    const backSub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (typeof (navigation as any).isFocused === 'function' && !(navigation as any).isFocused()) {
+        return false;
+      }
+      handleBack();
+      return true;
+    });
+
+    if (startAtCurrentTime !== 'yes') {
+      return () => backSub.remove();
+    }
+
+    const unsubscribeBeforeRemove = navigation.addListener('beforeRemove', (e: any) => {
+      if (
+        (typeof (navigation as any).isFocused !== 'function' || (navigation as any).isFocused()) &&
+        (e.data?.action?.type === 'GO_BACK' || e.data?.action?.type === 'POP')
+      ) {
+        setTimeout(() => {
+          router.navigate(SCREENS.Home as Href);
+        }, 0);
+      }
+    });
+    const unsubscribeBlur = navigation.addListener('blur', () => {
+      resetFiveDaysStack();
+    });
+    return () => {
+      backSub.remove();
+      unsubscribeBeforeRemove();
+      unsubscribeBlur();
+    };
+  }, [handleBack, navigation, resetFiveDaysStack, router, startAtCurrentTime]);
 
   let daySummary: ForecastDayRecord | undefined = undefined;
   if (forecast && dayString && location_name === store_location_name) {
@@ -60,7 +119,7 @@ function HourlyScreen(): JSX.Element {
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={location_name} />
+          <AppBar location={location_name} onBack={handleBack} />
           <View style={styles.alertsWrapper}>
             <Alerts lat={lat} lon={lon} location={location_name} />
           </View>
