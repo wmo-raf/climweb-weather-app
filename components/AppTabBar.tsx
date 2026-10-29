@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { ComponentProps, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import type { Tabs } from 'expo-router';
 import { Badge, Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,14 +10,9 @@ import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { ThemeColors, Fonts, navRailWidth, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-// Loosely typed on purpose: this is assigned the real BottomTabBarProps at
-// the call site (app/(tabs)/_layout.tsx), whose exact shape isn't reliably
-// importable across expo-router versions. Only state/navigation fields are
-// read, both structurally compatible with the real prop at runtime.
-type TabBarProps = {
-  state: any;
-  navigation: any;
-};
+// expo-router doesn't export BottomTabBarProps from its root, so derive it
+// from the Tabs layout's own tabBar prop to stay in sync across versions.
+type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
 
 const ICONS: Record<string, string> = {
   index: 'weather-sunny',
@@ -37,7 +33,7 @@ const LABEL_KEYS: Record<string, string> = {
 // rail is absolutely positioned over the left edge — screens are
 // responsible for adding paddingLeft: navRailWidth at the XL breakpoint so
 // content doesn't render underneath it (see useBreakpoint() call sites).
-function AppTabBar({ state, navigation }: TabBarProps) {
+function AppTabBar({ state, emitter, navigateToTab }: TabBarProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const colors = useTheme();
@@ -47,15 +43,15 @@ function AppTabBar({ state, navigation }: TabBarProps) {
 
   const { data: alerts = [] } = useAlertsQuery();
 
-  const items = state.routes.map((route: { key: string; name: string }, index: number) => {
+  const items = state.routes.map((route, index) => {
     const focused = state.index === index;
     const label = t(LABEL_KEYS[route.name] ?? route.name);
     const showAlertBadge = route.name === 'Warnings' && alerts.length > 0;
 
     const onPress = () => {
-      const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+      const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
       if (!focused && !event.defaultPrevented) {
-        navigation.navigate(route.name);
+        navigateToTab(route.key);
       }
     };
 

@@ -1,5 +1,5 @@
 import React, { forwardRef, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { HostInstance, StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +34,7 @@ type AlertShareCardProps = {
 // message needs is baked into the image itself (severity, title, where/when,
 // top action, source), since it has to stand alone after being forwarded
 // several times down a chain with no surrounding app context.
-const AlertShareCard = forwardRef<View, AlertShareCardProps>(({ alert, onReady }, ref) => {
+const AlertShareCard = forwardRef<HostInstance, AlertShareCardProps>(({ alert, onReady }, ref) => {
   const { t } = useTranslation();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
