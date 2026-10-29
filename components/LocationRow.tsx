@@ -23,17 +23,19 @@ type LocationRowProps = {
   // error card instead of one per failing row.
   id: string;
   onErrorChange?: (id: string, retry: (() => void) | undefined) => void;
+  onLoadingChange?: (id: string, loading: boolean) => void;
 };
 function LocationRow(props: LocationRowProps): JSX.Element | null {
   const { t } = useTranslation();
   const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const { district, onPress, id, onErrorChange } = props;
+  const { district, onPress, id, onErrorChange, onLoadingChange } = props;
   const [, forecast, error, retry] = useForecast(district.lat, district.lon);
 
   const today = forecast?.days.find(d => DateTime.fromISO(d.day).hasSame(DateTime.now(), "day"));
   const isError = !!error || (!!forecast && !today);
+  const isLoading = !isError && !(forecast && today);
 
   useEffect(() => {
     onErrorChange?.(id, isError ? retry : undefined);
@@ -43,6 +45,14 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
     // just be noise.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, id]);
+
+  useEffect(() => {
+    onLoadingChange?.(id, isLoading);
+    return () => {
+      onLoadingChange?.(id, false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, id]);
 
   if (isError) {
     return null;
@@ -65,6 +75,10 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
         </View>
       </TouchableOpacity>
     );
+  }
+
+  if (onLoadingChange) {
+    return null;
   }
 
   return (

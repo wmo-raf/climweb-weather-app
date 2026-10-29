@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -33,6 +33,29 @@ const FavouritesScreen = () => {
 
   const [favouritesLoading, favourites] = useFavourites();
   const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
+  const [loadingRows, setLoadingRows] = useState<Record<string, boolean>>({});
+
+  const onLoadingChange = useCallback((id: string, loading: boolean) => {
+    setLoadingRows(prev => {
+      if (!!prev[id] === loading) return prev;
+      const next = { ...prev };
+      if (loading) {
+        next[id] = true;
+      } else {
+        delete next[id];
+      }
+      return next;
+    });
+  }, []);
+
+  // Check both synchronous cache state (so the first render frame doesn't
+  // flash the already-cached first element before child effects run) and
+  // the live loading state reported by each LocationRow.
+  const anyRowUncached = favourites.some(place => {
+    const state = queryClient.getQueryState(forecastQueryKey(place.latitude, place.longitude));
+    return !state || (!state.data && state.status !== 'error');
+  });
+  const isRowsLoading = favourites.length > 0 && (anyRowUncached || Object.keys(loadingRows).length > 0);
 
   const onSelectPlace = (place: Place, forecast: ForecastRecord) => {
     // LocationRow already fetched this place's forecast to render its
@@ -70,37 +93,46 @@ const FavouritesScreen = () => {
               </View>
             ) : (
               <>
-                <View style={styles.header}>
-                  <Text style={styles.headerText}>{t('places.yourPlaces')}</Text>
-                  <TouchableOpacity
-                    onPress={onEdit}
-                    accessibilityLabel={t('places.edit')}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                  >
-                    <Icon source="pencil-outline" size={22} color={colors.primary} />
-                  </TouchableOpacity>
-                </View>
-                {hasErrors && (
-                  <StatusCard
-                    icon="cloud-off-outline"
-                    iconColor={colors.danger}
-                    title={t('forecast.error.title')}
-                    text={t("forecast.error.generic") + '.'}
-                    onRetry={retryAll}
-                  />
+                {isRowsLoading && (
+                  <View style={styles.loader}>
+                    <ActivityIndicator animating={true} color={colors.primary} size='large' />
+                  </View>
                 )}
-                {favourites.map((place, idx) => (
-                  <LocationRow
-                    key={`${place.name}-${place.latitude}-${place.longitude}-${idx}`}
-                    id={String(idx)}
-                    district={{ name: place.name, lat: place.latitude, lon: place.longitude }}
-                    onPress={(forecast: ForecastRecord) => onSelectPlace(place, forecast)}
-                    onErrorChange={onErrorChange}
-                  />
-                ))}
+                <View style={isRowsLoading ? styles.hidden : undefined}>
+                  <View style={styles.header}>
+                    <Text style={styles.headerText}>{t('places.yourPlaces')}</Text>
+                    <TouchableOpacity
+                      onPress={onEdit}
+                      accessibilityLabel={t('places.edit')}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Icon source="pencil-outline" size={22} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                  {hasErrors && (
+                    <StatusCard
+                      icon="cloud-off-outline"
+                      iconColor={colors.danger}
+                      title={t('forecast.error.title')}
+                      text={t("forecast.error.generic") + '.'}
+                      onRetry={retryAll}
+                    />
+                  )}
+                  {favourites.map((place, idx) => (
+                    <LocationRow
+                      key={`${place.name}-${place.latitude}-${place.longitude}-${idx}`}
+                      id={String(idx)}
+                      district={{ name: place.name, lat: place.latitude, lon: place.longitude }}
+                      onPress={(forecast: ForecastRecord) => onSelectPlace(place, forecast)}
+                      onErrorChange={onErrorChange}
+                      onLoadingChange={onLoadingChange}
+                    />
+                  ))}
+                  <LastUpdatedFooter />
+                </View>
               </>
             )}
-            <LastUpdatedFooter />
+            {favourites.length === 0 && !favouritesLoading && <LastUpdatedFooter />}
           </ScrollView>
         </View>
       </View>
@@ -127,13 +159,13 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     padding: Spacing.lg,
     paddingBottom: Spacing.xxl,
   },
-  // Matches the Today tab's whole-page loading spinner (plain, no card
-  // chrome) — useFavourites() reads from storage synchronously now, so
-  // this never actually shows, but the guard is kept in case that changes.
   loader: {
     marginTop: Spacing.xxxl,
     marginBottom: Spacing.xxxl,
     alignItems: 'center',
+  },
+  hidden: {
+    display: 'none',
   },
   header: {
     flexDirection: 'row',
