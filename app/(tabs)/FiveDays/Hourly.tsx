@@ -1,8 +1,8 @@
-import React, { JSX, useCallback, useEffect, useMemo } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { BackHandler, StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DateTime } from "luxon";
-import { useLocalSearchParams, useNavigation, useRouter, Href } from 'expo-router';
+import { useIsFocused, useLocalSearchParams, useNavigation, usePreventRemove, useRouter, Href } from 'expo-router';
 
 import AppBar from '@/components/AppBar';
 import HourlyTable from '@/components/HourlyTable';
@@ -22,6 +22,7 @@ function HourlyScreen(): JSX.Element {
 
   const navigation = useNavigation();
   const router = useRouter();
+  const isFocused = useIsFocused();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
@@ -38,16 +39,37 @@ function HourlyScreen(): JSX.Element {
     }
   }, [navigation]);
 
+  // When opened from Today, this screen leaves either back to Today (back
+  // button, hardware back, swipe-back) or by resetting the Five Days stack
+  // when another tab is picked. Swipe-back and other stack pops are blocked
+  // and redirected to Today; setting `exit` lifts the block, and the effect
+  // below navigates once it's lifted so our own pop isn't intercepted.
+  const [exit, setExit] = useState<'today' | 'reset' | null>(null);
+  usePreventRemove(startAtCurrentTime === 'yes' && isFocused && exit === null, ({ data, repeat }) => {
+    if (data.action.type === 'GO_BACK' || data.action.type === 'POP') {
+      setExit('today');
+    } else {
+      repeat();
+    }
+  });
+
+  useEffect(() => {
+    if (exit === null) return;
+    resetFiveDaysStack();
+    if (exit === 'today') {
+      router.navigate(SCREENS.Home as Href);
+    }
+  }, [exit, resetFiveDaysStack, router]);
+
   const handleBack = useCallback(() => {
     if (startAtCurrentTime === 'yes') {
-      resetFiveDaysStack();
-      router.navigate(SCREENS.Home as Href);
+      setExit('today');
     } else if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
       router.replace('/FiveDays' as Href);
     }
-  }, [navigation, resetFiveDaysStack, router, startAtCurrentTime]);
+  }, [navigation, router, startAtCurrentTime]);
 
   // When opened from Today's "Today, hour by hour" card (startAtCurrentTime === "yes"):
   // 1. Hardware back / swipe-back returns to Today instead of landing on Five Days.
@@ -66,25 +88,14 @@ function HourlyScreen(): JSX.Element {
       return () => backSub.remove();
     }
 
-    const unsubscribeBeforeRemove = navigation.addListener('beforeRemove', (e: any) => {
-      if (
-        (typeof (navigation as any).isFocused !== 'function' || (navigation as any).isFocused()) &&
-        (e.data?.action?.type === 'GO_BACK' || e.data?.action?.type === 'POP')
-      ) {
-        setTimeout(() => {
-          router.navigate(SCREENS.Home as Href);
-        }, 0);
-      }
-    });
     const unsubscribeBlur = navigation.addListener('blur', () => {
-      resetFiveDaysStack();
+      setExit((current) => current ?? 'reset');
     });
     return () => {
       backSub.remove();
-      unsubscribeBeforeRemove();
       unsubscribeBlur();
     };
-  }, [handleBack, navigation, resetFiveDaysStack, router, startAtCurrentTime]);
+  }, [handleBack, navigation, startAtCurrentTime]);
 
   let daySummary: ForecastDayRecord | undefined = undefined;
   if (forecast && dayString && location_name === store_location_name) {
