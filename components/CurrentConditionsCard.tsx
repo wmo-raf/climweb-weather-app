@@ -66,7 +66,7 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
 const makeStyles = (colors: ThemeColors, tempColor: string) => StyleSheet.create({
   currentCard: {
     borderRadius: Radius.large,
-    backgroundColor: colors.bg,
+    backgroundColor: colors.bgTint,
     borderWidth: 1,
     borderColor: colors.border,
     paddingVertical: Spacing.lg,
