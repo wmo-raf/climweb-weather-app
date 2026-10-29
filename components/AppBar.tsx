@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 
-import { useCanGoBack, useNavigation, useRouter, Href } from 'expo-router';
+import { useNavigation, useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,12 @@ type AppBarProps = {
   // as a plain screen title (e.g. "Settings", "Warnings").
   isPlace?: boolean,
   hideSettings?: boolean,
+  // Top-level tab screens that must never show a back arrow.
+  hideBack?: boolean,
+  // Icon shown before a plain (non-place) title, same size/colour as the
+  // place pin.
+  titleIcon?: string,
+  onBack?: () => void,
 };
 
 import { ThemedText } from '@/components/themed-text';
@@ -27,16 +33,43 @@ const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
-  const canGoBack = useCanGoBack();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
+  // Whether there's anywhere to go back to, kept in state and refreshed on
+  // focus / navigation changes. Reading navigation.canGoBack() during render
+  // went stale: a screen re-rendered while covered (e.g. Today re-rendering
+  // on a language change while Settings was open on top) kept a back arrow
+  // after the cover was popped, and tapping it threw "GO_BACK was not
+  // handled by any navigator".
+  const [canGoBack, setCanGoBack] = useState(() => navigation.canGoBack());
+  useEffect(() => {
+    const update = () => setCanGoBack(navigation.canGoBack());
+    update();
+    const unsubscribeFocus = navigation.addListener('focus', update);
+    const unsubscribeState = navigation.addListener('state', update);
+    return () => {
+      unsubscribeFocus();
+      unsubscribeState();
+    };
+  }, [navigation]);
+
+  const onBack = () => {
+    if (props.onBack) {
+      props.onBack();
+      return;
+    }
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  };
+
   const titleBlock = (
     <>
-      {props.isPlace && <Icon size={18} color={colors.primary} source="map-marker" />}
+      {(props.isPlace || props.titleIcon) && <Icon size={18} color={colors.primary} source={props.titleIcon ?? 'map-marker'} />}
       <View style={styles.titleTextBlock}>
         <ThemedText type="default" themeColor="textStrong" style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</ThemedText>
-        {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t('Tap to change place')}</ThemedText>}
+        {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t("places.tapToChange")}</ThemedText>}
       </View>
     </>
   );
@@ -44,15 +77,15 @@ const AppBar = (props: AppBarProps) => {
   return (
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
-        {canGoBack &&
-          <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={() => navigation.goBack()} style={styles.backButton}>
+        {!props.hideBack && (canGoBack || !!props.onBack) &&
+          <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={onBack} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
         {props.isPlace
           ? <TouchableOpacity
               style={styles.titleTouchable}
               accessible={true}
-              accessibilityLabel={`${props.location}. ${t('Tap to change place')}`}
+              accessibilityLabel={`${props.location}. ${t("places.tapToChange")}`}
               onPress={() => router.push(SCREENS.Search.toString() as Href)}
             >
               {titleBlock}
@@ -65,7 +98,7 @@ const AppBar = (props: AppBarProps) => {
         <TouchableOpacity
           style={styles.settingsButton}
           accessible={true}
-          accessibilityLabel={t('Settings')}
+          accessibilityLabel={t("settings.title")}
           onPress={() => router.push(SCREENS.Settings.toString() as Href)}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
@@ -107,6 +140,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexShrink: 1,
     minHeight: touchTarget.nav,
     paddingVertical: Spacing.md,
+    marginLeft: Spacing.md,
   },
   titleTextBlock: {
     flexShrink: 1,

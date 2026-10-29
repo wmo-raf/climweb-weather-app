@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastDayRecord } from '@/lib/forecast/types';
-import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useUnits } from '@/lib/hooks/use-units';
+import { SCREENS } from '@/lib/layout/constants';
 
 type FiveHourSummaryProps = {
   daySummary: ForecastDayRecord;
@@ -35,12 +36,12 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
   }
 
   const onPress = () => router.push({
-    pathname: '/Hourly',
+    pathname: SCREENS.Hourly,
     params: {
       location,
       dayString: daySummary.day,
       startAtCurrentTime: 'yes',
-      title: t('Today'),
+      title: t("time.today"),
     },
   } as Href);
 
@@ -58,6 +59,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
       {upcomingSteps.map((step, idx) => {
         const iconSource = step.weatherSymbol ? weatherIcons[step.weatherSymbol] : undefined;
         const timeLabel = DateTime.fromISO(step.time).toFormat('h a').toLowerCase();
+        const temp = units.temp(step.temperature);
 
         return (
           <View
@@ -67,7 +69,7 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
           >
             <Text style={styles.time}>{timeLabel}</Text>
             {iconSource && <Icon source={iconSource} size={24} />}
-            <Text style={styles.temp}>{units.temp(step.temperature)}</Text>
+            <Text style={styles.temp}>{temp}</Text>
           </View>
         );
       })}
@@ -78,18 +80,27 @@ function FiveHourSummary({ daySummary, location }: FiveHourSummaryProps): JSX.El
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
     marginTop: Spacing.lg,
-    padding: Spacing.lg,
-    borderRadius: Radius.medium,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: Radius.large,
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    ...shadow.sm,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.md,
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.bgMuted,
   },
   headerText: {
     fontSize: 16,
@@ -100,9 +111,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
-    paddingVertical: Spacing.md,
+    paddingVertical: Spacing.lg,
+    minHeight: 48,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.bgMuted,
   },
   rowLast: {
     borderBottomWidth: 0,

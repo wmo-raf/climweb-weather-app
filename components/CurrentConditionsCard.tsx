@@ -16,10 +16,7 @@ type CurrentConditionsCardProps = {
   daySummary: ForecastDayRecord;
   location: string;
   tempFontSize: number;
-  // Only shown where there's room to spare (the XL two-pane layout) — none
-  // of the phone breakpoints in the design reference show it.
   showWindSummary?: boolean;
-  // Small breakpoint (<360dp) — tighter padding to fit entry-level phones.
   compact?: boolean;
 };
 
@@ -31,6 +28,7 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
   const styles = useMemo(() => makeStyles(colors, tempTextColor[scheme]), [colors, scheme]);
 
   const nowStep = daySummary.steps[0];
+  const nowTemp = units.temp(nowStep?.temperature || 0);
   const nowIconSource = nowStep?.weatherSymbol ? weatherIcons[nowStep.weatherSymbol] : undefined;
   const nowConditionLabel = t('condition.now', { condition: t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]) });
 
@@ -41,17 +39,12 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
   return (
     <View style={[styles.currentCard, compact && styles.currentCardCompact]}>
       <View style={styles.currentRow}>
-        {nowIconSource && <Icon source={nowIconSource} size={64} />}
         <View style={styles.currentTempBlock}>
-          <Text
-            style={[styles.large, { fontSize: tempFontSize }]}
-            accessibilityLabel={units.tempSpoken(nowStep?.temperature || 0)}
-          >
-            {units.tempValue(nowStep?.temperature || 0)}
-            {/* Explicit unit, smaller so the number stays the focus. */}
-            <Text style={{ fontSize: Math.round(tempFontSize * 0.5) }}>{units.tempSymbol}</Text>
-          </Text>
+          <Text style={[styles.large, { fontSize: tempFontSize }]}>{nowTemp}</Text>
           <Text style={styles.nowCondition}>{nowConditionLabel}</Text>
+        </View>
+        <View style={styles.iconBlock}>
+          {nowIconSource && <Icon source={nowIconSource} size={80} />}
         </View>
       </View>
       <Text style={styles.summaryText}>
@@ -62,7 +55,7 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
         <View style={styles.windCard}>
           <Icon source="weather-windy" size={20} color={colors.text} />
           <Text style={styles.windText}>
-            <Text style={styles.windLabel}>{t('Wind')}: </Text>{windSentence}
+            <Text style={styles.windLabel}>{t("weather.wind")}: </Text>{windSentence}
           </Text>
         </View>
       }
@@ -72,20 +65,38 @@ function CurrentConditionsCard({ daySummary, location, tempFontSize, showWindSum
 
 const makeStyles = (colors: ThemeColors, tempColor: string) => StyleSheet.create({
   currentCard: {
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     backgroundColor: colors.bgTint,
-    padding: Spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.lg,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   currentCardCompact: {
-    padding: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
   },
   currentRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.lg,
+    justifyContent: 'space-between',
+    width: '100%',
   },
   currentTempBlock: {
     flexDirection: 'column',
+    alignItems: 'flex-start',
+    flex: 1,
+  },
+  iconBlock: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    marginLeft: Spacing.md,
   },
   large: {
     fontFamily: Fonts.sans.bold,
@@ -100,7 +111,8 @@ const makeStyles = (colors: ThemeColors, tempColor: string) => StyleSheet.create
     fontSize: 16,
     fontFamily: Fonts.sans.regular,
     color: colors.text,
-    marginTop: Spacing.md,
+    marginTop: Spacing.xl,
+    lineHeight: 22,
   },
   summaryBold: {
     fontFamily: Fonts.sans.bold,

@@ -34,35 +34,35 @@ export default function AboutTheAppScreen(): JSX.Element {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("About the app")} hideSettings />
+        <AppBar location={t("aboutApp.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           bounces={false}
         >
           {/* Main About the App Section */}
-          <ThemedView type="bgAlt" style={[styles.card, { marginTop: 16 }]}>
+          <ThemedView type="bg" style={[styles.card, { marginTop: 16 }]}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="information-circle-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('app.and.forecasts')}
+                {t('aboutApp.forecasts.title')}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>
-              {t('app.and.forecasts.desc')}
+              {t('aboutApp.forecasts.description')}
             </ThemedText>
           </ThemedView>
 
           {/* Partners Section */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="people-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('partners')}
+                {t("aboutApp.partners")}
               </ThemedText>
             </View>
             <View style={styles.partnersList}>
@@ -78,13 +78,13 @@ export default function AboutTheAppScreen(): JSX.Element {
           </ThemedView>
 
           {/* Icons Section */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="images-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('Icons')}
+                {t("aboutApp.icons")}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>
@@ -102,13 +102,13 @@ export default function AboutTheAppScreen(): JSX.Element {
           </ThemedView>
 
           {/* Geographical Data Section */}
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View style={[styles.iconContainer, { backgroundColor: theme.primary + '26' }]}>
                 <Ionicons name="map-outline" size={22} color={theme.primary} />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t('Geographical Data')}
+                {t("aboutApp.geographicalData")}
               </ThemedText>
             </View>
             <ThemedText themeColor="textSubtle" type="default" style={styles.paragraph}>
@@ -152,12 +152,14 @@ const styles = StyleSheet.create({
   card: {
     alignSelf: "stretch",
     borderRadius: Radius.large,
+    borderWidth: 1,
     padding: Spacing.xl,
-    elevation: 1,
+    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.05)",
     gap: Spacing.md,
   },
   sectionHeaderContainer: {

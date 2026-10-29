@@ -23,14 +23,14 @@ export default function AboutUsScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("About us")} hideSettings />
+        <AppBar location={t("aboutUs.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           bounces={false}
         >
           {/* About EMI Section */}
-          <ThemedView type="bgAlt" style={[styles.card, { marginTop: 16 }]}>
+          <ThemedView type="bg" style={[styles.card, { marginTop: 16 }]}>
             <View style={styles.sectionHeaderContainer}>
               <View
                 style={[
@@ -50,12 +50,12 @@ export default function AboutUsScreen() {
               type="default"
               style={styles.paragraph}
             >
-              {t("aboutUs.emi.text")}
+              {t("aboutUs.emi.description")}
             </ThemedText>
 
             <InfoItem
-              title={t("aboutUs.mission.title")}
-              description={t("aboutUs.mission.text")}
+              title={t("aboutUs.emi.mission.title")}
+              description={t("aboutUs.emi.mission.description")}
               icon="ribbon-outline"
               iconColor={theme.primary}
             />
@@ -67,10 +67,10 @@ export default function AboutUsScreen() {
             themeColor="textSubtle"
             style={styles.groupHeader}
           >
-            {t("aboutUs.services")}
+            {t("aboutUs.forecastServices.title")}
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             <View style={styles.sectionHeaderContainer}>
               <View
                 style={[
@@ -85,7 +85,7 @@ export default function AboutUsScreen() {
                 />
               </View>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                {t("aboutUs.products.title")}
+                {t("aboutUs.forecastServices.products.title")}
               </ThemedText>
             </View>
 
@@ -94,13 +94,13 @@ export default function AboutUsScreen() {
               type="default"
               style={styles.paragraph}
             >
-              {t("aboutUs.products.text")}
+              {t("aboutUs.forecastServices.products.description")}
             </ThemedText>
 
             {/* Nowcast Item */}
             <InfoItem
-              title={t("aboutUs.nowcast.title")}
-              description={t("aboutUs.nowcast.text")}
+              title={t("aboutUs.forecastServices.nowcasting.title")}
+              description={t("aboutUs.forecastServices.nowcasting.description")}
               icon="time-outline"
               iconColor={theme.primary}
             />
@@ -109,8 +109,8 @@ export default function AboutUsScreen() {
 
             {/* Daily Item */}
             <InfoItem
-              title={t("aboutUs.daily.title")}
-              description={t("aboutUs.daily.text")}
+              title={t("aboutUs.forecastServices.daily.title")}
+              description={t("aboutUs.forecastServices.daily.description")}
               icon="today-outline"
               iconColor={theme.primary}
             />
@@ -119,8 +119,8 @@ export default function AboutUsScreen() {
 
             {/* Seasonal Item */}
             <InfoItem
-              title={t("aboutUs.seasonal.title")}
-              description={t("aboutUs.seasonal.text")}
+              title={t("aboutUs.forecastServices.seasonal.title")}
+              description={t("aboutUs.forecastServices.seasonal.description")}
               icon="calendar-outline"
               iconColor={theme.primary}
             />
@@ -160,12 +160,14 @@ const styles = StyleSheet.create({
   card: {
     alignSelf: "stretch",
     borderRadius: Radius.large,
+    borderWidth: 1,
     padding: Spacing.xl,
-    elevation: 1,
+    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.05)",
     gap: Spacing.lg,
   },
   sectionHeaderContainer: {

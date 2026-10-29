@@ -39,10 +39,10 @@ export const WIND_LEVEL_LABEL_KEYS: Record<WindLevel, string> = {
 };
 
 export const RAIN_LEVEL_LABEL_KEYS: Record<RainLevel, string> = {
-  none: 'rain.none.label',
-  light: 'rain.light.label',
-  moderate: 'rain.moderate.label',
-  heavy: 'rain.heavy.label',
+  none: 'conditions.rain.none.label',
+  light: 'conditions.rain.light.label',
+  moderate: 'conditions.rain.moderate.label',
+  heavy: 'conditions.rain.heavy.label',
 };
 
 // Full-sentence i18next keys with a safety qualifier, for prose contexts
@@ -56,8 +56,8 @@ export const WIND_LEVEL_SENTENCE_KEYS: Record<WindLevel, string> = {
 };
 
 export const RAIN_LEVEL_SENTENCE_KEYS: Record<RainLevel, string> = {
-  none: 'rain.none.sentence',
-  light: 'rain.light.sentence',
-  moderate: 'rain.moderate.sentence',
-  heavy: 'rain.heavy.sentence',
+  none: 'conditions.rain.none.sentence',
+  light: 'conditions.rain.light.sentence',
+  moderate: 'conditions.rain.moderate.sentence',
+  heavy: 'conditions.rain.heavy.sentence',
 };

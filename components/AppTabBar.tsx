@@ -1,31 +1,36 @@
-import React, { ComponentProps, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import type { Tabs } from 'expo-router';
 import { Badge, Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useGlobalSearchParams, useRouter, Href } from 'expo-router';
 
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { ThemeColors, Fonts, navRailWidth, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-// expo-router doesn't export BottomTabBarProps from its root, so derive it
-// from the Tabs layout's own tabBar prop to stay in sync across versions.
-type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>>[0];
+// Loosely typed on purpose: this is assigned the real BottomTabBarProps at
+// the call site (app/(tabs)/_layout.tsx), whose exact shape isn't reliably
+// importable across expo-router versions. Only state/navigation fields are
+// read, both structurally compatible with the real prop at runtime.
+type TabBarProps = {
+  state: any;
+  navigation: any;
+};
 
 const ICONS: Record<string, string> = {
   index: 'weather-sunny',
   FiveDays: 'calendar-month',
   Warnings: 'alert',
-  Places: 'map-marker-multiple',
+  More: 'tune',
 };
 
 const LABEL_KEYS: Record<string, string> = {
-  index: 'Today',
-  FiveDays: '5 days',
-  Warnings: 'Alerts',
-  Places: 'Places',
+  index: 'time.today',
+  FiveDays: 'time.fiveDays',
+  Warnings: 'alerts.title',
+  More: 'More',
 };
 
 // Renders as a bottom bar on phones and a left nav rail at the XL
@@ -33,8 +38,10 @@ const LABEL_KEYS: Record<string, string> = {
 // rail is absolutely positioned over the left edge — screens are
 // responsible for adding paddingLeft: navRailWidth at the XL breakpoint so
 // content doesn't render underneath it (see useBreakpoint() call sites).
-function AppTabBar({ state, emitter, navigateToTab }: TabBarProps) {
+function AppTabBar({ state, navigation }: TabBarProps) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const globalParams = useGlobalSearchParams<{ startAtCurrentTime?: string }>();
   const insets = useSafeAreaInsets();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -43,15 +50,55 @@ function AppTabBar({ state, emitter, navigateToTab }: TabBarProps) {
 
   const { data: alerts = [] } = useAlertsQuery();
 
-  const items = state.routes.map((route, index) => {
-    const focused = state.index === index;
+  const activeTabRoute = state.routes[state.index];
+  const activeNestedRoute = activeTabRoute?.state?.routes?.[activeTabRoute.state.index ?? 0];
+  const nestedScreenName =
+    activeNestedRoute?.name ??
+    activeTabRoute?.params?.screen;
+  const startAtCurrentTime =
+    activeNestedRoute?.params?.startAtCurrentTime ??
+    activeTabRoute?.params?.params?.startAtCurrentTime ??
+    activeTabRoute?.params?.startAtCurrentTime ??
+    globalParams?.startAtCurrentTime;
+
+  // When Hourly is opened from Today ("Today, hour by hour", startAtCurrentTime === 'yes'),
+  // highlight Today in the bottom bar instead of Five Days.
+  const isTodayHourly =
+    activeTabRoute?.name === 'FiveDays' &&
+    (nestedScreenName === 'Hourly' || activeTabRoute?.state === undefined) &&
+    startAtCurrentTime === 'yes';
+  const focusedRouteName = isTodayHourly ? 'index' : activeTabRoute?.name;
+
+  const items = state.routes.map((route: { key: string; name: string; state?: { key: string; index?: number } }) => {
+    const focused = route.name === focusedRouteName;
     const label = t(LABEL_KEYS[route.name] ?? route.name);
     const showAlertBadge = route.name === 'Warnings' && alerts.length > 0;
 
     const onPress = () => {
-      const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-      if (!focused && !event.defaultPrevented) {
-        navigateToTab(route.key);
+      const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+      if (event.defaultPrevented) return;
+      if (isTodayHourly) {
+        if (route.name === 'FiveDays') {
+          if (activeTabRoute?.state?.key && (activeTabRoute.state.index ?? 0) > 0) {
+            navigation.dispatch({ type: 'POP_TO_TOP', target: activeTabRoute.state.key });
+          } else {
+            router.replace('/FiveDays' as Href);
+          }
+        } else {
+          if (activeTabRoute?.state?.key && (activeTabRoute.state.index ?? 0) > 0) {
+            navigation.dispatch({ type: 'POP_TO_TOP', target: activeTabRoute.state.key });
+          }
+          navigation.navigate(route.name);
+        }
+        return;
+      }
+      if (!focused) {
+        navigation.navigate(route.name);
+      } else if (route.state && (route.state.index ?? 0) > 0) {
+        // Re-tapping the current tab while on a sub-page (e.g. a warning's
+        // details, Favourites) returns to that tab's first screen, as the
+        // standard tab bar does.
+        navigation.dispatch({ type: 'POP_TO_TOP', target: route.state.key });
       }
     };
 

@@ -20,5 +20,5 @@ export function ThemedView({ style, lightColor, darkColor, type, ...otherProps }
       ? lightColor
       : theme[type ?? 'bgAlt']);
 
-  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+  return <View style={[{ backgroundColor, borderColor: theme.border }, style]} {...otherProps} />;
 }

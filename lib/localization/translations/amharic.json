@@ -1,319 +1,496 @@
 {
-  "Settings": "Settings",
-  "settings.alwaysShowStartPage": "Always Show Start Page",
-  "settings.alwaysShowStartPage.description": "Show the welcome screen every time you open the app.",
-  "settings.appearance": "Appearance",
-  "settings.appearance.description": "Choose how the app looks, or match your device's setting.",
-  "settings.appearance.system": "System",
-  "settings.appearance.light": "Light",
-  "settings.appearance.dark": "Dark",
-  "Retry": "Retry",
-  "forecast.error.title": "Couldn't load the forecast",
-  "warnings.error.title": "Couldn't load alerts",
-  "location.notSet.title": "No location set",
-  "location.notSet.text": "Choose a place to see its forecast and alerts.",
-  "location.notSet.action": "Choose a place",
-  "About us": "About us",
-  "About the app": "About the app",
-  "Privacy Policy": "Privacy Policy",
-  "privacy.intro": "Climweb Weather App is developed by WMO-RAF (World Meteorological Organisation - Regional Office for Africa) and Norway MET (Meteorologisk institutt). We are committed to protecting your privacy.",
-  "privacy.dataCollected.title": "Information We Collect",
-  "privacy.dataCollected.text": "Climweb Weather App does not collect, store, or share any personal information. You do not need to register or provide any personal details to use the app.",
-  "privacy.location.title": "Use of Location Data",
-  "privacy.location.text": "To show you accurate weather forecasts and alerts for your area, the app uses your device's location. Your location is used only to fetch weather data for that spot and is not linked to your identity or stored on our servers.",
-  "privacy.favourites.title": "Your Favourite Places",
-  "privacy.favourites.text": "If you save favourite places, they are stored only on your device. This information is never sent to us or shared with anyone else. You can add, change, or remove your favourite places at any time from the Places tab.",
-  "privacy.security.title": "Data Security",
-  "privacy.security.text": "We take data security seriously. Since we do not collect or store personal data, our focus is on keeping the app's forecast and alert services accurate and reliable.",
-  "privacy.children.title": "Children's Privacy",
-  "privacy.children.text": "Climweb Weather App is designed to be used by people of all ages, including children. We do not collect personal information from children or any other users.",
-  "privacy.thirdParty.title": "Third-Party Services",
-  "privacy.thirdParty.text": "The app may contain links to third-party websites or services that we do not operate. If you tap a third-party link, you will be taken to that third party's site. We encourage you to read their privacy policies, as we are not responsible for their content or practices.",
-  "privacy.changes.title": "Changes to This Policy",
-  "privacy.changes.text": "We may update this Privacy Policy from time to time. Any changes will be reflected on this page.",
-  "privacy.contact.title": "Contact Us",
-  "privacy.contact.text": "If you have questions about this Privacy Policy, please contact WMO-RAF (World Meteorological Organisation - Regional Office for Africa) or Norway MET (Meteorologisk institutt).",
-  "Today": "Today",
-  "5 days": "5 days",
-  "Warnings": "Warnings",
-  "Alerts": "Alerts",
-  "Places": "Places",
-  "Next 5 days": "Next 5 days",
-  "Tap to change place": "Tap to change place",
-  "fiveDays.footnote": "Forecast data provided by your national weather service.",
-  "forecast.lastUpdated": "Forecast last updated at {{time}}",
-  "welcome.subtitle": "Weather forecasts and warnings, in plain words.",
-  "welcome.getStarted": "Get started",
-  "welcome.next": "Next",
-  "warnings.empty.title": "No warnings right now",
-  "warnings.empty.text": "There are no active weather warnings right now.",
-  "warnings.group.yourArea": "Your area",
-  "warnings.group.elsewhere": "Elsewhere in the country",
-  "places.pickerTitle": "Choose your favourite places",
-  "places.pickerSubtitle": "Search and select up to 5 places you care about.",
-  "places.selectedCount": "{{count}}/5 selected",
-  "places.maxReached": "You've selected the maximum of 5 places.",
-  "places.finish": "Finish",
-  "places.removeChip": "Remove {{name}}",
-  "places.empty.title": "No favourite places yet",
-  "places.empty.text": "Add up to 5 places to see their forecasts here.",
-  "places.setFavourites": "Set favourite places",
-  "places.edit": "Edit favourite places",
-  "places.yourPlaces": "Your places",
-  "today.tomorrow": "Tomorrow",
-  "today.warmer": "warmer",
-  "today.cooler": "cooler",
-  "today.tapToSeeFiveDays": "Tap to see the next 5 days",
-  "today.hourByHour": "Today, hour by hour",
-  "today.tapToSeeHourly": "Tap to see the hourly forecast",
-  "day.conditionWindy": "{{condition}} and very windy.",
-  "Min": "Min",
-  "Max": "Max",
-  "Km/h": "Km/h",
-  "Rain": "Rain",
-  "mm": "mm",
-  "Wind": "Wind",
-  "Time": "Time",
-  "Temp": "Temp",
-  "Department of Climate Change and Meteorological Services (DCCMS)": "Department of Climate Change and Meteorological Services (DCCMS)",
-  "how.we.started": "How we started",
-  "how.we.started.desc": "We began with volunteers and enthusiasts in the 1890s. Later in the 1940s, we started providing weather services for local aviation. Today, we provide reliable weather services across globe. We cover aviation, marine, agriculture, livestock management, and more.",
-  "our.mandate": "Our mandate",
-  "our.mandate.desc": "To monitor, predict and provide information on weather and climate, that would contribute towards the socio-economic development of the country.",
-  "our.mission": "Our mission",
-  "our.mission.desc": "To provide reliable, responsive and high quality weather and climate services to meet national, regional and international obligations through timely dissemination of accurate and up to-date data and information for socio-economic development.",
-  "our.vision": "Our vision",
-  "our.vision.desc": "A Responsive Nation to Weather and Climate Change Impacts",
-  "app.and.forecasts": "The app and its forecasts",
-  "app.and.forecasts.desc": "The app development is led by \nWMO-RAF - World Meteorological Organisation, Regional Office for Africa, and Norway MET - Meteorologisk institutt.\n\n All forecasts are issued by Norway MET.",
-  "Icons": "Icons",
-  "partners": "Partners in this project have been",
-  "icons.disclaimer": "Weather icons are licensed by",
-  "warning.icons.disclaimer": "Warning icons are contributed by the World Meteorological Organisation.",
-  "Geographical Data": "Geographical Data",
-  "geographical.data.disclaimer": "The geographical data in the app was downloaded from",
-  "Language": "Language",
-  "English": "English",
-  "Not available": "Not available",
-  "clearsky_day": "Clear sky",
-  "clearsky_night": "Clear sky",
-  "clearsky_polartwilight": "Clear sky polar twilight",
-  "cloudy": "Cloudy",
-  "fair_day": "Fair day",
-  "fair_night": "Fair night",
-  "fair_polartwilight": "Fair polar twilight",
-  "fog": "Fog",
-  "heavyrainandthunder": "Heavy rain and thunder",
-  "heavyrain": "Heavy rain",
-  "heavyrainshowersandthunder_day": "Heavy rain showers and thunder",
-  "heavyrainshowersandthunder_night": "Heavy rain showers and thunder",
-  "heavyrainshowersandthunder_polartwilight": "Heavy rain showers and thunder polar twilight",
-  "heavyrainshowers_day": "Heavy rain showers",
-  "heavyrainshowers_night": "Heavy rain showers",
-  "heavyrainshowers_polartwilight": "Heavy rain showers polar twilight",
-  "heavysleetandthunder": "Heavy sleet and thunder",
-  "heavysleet": "Heavy sleet",
-  "heavysleetshowersandthunder_day": "Heavy sleet showers and thunder",
-  "heavysleetshowersandthunder_night": "Heavy sleet showers and thunder",
-  "heavysleetshowersandthunder_polartwilight": "Heavy sleet showers and thunder polar twilight",
-  "heavysleetshowers_day": "Heavy sleet showers",
-  "heavysleetshowers_night": "Heavy sleet showers",
-  "heavysleetshowers_polartwilight": "Heavy sleet showers polar twilight",
-  "heavysnowandthunder": "Heavy snow and thunder",
-  "heavysnow": "Heavy snow",
-  "heavysnowshowersandthunder_day": "Heavy snow showers and thunder",
-  "heavysnowshowersandthunder_night": "Heavy snow showers and thunder",
-  "heavysnowshowersandthunder_polartwilight": "Heavy snow showers and thunder polar twilight",
-  "heavysnowshowers_day": "Heavy snow showers",
-  "heavysnowshowers_night": "Heavy snow showers",
-  "heavysnowshowers_polartwilight": "Heavy snow showers polar twilight",
-  "lightrainandthunder": "Light rain and thunder",
-  "lightrain": "Light rain",
-  "lightrainshowersandthunder_day": "Light rain showers and thunder",
-  "lightrainshowersandthunder_night": "Light rain showers and thunder",
-  "lightrainshowersandthunder_polartwilight": "Light rain showers and thunder polar twilight",
-  "lightrainshowers_day": "Light rain showers",
-  "lightrainshowers_night": "Light rain showers",
-  "lightrainshowers_polartwilight": "Light rain showers polar twilight",
-  "lightsleetandthunder": "Light sleet and thunder",
-  "lightsleet": "Light sleet",
-  "lightsleetshowers_day": "Light sleet showers",
-  "lightsleetshowers_night": "Light sleet showers",
-  "lightsleetshowers_polartwilight": "Light sleet showers polar twilight",
-  "lightsnowandthunder": "Light snow and thunder",
-  "lightsnow": "Light snow",
-  "lightsnowshowers_day": "Light snow showers",
-  "lightsnowshowers_night": "Light snow showers",
-  "lightsnowshowers_polartwilight": "Light snow showers polar twilight",
-  "lightssleetshowersandthunder_day": "Light sleet showers and thunder",
-  "lightssleetshowersandthunder_night": "Light sleet showers and thunder",
-  "lightssleetshowersandthunder_polartwilight": "Light sleet showers and thunder polar twilight",
-  "lightssnowshowersandthunder_day": "Light snow showers and thunder",
-  "lightssnowshowersandthunder_night": "Light snow showers and thunder",
-  "lightssnowshowersandthunder_polartwilight": "Light snow showers and thunder polar twilight",
-  "partlycloudy_day": "Partly cloudy",
-  "partlycloudy_night": "Partly cloudy",
-  "partlycloudy_polartwilight": "Partly cloudy polar twilight",
-  "rainandthunder": "Rain and thunder",
-  "rain": "Rain",
-  "rainshowersandthunder_day": "Rain showers and thunder",
-  "rainshowersandthunder_night": "Rain showers and thunder",
-  "rainshowersandthunder_polartwilight": "Rain showers and thunder polar twilight",
-  "rainshowers_day": "Rain showers",
-  "rainshowers_night": "Rain showers",
-  "rainshowers_polartwilight": "Rain showers polar twilight",
-  "sleetandthunder": "Sleet and thunder",
-  "sleet": "Sleet",
-  "sleetshowersandthunder_day": "Sleet showers and thunder",
-  "sleetshowersandthunder_night": "Sleet showers and thunder",
-  "sleetshowersandthunder_polartwilight": "Sleet showers and thunder polar twilight",
-  "sleetshowers_day": "Sleet showers",
-  "sleetshowers_night": "Sleet showers",
-  "sleetshowers_polartwilight": "Sleet showers polar twilight",
-  "snowandthunder": "Snow and thunder",
-  "snow": "Snow",
-  "snowshowersandthunder_day": "Snow showers and thunder",
-  "snowshowersandthunder_night": "Snow showers and thunder",
-  "snowshowersandthunder_polartwilight": "Snow showers and thunder polar twilight",
-  "snowshowers_day": "Snow showers",
-  "snowshowers_night": "Snow showers",
-  "snowshowers_polartwilight": "Snow showers polar twilight",
-  "Sun": "Sunday",
-  "Mon": "Monday",
-  "Tue": "Tuesday",
-  "Wed": "Wednesday",
-  "Thu": "Thursday",
-  "Fri": "Friday",
-  "Sat": "Saturday",
-  "select.language.placeholder": "Select a language",
-  "Forecast not available at the moment. Please try again later.": "Forecast not available at the moment. Please try again later.",
-  "Loading": "Loading",
-  "Forecast unavailable": "Forecast unavailable",
-  "There was an error getting the forecast": "There was an error getting the forecast",
-  "Search location": "Search location",
-  "wind.calm.label": "Calm",
-  "wind.gentle.label": "Gentle",
-  "wind.breezy.label": "Breezy",
-  "wind.strong.label": "Strong wind",
-  "wind.severe.label": "Severe wind",
-  "wind.calm.sentence": "Calm — safe for boats.",
-  "wind.gentle.sentence": "Gentle wind — safe for boats.",
-  "wind.breezy.sentence": "Breezy — take care on the water.",
-  "wind.strong.sentence": "Strong wind — dangerous for boats.",
-  "wind.severe.sentence": "Very strong wind — stay off the water.",
-  "rain.none.label": "No rain",
-  "rain.light.label": "Light rain",
-  "rain.moderate.label": "Rain",
-  "rain.heavy.label": "Heavy rain",
-  "rain.none.sentence": "No rain expected.",
-  "rain.light.sentence": "Light rain expected.",
-  "rain.moderate.sentence": "Rain expected.",
-  "rain.heavy.sentence": "Heavy rain expected.",
-  "condition.clear": "Clear sky",
-  "condition.fair": "Fair",
-  "condition.partlycloudy": "Partly cloudy",
-  "condition.cloudy": "Cloudy",
-  "condition.fog": "Fog",
-  "condition.lightrain": "Light rain",
-  "condition.rain": "Rain",
-  "condition.heavyrain": "Heavy rain",
-  "condition.lightsleet": "Light sleet",
-  "condition.sleet": "Sleet",
-  "condition.heavysleet": "Heavy sleet",
-  "condition.lightsnow": "Light snow",
-  "condition.snow": "Snow",
-  "condition.heavysnow": "Heavy snow",
-  "condition.thunder": "Thunderstorm",
-  "condition.now": "{{condition}} now",
-  "Morning": "Morning",
-  "Afternoon": "Afternoon",
-  "Evening": "Evening",
-  "Night": "Night",
-  "daypart.morning": "morning",
-  "daypart.afternoon": "afternoon",
-  "daypart.evening": "evening",
-  "daypart.night": "tonight",
-  "summary.lead": "{{condition}} in {{location}}.",
-  "summary.morerain": "More rain is coming this {{part}}.",
-  "summary.raineasing": "The rain should ease by this {{part}}.",
-  "summary.coolertonight": "Cooler tonight, about {{temp}}.",
-  "alert.lead.red": "Danger",
-  "alert.lead.orange": "Warning",
-  "alert.lead.yellow": "Caution",
-  "alert.lead.notice": "Notice",
-  "alert.tapToSeeWhatToDo": "Tap here to see what to do",
-  "alert.moreWarningsSingular": "+{{count}} more warning · tap to see all",
-  "alert.moreWarningsPlural": "+{{count}} more warnings · tap to see all",
-  "alert.band.red": "RED — act now",
-  "alert.band.orange": "ORANGE — get ready",
-  "alert.band.yellow": "YELLOW — be careful",
-  "alert.band.notice": "NOTICE",
-  "alert.whenLabel": "When",
-  "alert.whereLabel": "Where",
-  "alert.whatToDo": "What to do",
-  "alert.affectedArea": "Affected area",
-  "alert.map.attribution": "Map data © OpenStreetMap contributors",
-  "alert.when.now": "now",
-  "alert.when.range": "From {{start}} until {{end}}.",
-  "alert.when.fromOnly": "From {{start}}.",
-  "alert.when.untilOnly": "Until {{end}}.",
-  "time.morning": "morning",
-  "time.afternoon": "afternoon",
-  "time.evening": "evening",
-  "time.night": "night",
-  "alert.listen": "Listen",
-  "alert.stop": "Stop",
-  "alert.listen.unavailable": "Voice reading isn't available on this device.",
-  "alert.missing": "Missing alert! Please go back and try again.",
-  "alert.share": "Share",
-  "alert.share.dialogTitle": "Share this warning",
-  "alert.share.from": "From",
-  "alert.share.unavailable": "Sharing isn't available on this device.",
-  "legend.title": "What the colours mean",
-  "legend.red.label": "Red",
-  "legend.red.description": "Act now — serious danger is happening or expected very soon.",
-  "legend.orange.label": "Orange",
-  "legend.orange.description": "Get ready — a serious risk is expected soon.",
-  "legend.yellow.label": "Yellow",
-  "legend.yellow.description": "Be careful — bad weather is possible.",
-  "legend.green.label": "Green",
-  "legend.green.description": "No warnings right now.",
-  "placeholder_lorem_ipsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
-  "placeholder_app_title": "ClimWeb Weather App",
-  "placeholder_app_description": "ClimWeb Weather App provides accurate and up-to-date weather forecasts for locations across the globe.",
-  "settings.rateApp": "Rate this app",
-  "units.title": "Units",
-  "units.temperature": "Temperature",
-  "units.wind": "Wind speed",
-  "units.precipitation": "Rain",
-  "units.celsius": "Celsius (°C)",
-  "units.fahrenheit": "Fahrenheit (°F)",
-  "units.kmh": "Kilometres per hour (km/h)",
-  "units.ms": "Metres per second (m/s)",
-  "units.knots": "Knots (kn)",
-  "units.mph": "Miles per hour (mph)",
-  "units.mm": "Millimetres (mm)",
-  "units.in": "Inches (in)",
-  "units.spoken.celsius": "{{value}} degrees Celsius",
-  "units.spoken.fahrenheit": "{{value}} degrees Fahrenheit",
+  "settings": {
+    "title": "ቅንብሮች",
+    "alwaysShowStartPage": "ሁልጊዜ የመነሻ ገጹን አሳይ",
+    "appearance": "ገጽታ",
+    "language": {
+      "title": "ቋንቋ",
+      "english": "እንግሊዝኛ",
+      "placeholder": "ቋንቋ ይምረጡ"
+    },
+    "sections": {
+      "preferences": "ምርጫዎች",
+      "about": "ስለ"
+    },
+    "preferences": {
+      "appearance": {
+        "darkMode": "ጨለማ ገጽታ"
+      },
+      "showOnboarding": "መነሻ ገጽ አሳይ"
+    },
+    "about": {
+      "appVersion": "የመተግበሪያ ስሪት"
+    },
+    "rateApp": "Rate this app"
+  },
+  "common": {
+    "actions": {
+      "retry": "እንደገና ሞክር",
+      "dismiss": "ዝጋ"
+    },
+    "states": {
+      "notAvailable": "አይገኝም",
+      "loading": "በመጫን ላይ"
+    },
+    "alerts": {
+      "title": "ማንቂያ"
+    }
+  },
+  "forecast": {
+    "error": {
+      "title": "ትንበያውን መጫን አልተቻለም",
+      "unavailable": "በአሁኑ ጊዜ ትንበያ አይገኝም። እባክዎ ቆየት ብለው እንደገና ይሞክሩ።",
+      "generic": "ትንበያውን በማግኘት ላይ ስህተት ተከስቷል"
+    },
+    "lastUpdated": "ትንበያው ለመጨረሻ ጊዜ የዘመነው በ {{time}}",
+    "states": {
+      "unavailable": "ትንበያ አይገኝም"
+    }
+  },
+  "warnings": {
+    "error": {
+      "title": "ማስጠንቀቂያዎችን መጫን አልተቻለም"
+    },
+    "title": "ማስጠንቀቂያዎች",
+    "empty": {
+      "title": "አሁን ምንም ማስጠንቀቂያዎች የሉም",
+      "text": "አሁን ምንም ንቁ የአየር ሁኔታ ማስጠንቀቂያዎች የሉም።"
+    },
+    "group": {
+      "yourArea": "የእርስዎ አካባቢ",
+      "elsewhere": "በሀገሪቱ ሌላ ቦታ"
+    }
+  },
+  "location": {
+    "notSet": {
+      "title": "ቦታ አልተመረጠም",
+      "text": "የአየር ሁኔታ ትንበያዎችን እና ማንቂያዎችን ለማየት ቦታ ይምረጡ።",
+      "action": "ቦታ ይምረጡ"
+    }
+  },
+  "aboutUs": {
+    "title": "ስለ እኛ",
+    "partners": {
+      "dccms": "የአየር ንብረት ለውጥ እና የሜትሮሎጂ አገልግሎቶች መምሪያ (DCCMS)"
+    },
+    "emi": {
+      "title": "የኢትዮጵያ ሚቲዎሮሎጂ ኢንስቲትዩት",
+      "description": "የኢትዮጵያ ሚቲዎሮሎጂ ኢንስቲትዩት (EMI) በመላው ኢትዮጵያ የአየር ሁኔታ፣ የአየር ንብረት እና የቅድመ ማስጠንቀቂያ አገልግሎቶችን የመስጠት ኃላፊነት ያለው የመንግስት ባለስልጣን ነው።",
+      "mission": {
+        "title": "ተልእኮ",
+        "description": "ዘላቂ ብሄራዊ ልማትን ለመደገፍ እና የህዝብን ደህንነት ለማረጋገጥ የአየር ሁኔታን፣ የአየር ንብረትን እና የግብርና-ሚቲዎሮሎጂ ሁኔታዎችን መከታተል፣ መተንተን እና መተንበይ።"
+      }
+    },
+    "forecastServices": {
+      "title": "የትንበያ አገልግሎቶች",
+      "products": {
+        "title": "የሚቲዎሮሎጂ ምርቶች",
+        "description": "EMI የተጣጣሙ ትንበያዎችን ለማቅረብ የላቁ የሚቲዎሮሎጂ ጣቢያዎችን፣ የሳተላይት መረጃዎችን እና የቁጥር ሞዴሎችን ይጠቀማል፦"
+      },
+      "nowcasting": {
+        "title": "የአሁኑ ትንበያ እና በየሰዓቱ",
+        "description": "በአየር ሁኔታ ላይ ለሚከሰቱ ድንገተኛ ለውጦች ቅጽበታዊ ማንቂያዎች።"
+      },
+      "daily": {
+        "title": "ዕለታዊ እና መካከለኛ ክልል",
+        "description": "ለጉዞ፣ ለህዝብ ደህንነት እና ለአጠቃላይ እቅድ ከ1 እስከ 10 ቀናት የሚቆይ እይታ።"
+      },
+      "seasonal": {
+        "title": "ወቅታዊ እይታዎች",
+        "description": "እንደ በልግ እና ክረምት ላሉ የግብርና ወቅቶች ወሳኝ ትንበያዎች።"
+      }
+    }
+  },
+  "aboutApp": {
+    "title": "ስለ መተግበሪያው",
+    "icons": "አዶዎች",
+    "partners": "በዚህ ፕሮጀክት አጋሮች ነበሩ",
+    "geographicalData": "ጂኦግራፊያዊ መረጃ",
+    "forecasts": {
+      "title": "መተግበሪያው እና ትንበያዎቹ",
+      "description": "የመተግበሪያው ልማት የሚመራው በ\nWMO-RAF - የዓለም ሚቲዎሮሎጂ ድርጅት፣ የአፍሪካ ክልላዊ ጽህፈት ቤት እና ኖርዌይ ሜት - ሜትሮሎጂስክ ኢንስቲትዩት ነው።\n\n ሁሉም ትንበያዎች በኖርዌይ ሜት ይሰጣሉ።"
+    }
+  },
+  "privacy": {
+    "title": "የግላዊነት መመሪያ",
+    "intro": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ በ WMO-RAF (ዓለም አቀፍ የሜትሮሎጂ ድርጅት - የአፍሪካ ክልላዊ ጽህፈት ቤት) እና በኖርዌይ MET (የሜትሮሎጂ ተቋም) የተሰራ ነው። የእርስዎን ግላዊነት ለመጠበቅ ቆርጠን ተነስተናል።",
+    "dataCollected": {
+      "title": "የምንሰበስበው መረጃ",
+      "text": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ ማንኛውንም የግል መረጃ አይሰበስብም፣ አያከማችም ወይም አያጋራም። መተግበሪያውን ለመጠቀም መመዝገብ ወይም ምንም አይነት የግል ዝርዝር ማቅረብ አያስፈልግዎትም።"
+    },
+    "location": {
+      "title": "የአካባቢ መረጃ አጠቃቀም",
+      "text": "ትክክለኛ የአየር ሁኔታ ትንበያዎችን እና ማንቂያዎችን ለእርስዎ አካባቢ ለማሳየት መተግበሪያው የመሣሪያዎን አካባቢ ይጠቀማል። የእርስዎ አካባቢ ለዚያ ቦታ የአየር ሁኔታ መረጃን ለማምጣት ብቻ የሚያገለግል ሲሆን ከማንነትዎ ጋር አልተገናኘም ወይም በአገልጋዮቻችን ላይ አይከማችም።"
+    },
+    "favourites": {
+      "title": "ተወዳጅ ቦታዎችዎ",
+      "text": "If you save favourite places, they are stored only on your device. This information is never sent to us or shared with anyone else. You can add, change, or remove your favourite places at any time from Favourites on the More tab."
+    },
+    "security": {
+      "title": "የውሂብ ደህንነት",
+      "text": "የውሂብ ደህንነትን በቁም ነገር እንወስዳለን። የግል መረጃዎችን ስለማንሰበስብ ወይም ስለማናከማች ትኩረታችን የመተግበሪያውን ትንበያ እና የማንቂያ አገልግሎቶች ትክክለኛ እና አስተማማኝ እንዲሆኑ ማድረግ ላይ ነው።"
+    },
+    "children": {
+      "title": "የልጆች ግላዊነት",
+      "text": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ ልጆችን ጨምሮ በሁሉም ዕድሜ ላሉ ሰዎች እንዲውል ታስቦ የተሰራ ነው። ከልጆችም ሆነ ከማንኛውም ሌሎች ተጠቃሚዎች የግል መረጃ አንሰበስብም።"
+    },
+    "thirdParty": {
+      "title": "የሶስተኛ ወገን አገልግሎቶች",
+      "text": "መተግበሪያው እኛ ወደማንሰራቸው የሶስተኛ ወገን ድር ጣቢያዎች ወይም አገልግሎቶች አገናኞችን ሊይዝ ይችላል። የሶስተኛ ወገን አገናኝን መታ ካደረጉ ወደዚያ የሶስተኛ ወገን ጣቢያ ይመራሉ። ለይዘታቸው ወይም ለድርጊታቸው ተጠያቂ ስላልሆንን የግላዊነት መመሪያዎቻቸውን እንዲያነቡ እናበረታታዎታለን።"
+    },
+    "changes": {
+      "title": "በዚህ መመሪያ ላይ የሚደረጉ ለውጦች",
+      "text": "ይህንን የግላዊነት መመሪያ ከጊዜ ወደ ጊዜ ልናዘምነው እንችላለን። ማንኛውም ለውጦች በዚህ ገጽ ላይ ይንጸባረቃሉ።"
+    },
+    "contact": {
+      "title": "ያግኙን",
+      "text": "ስለዚህ የግላዊነት መመሪያ ጥያቄዎች ካሉዎት እባክዎ WMO-RAFን (ዓለም አቀፍ የሜትሮሎጂ ድርጅት - የአፍሪካ ክልላዊ ጽህፈት ቤት) ወይም የኖርዌይ METን (የሜትሮሎጂ ተቋም) ያነጋግሩ።"
+    }
+  },
+  "time": {
+    "today": "ዛሬ",
+    "fiveDays": "5 ቀናት",
+    "nextFiveDays": "ቀጣይ 5 ቀናት",
+    "time": "ሰዓት",
+    "days": {
+      "sun": "እሁድ",
+      "mon": "ሰኞ",
+      "tue": "ማክሰኞ",
+      "wed": "ረቡዕ",
+      "thu": "ሐሙስ",
+      "fri": "አርብ",
+      "sat": "ቅዳሜ"
+    },
+    "periods": {
+      "morning": "ጥዋት",
+      "afternoon": "ከሰዓት",
+      "evening": "ምሽት",
+      "night": "ሌሊት"
+    },
+    "morning": "ጥዋት",
+    "afternoon": "ከሰዓት",
+    "evening": "ምሽት",
+    "night": "ሌሊት"
+  },
+  "alerts": {
+    "title": "ማንቂያዎች"
+  },
+  "places": {
+    "title": "ቦታዎች",
+    "tapToChange": "ቦታ ለመቀየር ይንኩ",
+    "pickerTitle": "ተወዳጅ ቦታዎችዎን ይምረጡ",
+    "pickerSubtitle": "የሚፈልጓቸውን እስከ 5 ቦታዎች ይፈልጉ እና ይምረጡ።",
+    "selectedCount": "{{count}}/5 ተመርጠዋል",
+    "maxReached": "ከፍተኛውን 5 ቦታዎች መርጠዋል።",
+    "finish": "ጨርስ",
+    "removeChip": "{{name}}ን አስወግድ",
+    "empty": {
+      "title": "ገና ምንም ተወዳጅ ቦታዎች የሉም",
+      "text": "የእነሱን ትንበያ እዚህ ለማየት እስከ 5 ቦታዎችን ያክሉ።"
+    },
+    "setFavourites": "ተወዳጅ ቦታዎችን ያዘጋጁ",
+    "edit": "ተወዳጅ ቦታዎችን ያርትዑ",
+    "yourPlaces": "የእርስዎ ቦታዎች",
+    "searchLocation": "ቦታ ይፈልጉ",
+    "locationError": {
+      "message": "በአቅራቢያዎ ያለውን ቦታ ለማግኘት አካባቢዎን መጠቀም አልተቻለም።"
+    }
+  },
+  "fiveDays": {
+    "footnote": "የአየር ሁኔታ ትንበያ መረጃ በብሔራዊ የአየር ሁኔታ አገልግሎት የቀረበ።"
+  },
+  "welcome": {
+    "title": "እንኳን ደህና መጡ ወደ EMI የአየር ሁኔታ መተግበሪያ",
+    "subtitle": "የአየር ሁኔታ ትንበያዎች እና ማስጠንቀቂያዎች በቀላሉ ያግኙ።",
+    "getStarted": "ይጀምሩ",
+    "next": "ቀጣይ"
+  },
+  "today": {
+    "tomorrow": "ነገ",
+    "warmer": "ይሞቃል",
+    "cooler": "ይቀዘቅዛል",
+    "tapToSeeFiveDays": "የቀጣይ 5 ቀናትን ለማየት ይንኩ",
+    "hourByHour": "ዛሬ፣ በየሰዓቱ",
+    "tapToSeeHourly": "በየሰዓቱ ያለውን ትንበያ ለማየት ይንኩ"
+  },
+  "day": {
+    "conditionWindy": "{{condition}} እና በጣም ንፋስ።"
+  },
+  "weather": {
+    "min": "ዝቅተኛ",
+    "max": "ከፍተኛ",
+    "kmh": "ኪ.ሜ/ሰ",
+    "rain": "ዝናብ",
+    "mm": "ሚሜ",
+    "wind": "ንፋስ",
+    "temp": "የሙቀት መጠን"
+  },
+  "how": {
+    "we": {
+      "started": "እንዴት እንደጀመርን"
+    }
+  },
+  "our": {
+    "mandate": "የእኛ ስልጣን",
+    "mission": "የእኛ ተልእኮ",
+    "vision": "የእኛ ራዕይ"
+  },
+  "app": {
+    "and": {
+      "forecasts": "መተግበሪያው እና ትንበያዎቹ"
+    }
+  },
+  "icons": {
+    "disclaimer": "የአየር ሁኔታ አዶዎች ፈቃድ የተሰጣቸው በ"
+  },
+  "warning": {
+    "icons": {
+      "disclaimer": "የማስጠንቀቂያ አዶዎች በዓለም ሜትሮሎጂ ድርጅት የተበረከቱ ናቸው።"
+    }
+  },
+  "geographical": {
+    "data": {
+      "disclaimer": "በመተግበሪያው ውስጥ ያለው ጂኦግራፊያዊ መረጃ የወረደው ከ"
+    }
+  },
+  "clearsky_day": "ግልጽ ሰማይ",
+  "clearsky_night": "ግልጽ ሰማይ",
+  "clearsky_polartwilight": "ግልጽ ሰማይ ዋልታ ድንግዝግዝ",
+  "cloudy": "ደመናማ",
+  "fair_day": "ጥሩ ቀን",
+  "fair_night": "ጥሩ ምሽት",
+  "fair_polartwilight": "ጥሩ የዋልታ ድንግዝግዝ",
+  "fog": "ጭጋግ",
+  "heavyrainandthunder": "ከባድ ዝናብ እና ነጎድጓድ",
+  "heavyrain": "ከባድ ዝናብ",
+  "heavyrainshowersandthunder_day": "የከባድ ዝናብ ዶፍ እና ነጎድጓድ",
+  "heavyrainshowersandthunder_night": "የከባድ ዝናብ ዶፍ እና ነጎድጓድ",
+  "heavyrainshowersandthunder_polartwilight": "የከባድ ዝናብ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "heavyrainshowers_day": "የከባድ ዝናብ ዶፍ",
+  "heavyrainshowers_night": "የከባድ ዝናብ ዶፍ",
+  "heavyrainshowers_polartwilight": "የከባድ ዝናብ ዶፍ የዋልታ ድንግዝግዝ",
+  "heavysleetandthunder": "ከባድ በረዶ የቀላቀለ ዝናብ እና ነጎድጓድ",
+  "heavysleet": "ከባድ በረዶ የቀላቀለ ዝናብ",
+  "heavysleetshowersandthunder_day": "ከባድ በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ",
+  "heavysleetshowersandthunder_night": "ከባድ በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ",
+  "heavysleetshowersandthunder_polartwilight": "ከባድ በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "heavysleetshowers_day": "ከባድ በረዶ የቀላቀለ ዝናብ ዶፍ",
+  "heavysleetshowers_night": "ከባድ በረዶ የቀላቀለ ዝናብ ዶፍ",
+  "heavysleetshowers_polartwilight": "ከባድ በረዶ የቀላቀለ ዝናብ ዶፍ የዋልታ ድንግዝግዝ",
+  "heavysnowandthunder": "ከባድ በረዶ እና ነጎድጓድ",
+  "heavysnow": "ከባድ በረዶ",
+  "heavysnowshowersandthunder_day": "የከባድ በረዶ ዶፍ እና ነጎድጓድ",
+  "heavysnowshowersandthunder_night": "የከባድ በረዶ ዶፍ እና ነጎድጓድ",
+  "heavysnowshowersandthunder_polartwilight": "የከባድ በረዶ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "heavysnowshowers_day": "የከባድ በረዶ ዶፍ",
+  "heavysnowshowers_night": "የከባድ በረዶ ዶፍ",
+  "heavysnowshowers_polartwilight": "የከባድ በረዶ ዶፍ የዋልታ ድንግዝግዝ",
+  "lightrainandthunder": "ቀላል ዝናብ እና ነጎድጓድ",
+  "lightrain": "ቀላል ዝናብ",
+  "lightrainshowersandthunder_day": "የቀላል ዝናብ ዶፍ እና ነጎድጓድ",
+  "lightrainshowersandthunder_night": "የቀላል ዝናብ ዶፍ እና ነጎድጓድ",
+  "lightrainshowersandthunder_polartwilight": "የቀላል ዝናብ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "lightrainshowers_day": "የቀላል ዝናብ ዶፍ",
+  "lightrainshowers_night": "የቀላል ዝናብ ዶፍ",
+  "lightrainshowers_polartwilight": "የቀላል ዝናብ ዶፍ የዋልታ ድንግዝግዝ",
+  "lightsleetandthunder": "ቀላል በረዶ የቀላቀለ ዝናብ እና ነጎድጓድ",
+  "lightsleet": "ቀላል በረዶ የቀላቀለ ዝናብ",
+  "lightsleetshowers_day": "ቀላል በረዶ የቀላቀለ ዝናብ ዶፍ",
+  "lightsleetshowers_night": "ቀላል በረዶ የቀላቀለ ዝናብ ዶፍ",
+  "lightsleetshowers_polartwilight": "ቀላል በረዶ የቀላቀለ ዝናብ ዶፍ የዋልታ ድንግዝግዝ",
+  "lightsnowandthunder": "ቀላል በረዶ እና ነጎድጓድ",
+  "lightsnow": "ቀላል በረዶ",
+  "lightsnowshowers_day": "የቀላል በረዶ ዶፍ",
+  "lightsnowshowers_night": "የቀላል በረዶ ዶፍ",
+  "lightsnowshowers_polartwilight": "የቀላል በረዶ ዶፍ የዋልታ ድንግዝግዝ",
+  "lightssleetshowersandthunder_day": "ቀላል በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ",
+  "lightssleetshowersandthunder_night": "ቀላል በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ",
+  "lightssleetshowersandthunder_polartwilight": "ቀላል በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "lightssnowshowersandthunder_day": "ቀላል በረዶ ዶፍ እና ነጎድጓድ",
+  "lightssnowshowersandthunder_night": "ቀላል በረዶ ዶፍ እና ነጎድጓድ",
+  "lightssnowshowersandthunder_polartwilight": "ቀላል በረዶ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "partlycloudy_day": "በከፊል ደመናማ",
+  "partlycloudy_night": "በከፊል ደመናማ",
+  "partlycloudy_polartwilight": "በከፊል ደመናማ የዋልታ ድንግዝግዝ",
+  "rainandthunder": "ዝናብ እና ነጎድጓድ",
+  "conditions": {
+    "rain": {
+      "none": {
+        "label": "ዝናብ የለም",
+        "sentence": "ዝናብ አይጠበቅም።"
+      },
+      "light": {
+        "label": "ቀላል ዝናብ",
+        "sentence": "ቀላል ዝናብ ይጠበቃል።"
+      },
+      "moderate": {
+        "label": "ዝናብ",
+        "sentence": "ዝናብ ይጠበቃል።"
+      },
+      "heavy": {
+        "label": "ከባድ ዝናብ",
+        "sentence": "ከባድ ዝናብ ይጠበቃል።"
+      }
+    }
+  },
+  "rainshowersandthunder_day": "የዝናብ ዶፍ እና ነጎድጓድ",
+  "rainshowersandthunder_night": "የዝናብ ዶፍ እና ነጎድጓድ",
+  "rainshowersandthunder_polartwilight": "የዝናብ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "rainshowers_day": "የዝናብ ዶፍ",
+  "rainshowers_night": "የዝናብ ዶፍ",
+  "rainshowers_polartwilight": "የዝናብ ዶፍ የዋልታ ድንግዝግዝ",
+  "sleetandthunder": "በረዶ የቀላቀለ ዝናብ እና ነጎድጓድ",
+  "sleet": "በረዶ የቀላቀለ ዝናብ",
+  "sleetshowersandthunder_day": "በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ",
+  "sleetshowersandthunder_night": "በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ",
+  "sleetshowersandthunder_polartwilight": "በረዶ የቀላቀለ ዝናብ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "sleetshowers_day": "በረዶ የቀላቀለ ዝናብ ዶፍ",
+  "sleetshowers_night": "በረዶ የቀላቀለ ዝናብ ዶፍ",
+  "sleetshowers_polartwilight": "በረዶ የቀላቀለ ዝናብ ዶፍ የዋልታ ድንግዝግዝ",
+  "snowandthunder": "በረዶ እና ነጎድጓድ",
+  "snow": "በረዶ",
+  "snowshowersandthunder_day": "የበረዶ ዶፍ እና ነጎድጓድ",
+  "snowshowersandthunder_night": "የበረዶ ዶፍ እና ነጎድጓድ",
+  "snowshowersandthunder_polartwilight": "የበረዶ ዶፍ እና ነጎድጓድ የዋልታ ድንግዝግዝ",
+  "snowshowers_day": "የበረዶ ዶፍ",
+  "snowshowers_night": "የበረዶ ዶፍ",
+  "snowshowers_polartwilight": "የበረዶ ዶፍ የዋልታ ድንግዝግዝ",
+  "wind": {
+    "calm": {
+      "label": "ጸጥ ያለ",
+      "sentence": "ጸጥ ያለ — ለጀልባዎች ደህንነቱ የተጠበቀ።"
+    },
+    "gentle": {
+      "label": "ለስላሳ",
+      "sentence": "ለስላሳ ንፋስ — ለጀልባዎች ደህንነቱ የተጠበቀ።"
+    },
+    "breezy": {
+      "label": "ነፋሻማ",
+      "sentence": "ነፋሻማ — በውሃ ላይ ጥንቃቄ ያድርጉ።"
+    },
+    "strong": {
+      "label": "ኃይለኛ ንፋስ",
+      "sentence": "ኃይለኛ ንፋስ — ለጀልባዎች አደገኛ።"
+    },
+    "severe": {
+      "label": "ከባድ ንፋስ",
+      "sentence": "በጣም ኃይለኛ ንፋስ — ከውሃ ላይ ይራቁ።"
+    }
+  },
+  "condition": {
+    "clear": "ግልጽ ሰማይ",
+    "fair": "ጥሩ",
+    "partlycloudy": "በከፊል ደመናማ",
+    "cloudy": "ደመናማ",
+    "fog": "ጭጋግ",
+    "lightrain": "ቀላል ዝናብ",
+    "rain": "ዝናብ",
+    "heavyrain": "ከባድ ዝናብ",
+    "lightsleet": "ቀላል በረዶ የቀላቀለ ዝናብ",
+    "sleet": "በረዶ የቀላቀለ ዝናብ",
+    "heavysleet": "ከባድ በረዶ የቀላቀለ ዝናብ",
+    "lightsnow": "ቀላል በረዶ",
+    "snow": "በረዶ",
+    "heavysnow": "ከባድ በረዶ",
+    "thunder": "ነጎድጓዳማ ዝናብ",
+    "now": "አሁን {{condition}}"
+  },
+  "daypart": {
+    "morning": "ጥዋት",
+    "afternoon": "ከሰዓት በኋላ",
+    "evening": "ምሽት",
+    "night": "ዛሬ ማታ"
+  },
+  "summary": {
+    "lead": "{{condition}} በ {{location}}።",
+    "morerain": "በዚህ {{part}} ተጨማሪ ዝናብ ይመጣል።",
+    "raineasing": "ዝናቡ በዚህ {{part}} ይቀንሳል ተብሎ ይጠበቃል።",
+    "coolertonight": "ዛሬ ማታ ይቀዘቅዛል፣ ወደ {{temp}} ገደማ።"
+  },
+  "alert": {
+    "lead": {
+      "red": "አደጋ",
+      "orange": "ማስጠንቀቂያ",
+      "yellow": "ጥንቃቄ",
+      "notice": "ማስታወቂያ"
+    },
+    "tapToSeeWhatToDo": "ምን ማድረግ እንዳለብዎ ለማየት እዚህ ይንኩ",
+    "moreWarningsSingular": "+{{count}} ተጨማሪ ማስጠንቀቂያ · ሁሉንም ለማየት ይንኩ",
+    "moreWarningsPlural": "+{{count}} ተጨማሪ ማስጠንቀቂያዎች · ሁሉንም ለማየት ይንኩ",
+    "band": {
+      "red": "ቀይ — አሁን እርምጃ ይውሰዱ",
+      "orange": "ብርቱካናማ — ይዘጋጁ",
+      "yellow": "ቢጫ — ይጠንቀቁ",
+      "notice": "ማስታወቂያ"
+    },
+    "whenLabel": "መቼ",
+    "whereLabel": "የት",
+    "whatToDo": "ምን ማድረግ እንዳለብዎ",
+    "affectedArea": "የተጎዳ አካባቢ",
+    "map": {
+      "attribution": "የካርታ መረጃ © OpenStreetMap አበርካቾች"
+    },
+    "when": {
+      "now": "አሁን",
+      "range": "ከ {{start}} እስከ {{end}}።",
+      "fromOnly": "ከ {{start}} ጀምሮ።",
+      "untilOnly": "እስከ {{end}} ድረስ።"
+    },
+    "listen": "አዳምጥ",
+    "stop": "አቁም",
+    "missing": "የጠፋ ማንቂያ! እባክዎ ይመለሱ እና እንደገና ይሞክሩ።",
+    "share": "አጋራ"
+  },
+  "legend": {
+    "title": "ቀለሞቹ ምን ማለት ናቸው",
+    "red": {
+      "label": "ቀይ",
+      "description": "አሁን እርምጃ ይውሰዱ — ከባድ አደጋ እየተከሰተ ነው ወይም በቅርቡ ይጠበቃል።"
+    },
+    "orange": {
+      "label": "ብርቱካናማ",
+      "description": "ይዘጋጁ — ከባድ አደጋ በቅርቡ ይጠበቃል።"
+    },
+    "yellow": {
+      "label": "ቢጫ",
+      "description": "ይጠንቀቁ — መጥፎ የአየር ሁኔታ ሊከሰት ይችላል።"
+    },
+    "green": {
+      "label": "አረንጓዴ",
+      "description": "አሁን ምንም ማስጠንቀቂያዎች የሉም።"
+    }
+  },
+  "placeholders": {
+    "loremIpsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
+    "appTitle": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ",
+    "appDescription": "ክሊምዌብ የአየር ሁኔታ መተግበሪያ በመላው ዓለም ላሉ ቦታዎች ትክክለኛ እና ወቅታዊ የአየር ሁኔታ ትንበያዎችን ያቀርባል።"
+  },
+  "units": {
+    "title": "Units",
+    "temperature": "Temperature",
+    "wind": "Wind speed",
+    "precipitation": "Rain",
+    "celsius": "Celsius (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "kmh": "Kilometres per hour (km/h)",
+    "ms": "Metres per second (m/s)",
+    "knots": "Knots (kn)",
+    "mph": "Miles per hour (mph)",
+    "mm": "Millimetres (mm)",
+    "in": "Inches (in)",
+    "spoken": {
+      "celsius": "{{value}} degrees Celsius",
+      "fahrenheit": "{{value}} degrees Fahrenheit"
+    }
+  },
+  "More": "More",
+  "More conditions": "More conditions",
+  "Favourites": "Favourites",
   "Go back": "Go back",
-  "settings.section.preferences": "Preferences",
-  "settings.section.about": "About",
-  "settings.darkMode": "Dark Mode",
-  "settings.showOnboarding": "Show Onboarding",
-  "settings.appVersion": "App Version",
-  "language.select": "Select Language",
-  "aboutUs.emi.title": "Ethiopian Meteorological Institute",
-  "aboutUs.emi.text": "The Ethiopian Meteorological Institute (EMI) is the state authority responsible for providing weather, climate, and early warning services across Ethiopia.",
-  "aboutUs.mission.title": "Mission",
-  "aboutUs.mission.text": "To monitor, analyze, and forecast weather, climate, and agro-meteorological conditions to support sustainable national development and ensure public safety.",
-  "aboutUs.services": "Forecast Services",
-  "aboutUs.products.title": "Meteorological Products",
-  "aboutUs.products.text": "EMI uses advanced meteorological stations, satellite data, and numerical models to deliver tailored forecasts:",
-  "aboutUs.nowcast.title": "Nowcasting & Hourly",
-  "aboutUs.nowcast.text": "Real-time alerts for sudden changes in weather conditions.",
-  "aboutUs.daily.title": "Daily & Medium Range",
-  "aboutUs.daily.text": "1 to 10-day outlooks for travel, public safety, and general planning.",
-  "aboutUs.seasonal.title": "Seasonal Outlooks",
-  "aboutUs.seasonal.text": "Critical forecasts for agricultural seasons like Belg and Kiremt."
+  "more": {
+    "intro": "More weather details for your work.",
+    "favourites": {
+      "description": "Your saved places"
+    }
+  }
 }

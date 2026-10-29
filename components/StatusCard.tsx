@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
-import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type StatusCardProps = {
@@ -21,13 +21,13 @@ type StatusCardProps = {
 
 // Shared "nothing to show" / "something went wrong" card. Mirrors the
 // visual pattern already used for Warnings' empty state, with an optional
-// action button for error/unknown-state cases (Today, Places, Alerts,
+// action button for error/unknown-state cases (Today, Favourites, Alerts,
 // NoLocation, 5 Days).
 function StatusCard({ icon, iconColor, title, text, onRetry, actionLabel }: StatusCardProps): JSX.Element {
   const { t } = useTranslation();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const label = actionLabel ?? t('Retry');
+  const label = actionLabel ?? t("common.actions.retry");
 
   return (
     <View style={styles.card}>
@@ -50,11 +50,16 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.xl,
     marginTop: Spacing.lg,
     marginBottom: Spacing.lg,
-    ...shadow.sm,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   title: {
     fontSize: 16,

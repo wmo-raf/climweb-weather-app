@@ -11,7 +11,7 @@ import { Place } from '@/lib/geo/places';
 import { ThemeColors } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-// Reached from the Places tab (empty state or edit action) to add/remove
+// Reached from the Favourites page (empty state or edit action) to add/remove
 // favourites after onboarding — same picker as OnboardingPlaces, but the
 // finish button just saves and returns instead of completing onboarding.
 function EditFavouritesScreen() {

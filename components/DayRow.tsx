@@ -6,10 +6,10 @@ import { useTranslation } from "react-i18next";
 
 import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
-import { describeDaySummary } from "@/lib/forecast/day-parts";
+import { describeDaySummary, WEEKDAY_LABEL_KEYS } from "@/lib/forecast/day-parts";
 import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
-import { ThemeColors, Fonts, Radius, shadow, Spacing, touchTarget } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from "@/lib/hooks/use-theme";
 import { useUnits } from "@/lib/hooks/use-units";
 
@@ -33,17 +33,19 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
     return (
       <View style={styles.dayRow}>
         <View style={styles.card}>
-          <Text style={styles.whiteText}>{t('Forecast unavailable')}.</Text>
+          <Text style={styles.whiteText}>{t("forecast.states.unavailable")}.</Text>
         </View>
       </View>
     );
   }
 
   const minTemp = units.tempValue(summary.minTemperature || 0);
+  const minTempText = units.temp(summary.minTemperature || 0);
+  const maxTempText = units.temp(summary.maxTemperature || 0);
   const icon = summary.weatherSymbol;
   const iconSource = icon ? weatherIcons[icon] : undefined;
-  const dayAbbrev = DateTime.fromISO(summary.day).toLocaleString({ weekday: "short" });
-  const weekday = t(dayAbbrev);
+  const day = DateTime.fromISO(summary.day);
+  const weekday = t(WEEKDAY_LABEL_KEYS[day.weekday] ?? '');
   const dayLabel = isTomorrow ? `${t('today.tomorrow')} — ${weekday}` : weekday;
   const description = describeDaySummary(t, summary);
 
@@ -64,7 +66,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
           <Text style={styles.description}>{description}</Text>
         </View>
         <View style={styles.rightBlock}>
-          <Text style={styles.tempRange}>{units.temp(summary.minTemperature || 0)} – {units.temp(summary.maxTemperature || 0)}</Text>
+          <Text style={styles.tempRange}>{minTempText} – {maxTempText}</Text>
           <Icon source="chevron-right" size={20} color={colors.textSubtle} />
         </View>
       </View>
@@ -90,20 +92,27 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   dayRow: {
     fontFamily: Fonts.sans.regular,
     width: "100%",
-    marginTop: Spacing.md,
+    marginTop: Spacing.lg,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: Radius.large,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.border,
     width: '100%',
     padding: Spacing.lg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     minHeight: touchTarget.nav,
-    ...shadow.sm,
   },
   cardWithChip: {
     borderBottomWidth: 0,
@@ -112,6 +121,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   textBlock: {
     flex: 1,
+    gap: 6,
   },
   rightBlock: {
     flexDirection: 'row',
@@ -134,7 +144,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     color: colors.text,
     fontFamily: Fonts.sans.regular,
     fontSize: 14,
-    marginTop: Spacing.sm,
   },
   tempRange: {
     color: colors.textStrong,
@@ -146,11 +155,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderColor: colors.border,
-    borderBottomLeftRadius: Radius.medium,
-    borderBottomRightRadius: Radius.medium,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    borderBottomLeftRadius: Radius.large,
+    borderBottomRightRadius: Radius.large,
     minHeight: touchTarget.nav,
   },
   alertChipText: {

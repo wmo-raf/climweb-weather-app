@@ -35,7 +35,7 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
             return (
                 <View style={styles.noForecast}>
                     <Text>
-                        {t('Forecast not available at the moment. Please try again later.')}
+                        {t("forecast.error.unavailable")}
                     </Text>
                 </View>
             );
@@ -62,7 +62,7 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
 
     return (
         <View style={styles.loading}>
-            <Text>{t('Loading')}...</Text>
+            <Text>{t("common.states.loading")}...</Text>
         </View>
     );
 };
@@ -83,9 +83,8 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
         marginTop: Spacing.xxl,
     },
     fiveDaysWrapper: {
-        paddingLeft: Spacing.xl,
-        paddingRight: Spacing.xl,
-        marginTop: Spacing.md,
+        paddingHorizontal: Spacing.lg,
+        marginTop: Spacing.sm,
         paddingBottom: Spacing.md,
     },
 });

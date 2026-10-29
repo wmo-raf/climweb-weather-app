@@ -39,7 +39,7 @@ const NoLocationScreen = () => {
                 icon="cloud-off-outline"
                 iconColor={colors.danger}
                 title={t('forecast.error.title')}
-                text={t('There was an error getting the forecast') + '.'}
+                text={t("forecast.error.generic") + '.'}
                 onRetry={retryAll}
               />
             )}
@@ -78,8 +78,9 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginLeft: Spacing.lg,
-    marginRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingRight: Spacing.lg,
+    paddingBottom: Spacing.xxl,
   },
   bg: {
     height: '100%',

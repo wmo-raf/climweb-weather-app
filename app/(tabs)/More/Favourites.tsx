@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,10 +19,10 @@ import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
 import { Place } from '@/lib/geo/places';
 import { ForecastRecord } from '@/lib/forecast/types';
-import { ThemeColors, Fonts, navRailWidth, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, navRailWidth, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-const PlacesScreen = () => {
+const FavouritesScreen = () => {
   const { t } = useTranslation();
   const setLocation = useLocationStore(s => s.setLocation);
   const queryClient = useQueryClient();
@@ -33,6 +33,29 @@ const PlacesScreen = () => {
 
   const [favouritesLoading, favourites] = useFavourites();
   const { hasErrors, onErrorChange, retryAll } = useLocationRowErrors();
+  const [loadingRows, setLoadingRows] = useState<Record<string, boolean>>({});
+
+  const onLoadingChange = useCallback((id: string, loading: boolean) => {
+    setLoadingRows(prev => {
+      if (!!prev[id] === loading) return prev;
+      const next = { ...prev };
+      if (loading) {
+        next[id] = true;
+      } else {
+        delete next[id];
+      }
+      return next;
+    });
+  }, []);
+
+  // Check both synchronous cache state (so the first render frame doesn't
+  // flash the already-cached first element before child effects run) and
+  // the live loading state reported by each LocationRow.
+  const anyRowUncached = favourites.some(place => {
+    const state = queryClient.getQueryState(forecastQueryKey(place.latitude, place.longitude));
+    return !state || (!state.data && state.status !== 'error');
+  });
+  const isRowsLoading = favourites.length > 0 && (anyRowUncached || Object.keys(loadingRows).length > 0);
 
   const onSelectPlace = (place: Place, forecast: ForecastRecord) => {
     // LocationRow already fetched this place's forecast to render its
@@ -48,10 +71,12 @@ const PlacesScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t('Places')} />
+          <AppBar location={t('Favourites')} />
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
             {favouritesLoading ? (
               <View style={styles.loader}>
@@ -68,37 +93,46 @@ const PlacesScreen = () => {
               </View>
             ) : (
               <>
-                <View style={styles.header}>
-                  <Text style={styles.headerText}>{t('places.yourPlaces')}</Text>
-                  <TouchableOpacity
-                    onPress={onEdit}
-                    accessibilityLabel={t('places.edit')}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                  >
-                    <Icon source="pencil-outline" size={22} color={colors.primary} />
-                  </TouchableOpacity>
-                </View>
-                {hasErrors && (
-                  <StatusCard
-                    icon="cloud-off-outline"
-                    iconColor={colors.danger}
-                    title={t('forecast.error.title')}
-                    text={t('There was an error getting the forecast') + '.'}
-                    onRetry={retryAll}
-                  />
+                {isRowsLoading && (
+                  <View style={styles.loader}>
+                    <ActivityIndicator animating={true} color={colors.primary} size='large' />
+                  </View>
                 )}
-                {favourites.map((place, idx) => (
-                  <LocationRow
-                    key={`${place.name}-${place.latitude}-${place.longitude}-${idx}`}
-                    id={String(idx)}
-                    district={{ name: place.name, lat: place.latitude, lon: place.longitude }}
-                    onPress={(forecast: ForecastRecord) => onSelectPlace(place, forecast)}
-                    onErrorChange={onErrorChange}
-                  />
-                ))}
+                <View style={isRowsLoading ? styles.hidden : undefined}>
+                  <View style={styles.header}>
+                    <Text style={styles.headerText}>{t('places.yourPlaces')}</Text>
+                    <TouchableOpacity
+                      onPress={onEdit}
+                      accessibilityLabel={t('places.edit')}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Icon source="pencil-outline" size={22} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                  {hasErrors && (
+                    <StatusCard
+                      icon="cloud-off-outline"
+                      iconColor={colors.danger}
+                      title={t('forecast.error.title')}
+                      text={t("forecast.error.generic") + '.'}
+                      onRetry={retryAll}
+                    />
+                  )}
+                  {favourites.map((place, idx) => (
+                    <LocationRow
+                      key={`${place.name}-${place.latitude}-${place.longitude}-${idx}`}
+                      id={String(idx)}
+                      district={{ name: place.name, lat: place.latitude, lon: place.longitude }}
+                      onPress={(forecast: ForecastRecord) => onSelectPlace(place, forecast)}
+                      onErrorChange={onErrorChange}
+                      onLoadingChange={onLoadingChange}
+                    />
+                  ))}
+                  <LastUpdatedFooter />
+                </View>
               </>
             )}
-            <LastUpdatedFooter />
+            {favourites.length === 0 && !favouritesLoading && <LastUpdatedFooter />}
           </ScrollView>
         </View>
       </View>
@@ -106,7 +140,7 @@ const PlacesScreen = () => {
   );
 };
 
-export default PlacesScreen;
+export default FavouritesScreen;
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   wrapper: {
@@ -125,13 +159,13 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     padding: Spacing.lg,
     paddingBottom: Spacing.xxl,
   },
-  // Matches the Today tab's whole-page loading spinner (plain, no card
-  // chrome) — useFavourites() reads from storage synchronously now, so
-  // this never actually shows, but the guard is kept in case that changes.
   loader: {
     marginTop: Spacing.xxxl,
     marginBottom: Spacing.xxxl,
     alignItems: 'center',
+  },
+  hidden: {
+    display: 'none',
   },
   header: {
     flexDirection: 'row',
@@ -149,10 +183,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.xl,
     marginBottom: Spacing.lg,
-    ...shadow.sm,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   emptyTitle: {
     fontSize: 16,

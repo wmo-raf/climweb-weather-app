@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import { WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
-import { ThemeColors, Fonts, Colors, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Colors, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 // "Green" isn't a real CAP severity in this app's data (only Red/Orange/
@@ -46,9 +46,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.lg,
-    ...shadow.sm,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   title: {
     fontSize: 16,

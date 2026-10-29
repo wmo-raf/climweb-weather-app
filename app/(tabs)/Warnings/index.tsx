@@ -12,11 +12,12 @@ import AlertLegend from '@/components/AlertLegend';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
 
+import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { CAPAlert, alertInLocation } from '@/lib/alerts/providers/cap-alerts/alert';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { ThemeColors, Fonts, navRailWidth, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, navRailWidth, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type AlertSection = { title?: string; data: CAPAlert[] };
@@ -57,13 +58,15 @@ const WarningsScreen = () => {
     : (alerts.length > 0 ? [{ data: alerts }] : []);
 
   const onSelectAlert = (alert: CAPAlert) =>
-    router.push({ pathname: '/WeatherWarning', params: { location, alertID: alert.identifier } } as Href);
+    router.push({ pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier } } as Href);
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t('Warnings')} />
+          <AppBar location={t("warnings.title")} />
           <SectionList
             sections={sections}
             keyExtractor={(alert, idx) => alert.identifier ?? String(idx)}
@@ -143,10 +146,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     padding: Spacing.xl,
     marginBottom: Spacing.lg,
-    ...shadow.sm,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   emptyTitle: {
     fontSize: 16,

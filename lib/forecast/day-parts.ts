@@ -2,17 +2,27 @@ import { DateTime } from 'luxon';
 
 import { ForecastDayRecord, ForecastRecord, ForecastStepRecord } from './types';
 import { rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
-import { formatTemperature } from '@/lib/units';
 
 export type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 
 export const DAY_PARTS: DayPart[] = ['morning', 'afternoon', 'evening', 'night'];
 
 export const DAY_PART_LABEL_KEYS: Record<DayPart, string> = {
-  morning: 'Morning',
-  afternoon: 'Afternoon',
-  evening: 'Evening',
-  night: 'Night',
+  morning: 'time.periods.morning',
+  afternoon: 'time.periods.afternoon',
+  evening: 'time.periods.evening',
+  night: 'time.periods.night',
+};
+
+// Maps Luxon weekday numbers (1 = Monday, 7 = Sunday) to translation keys.
+export const WEEKDAY_LABEL_KEYS: Record<number, string> = {
+  1: 'time.days.mon',
+  2: 'time.days.tue',
+  3: 'time.days.wed',
+  4: 'time.days.thu',
+  5: 'time.days.fri',
+  6: 'time.days.sat',
+  7: 'time.days.sun',
 };
 
 const RANGE: Record<DayPart, [number, number]> = {
@@ -133,10 +143,9 @@ export function buildTodaySummary(
   location: string,
   nowStep: ForecastStepRecord | undefined,
   dayParts: Partial<Record<DayPart, DayPartSummary>>,
-  // Formats a °C value in the user's unit, with the unit ("17°C"); the
-  // 2-degree "cooler" threshold below stays in °C so it's the same real
-  // difference.
-  formatTemp: (celsius: number) => string = celsius => formatTemperature(celsius, 'celsius')
+  // Converts a °C value to the user's display unit (rounded); the 2-degree
+  // "cooler" threshold below stays in °C so it's the same real difference.
+  formatDisplayTemp: (celsius: number) => string | number = (c) => `${Math.round(c)}°C`
 ): TodaySummaryParts {
   const nowCondition = t(CONDITION_LABEL_KEYS[conditionBucket(nowStep?.weatherSymbol)]);
   const lead = t('summary.lead', { condition: nowCondition, location });
@@ -172,7 +181,7 @@ export function buildTodaySummary(
     nowStep?.temperature !== undefined &&
     nowStep.temperature - night.temperature >= 2
   ) {
-    trailing = t('summary.coolertonight', { temp: formatTemp(night.temperature) });
+    trailing = t('summary.coolertonight', { temp: formatDisplayTemp(night.temperature) });
   }
 
   return { lead, predictive, trailing };

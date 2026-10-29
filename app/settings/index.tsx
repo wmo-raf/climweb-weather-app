@@ -32,7 +32,7 @@ export default function SettingsScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
-        <AppBar location={t("Settings")} hideSettings />
+        <AppBar location={t("settings.title")} hideSettings />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -45,13 +45,13 @@ export default function SettingsScreen() {
             themeColor="textSubtle"
             style={styles.sectionHeader}
           >
-            {t("settings.section.preferences")}
+            {t("settings.sections.preferences")}
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             {/* Dark Mode Row */}
             <SettingItem
-              label={t("settings.darkMode")}
+              label={t("settings.preferences.appearance.darkMode")}
               leftIcon="moon"
               leftIconColor="#f9ab00"
               leftIconBgColor="rgba(249, 171, 0, 0.15)"
@@ -78,7 +78,7 @@ export default function SettingsScreen() {
 
             {/* Language Row */}
             <SettingItem
-              label={t("Language")}
+              label={t("settings.language.title")}
               leftIcon="language"
               leftIconColor="#1a73e8"
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
@@ -112,7 +112,7 @@ export default function SettingsScreen() {
 
             {/* Onboarding Toggle Row */}
             <SettingItem
-              label={t("settings.showOnboarding")}
+              label={t("settings.preferences.showOnboarding")}
               leftIcon="flag"
               leftIconColor={theme.primary}
               leftIconBgColor={theme.primary + "26"}
@@ -137,13 +137,13 @@ export default function SettingsScreen() {
             themeColor="textSubtle"
             style={styles.sectionHeader}
           >
-            {t("settings.section.about")}
+            {t("settings.sections.about")}
           </ThemedText>
 
-          <ThemedView type="bgAlt" style={styles.card}>
+          <ThemedView type="bg" style={styles.card}>
             {/* About EMI Row */}
             <SettingItem
-              label={t("About us")}
+              label={t("aboutUs.title")}
               leftIcon="business"
               leftIconColor="#0B2C54"
               leftIconBgColor="rgba(11, 44, 84, 0.15)"
@@ -159,7 +159,7 @@ export default function SettingsScreen() {
 
             {/* About the App Row */}
             <SettingItem
-              label={t("About the app")}
+              label={t("aboutApp.title")}
               leftIcon="information-circle"
               leftIconColor="#1a73e8"
               leftIconBgColor="rgba(26, 115, 232, 0.15)"
@@ -175,7 +175,7 @@ export default function SettingsScreen() {
 
             {/* Privacy Row */}
             <SettingItem
-              label={t("Privacy Policy")}
+              label={t("privacy.title")}
               leftIcon="shield-checkmark"
               leftIconColor="#c5221f"
               leftIconBgColor="rgba(197, 34, 31, 0.15)"
@@ -212,7 +212,7 @@ export default function SettingsScreen() {
 
             {/* App Version Row */}
             <SettingItem
-              label={t("settings.appVersion")}
+              label={t("settings.about.appVersion")}
               leftIcon="information-circle"
               leftIconColor="#5f6368"
               leftIconBgColor="rgba(95, 99, 104, 0.15)"
@@ -285,13 +285,15 @@ const styles = StyleSheet.create({
   card: {
     alignSelf: "stretch",
     borderRadius: Radius.large,
+    borderWidth: 1,
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
-    elevation: 1,
+    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.05)",
   },
   separator: {
     height: 1,

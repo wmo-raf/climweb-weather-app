@@ -51,7 +51,7 @@ const FiveDaysScreen = () => {
 
   const onSelectDay = (day: DateTime) =>
     router.push({
-      pathname: "/Hourly", params: {
+      pathname: SCREENS.Hourly, params: {
         location: location,
         dayString: day.toISO(),
         startAtCurrentTime: "no",
@@ -61,14 +61,16 @@ const FiveDaysScreen = () => {
 
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({
-      pathname: "/WeatherWarning", params: { location, alertID: alert.identifier }
+      pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier }
     } as Href);
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t('Next 5 days')} />
+          <AppBar location={t("time.nextFiveDays")} />
           <ScrollView showsVerticalScrollIndicator={false}>
             {!hasLocation ? (
               <View style={styles.alertsWrapper}>
@@ -98,7 +100,11 @@ const FiveDaysScreen = () => {
                 <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
               </>
             )}
-            <LastUpdatedFooter />
+            {/* Same side insets as the day cards, so the text spans the
+                card width and wraps instead of running edge to edge. */}
+            <View style={styles.footerWrapper}>
+              <LastUpdatedFooter />
+            </View>
           </ScrollView>
         </View>
       </View>
@@ -129,10 +135,14 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     marginTop: Spacing.md,
     marginBottom: Spacing.xxl,
   },
-  alertsWrapper: {
+  footerWrapper: {
     marginLeft: Spacing.xl,
     marginRight: Spacing.xl,
-    marginTop: Spacing.lg,
+  },
+  alertsWrapper: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xs,
   },
   xlPadding: {
     paddingLeft: navRailWidth,

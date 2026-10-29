@@ -55,6 +55,12 @@ const styles = StyleSheet.create({
     borderRadius: Radius.medium,
     padding: Spacing.lg,
     gap: Spacing.md,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.06)',
   },
   textBlock: {
     flex: 1,

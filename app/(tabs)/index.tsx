@@ -120,7 +120,7 @@ const MainScreen = () => {
     if (welcomeDecision !== 'skip') return;
     if (locationError && !navigation.canGoBack() && !favouritesLoading) {
       resetLocationError();
-      router.replace((favourites.length > 0 ? '/Places' : SCREENS.NoLocation.toString()) as Href);
+      router.replace((favourites.length > 0 ? SCREENS.Favourites : SCREENS.NoLocation).toString() as Href);
     }
   }, [locationError, favouritesLoading, favourites, welcomeDecision]);
 
@@ -145,7 +145,7 @@ const MainScreen = () => {
   const today = DateTime.now();
   const onSelectDay = (day: DateTime) =>
     router.push({
-      pathname: "/Hourly", params: {
+      pathname: SCREENS.Hourly, params: {
         location: location,
         dayString: day.toISO(),
         startAtCurrentTime: "no",
@@ -155,7 +155,7 @@ const MainScreen = () => {
 
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({
-      pathname: "/WeatherWarning", params: { location, alertID: alert.identifier }
+      pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier }
     });
 
   let relevantAlerts: CAPAlert[] = [];
@@ -183,7 +183,7 @@ const MainScreen = () => {
 
   // Reachable whenever this screen renders with no coordinates and nothing
   // in flight — e.g. GPS was denied and the user tab-navigated here
-  // directly instead of picking a place on NoLocation/Places.
+  // directly instead of picking a place on NoLocation/Favourites.
   if (!loading && !locationLoading && (isUndefined(lat) || isUndefined(lon))) {
     mainContent = (
       <StatusCard
@@ -209,7 +209,7 @@ const MainScreen = () => {
           <View style={styles.xlRightPane}>
             <DayPartsGrid dayParts={getDayParts(todaySummary)} columns={4} />
             <View style={styles.xlFiveDaysSection}>
-              <Text style={styles.xlSectionHeader}>{t('Next 5 days')}</Text>
+              <Text style={styles.xlSectionHeader}>{t("time.nextFiveDays")}</Text>
               <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
             </View>
           </View>
@@ -237,11 +237,13 @@ const MainScreen = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]}>
+    // No bottom edge: the tab bar already pads for the home indicator, so
+    // insetting here too leaves a blank strip above the bar.
+    <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
           <AppBar location={location} isPlace />
-          {!isXL &&
+          {!isXL && relevantAlerts.length > 0 &&
             <View style={styles.alertsWrapper}>
               <Alerts lat={lat} lon={lon} location={location} />
             </View>
@@ -279,15 +281,16 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
   },
   contentWrapper: {
-    marginRight: Spacing.lg,
-    marginLeft: Spacing.lg,
-    marginTop: Spacing.lg,
-    marginBottom: Spacing.xxxl,
+    paddingRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.xxxl,
   },
   alertsWrapper: {
-    marginRight: Spacing.lg,
-    marginLeft: Spacing.lg,
-    marginTop: Spacing.lg,
+    paddingRight: Spacing.lg,
+    paddingLeft: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
   opacity: {},
   loader: {

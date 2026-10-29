@@ -1,7 +1,7 @@
 import enResources from './english.json';
 import swResources from './swahili.json';
 import amResources from './amharic.json';
-import omResources from './oromo.json';
+import omResources from './afaan_oromoo.json';
 import tiResources from './tigrinya.json';
 import soResources from './somali.json';
 

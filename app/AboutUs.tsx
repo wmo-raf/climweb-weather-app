@@ -8,7 +8,7 @@ import Alerts from '@/components/Alerts';
 
 import { useLocationStore } from '@/lib/store/location.store';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, Fonts, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Spacing, Radius } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 function AboutUsScreen(): JSX.Element {
@@ -22,41 +22,43 @@ function AboutUsScreen(): JSX.Element {
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.wrapper}>
         <View style={styles.bg}>
-          <AppBar location={t("About us")} />
+          <AppBar location={t("aboutUs.title")} />
           <Alerts lat={lat} lon={lon} location={"About us"} />
           <View style={styles.container}>
             <View style={styles.opacity}>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
-                  <Text variant="bodyMedium">
-                    <Text style={styles.title}>
-                      {t('placeholder_app_title')}
-                    </Text>{"\n"}
-                  </Text>
-                  <Text variant="bodyMedium">
-                    <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                  <View style={styles.card}>
+                    <Text variant="bodyMedium">
+                      <Text style={styles.title}>
+                        {t("placeholders.appTitle")}
+                      </Text>{"\n"}
                     </Text>
-                  </Text>
-                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                    <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                    <Text variant="bodyMedium">
+                      <Text style={styles.whiteHeader}>{t('how.we.started')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('how.we.started.desc')}
+                      </Text>
                     </Text>
-                  </Text>
-                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                    <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                    <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
+                      <Text style={styles.whiteHeader}>{t('our.mandate')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('our.mandate.desc')}
+                      </Text>
                     </Text>
-                  </Text>
-                  <Text variant="bodyMedium" style={{ marginTop: 40 }}>
-                    <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
-                    <Text style={styles.whiteText}>
-                      {t('placeholder_lorem_ipsum')}
+                    <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
+                      <Text style={styles.whiteHeader}>{t('our.mission')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('our.mission.desc')}
+                      </Text>
                     </Text>
-                  </Text>
+                    <Text variant="bodyMedium" style={{ marginTop: Spacing.xl }}>
+                      <Text style={styles.whiteHeader}>{t('our.vision')}</Text>{"\n"}
+                      <Text style={styles.whiteText}>
+                        {t('our.vision.desc')}
+                      </Text>
+                    </Text>
+                  </View>
                 </View>
               </ScrollView>
             </View>
@@ -107,9 +109,22 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     backgroundColor: colors.bgAlt,
   },
   content: {
-    marginTop: Spacing.xl,
-    marginLeft: Spacing.xl,
-    marginRight: Spacing.xl,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xxxl,
+  },
+  card: {
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: Radius.large,
+    padding: Spacing.xl,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
 });
 

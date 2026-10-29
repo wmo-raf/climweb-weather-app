@@ -9,7 +9,7 @@ import AlertAreaMap from './AlertAreaMap';
 import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, getWarningTintColors } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
-import { ThemeColors, Fonts, Colors, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Colors, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 const BAND_LABEL_KEYS: { [k in 'Red' | 'Yellow' | 'Orange' | 'Cyan' | 'Blue']: string } = {
@@ -69,7 +69,7 @@ function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Ele
   ].filter(Boolean).join('. ');
 
   return (
-    <View>
+    <View style={styles.card}>
       <View style={[styles.band, { backgroundColor: bandColor }]}>
         <View style={styles.bandLeft}>
           <Icon source="alert" size={22} color={bandTextColor} />
@@ -130,13 +130,25 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   // band and the top of the body both go square so the whole card reads as
   // a single rounded rectangle, in both compact (list) and full (detail)
   // modes.
+  card: {
+    borderRadius: Radius.large,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
+  },
   band: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
@@ -157,14 +169,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   body: {
     padding: Spacing.lg,
-    borderRadius: Radius.medium,
+    borderRadius: Radius.large,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderColor: colors.border,
-    ...shadow.sm,
   },
   headline: {
     fontSize: 20,

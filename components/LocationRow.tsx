@@ -8,7 +8,7 @@ import { City } from '@/lib/geo/constants';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { ForecastRecord } from '@/lib/forecast/types';
 import { useTranslation } from 'react-i18next';
-import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useUnits } from '@/lib/hooks/use-units';
 import { conditionBucket, CONDITION_LABEL_KEYS } from '@/lib/forecast/day-parts';
@@ -23,17 +23,19 @@ type LocationRowProps = {
   // error card instead of one per failing row.
   id: string;
   onErrorChange?: (id: string, retry: (() => void) | undefined) => void;
+  onLoadingChange?: (id: string, loading: boolean) => void;
 };
 function LocationRow(props: LocationRowProps): JSX.Element | null {
   const { t } = useTranslation();
   const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const { district, onPress, id, onErrorChange } = props;
+  const { district, onPress, id, onErrorChange, onLoadingChange } = props;
   const [, forecast, error, retry] = useForecast(district.lat, district.lon);
 
   const today = forecast?.days.find(d => DateTime.fromISO(d.day).hasSame(DateTime.now(), "day"));
   const isError = !!error || (!!forecast && !today);
+  const isLoading = !isError && !(forecast && today);
 
   useEffect(() => {
     onErrorChange?.(id, isError ? retry : undefined);
@@ -44,31 +46,39 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError, id]);
 
+  useEffect(() => {
+    onLoadingChange?.(id, isLoading);
+    return () => {
+      onLoadingChange?.(id, false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, id]);
+
   if (isError) {
     return null;
   }
 
   if (forecast && today) {
     return (
-      <TouchableOpacity style={styles.wrapper} onPress={() => onPress(forecast)}>
-        <View style={styles.glassWrapper}>
-          <View style={styles.opacity}>
-            <View style={styles.left}>
-              <View>
-                <Text style={styles.header}>{district.name}</Text>
-              </View>
-              <View style={styles.smallContainer}>
-                <Text style={styles.small}>&uarr;{units.temp(today.maxTemperature || 0)}  &darr;{units.temp(today.minTemperature || 0)}</Text>
-              </View>
-            </View>
-            <View style={styles.right}>
-              <Icon source={weatherIcons[today.weatherSymbol || 'fair_day']} size={90} />
-              <Text style={styles.small}>{t(CONDITION_LABEL_KEYS[conditionBucket(today.weatherSymbol)])}</Text>
-            </View>
+      <TouchableOpacity style={styles.opacity} onPress={() => onPress(forecast)}>
+        <View style={styles.left}>
+          <View>
+            <Text style={styles.header}>{district.name}</Text>
           </View>
+          <View style={styles.smallContainer}>
+            <Text style={styles.small}>&uarr;{units.temp(today.maxTemperature || 0)}  &darr;{units.temp(today.minTemperature || 0)}</Text>
+          </View>
+        </View>
+        <View style={styles.right}>
+          <Icon source={weatherIcons[today.weatherSymbol || 'fair_day']} size={90} />
+          <Text style={styles.small}>{t(CONDITION_LABEL_KEYS[conditionBucket(today.weatherSymbol)])}</Text>
         </View>
       </TouchableOpacity>
     );
+  }
+
+  if (onLoadingChange) {
+    return null;
   }
 
   return (
@@ -80,26 +90,16 @@ function LocationRow(props: LocationRowProps): JSX.Element | null {
 
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: Spacing.lg,
-  },
   // Deliberately no card chrome (border/shadow/background) here, unlike
   // the loaded-row wrapper above — matches the plain floating spinner used
   // for the whole-page loading state on the Today tab, since this is the
-  // spinner shown while Places/NoLocation's rows are individually loading.
+  // spinner shown while Favourites/NoLocation's rows are individually loading.
   loadingWrapper: {
     width: '100%',
     marginTop: Spacing.lg,
     paddingVertical: Spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  glassWrapper: {
-    width: '100%',
-    borderRadius: Radius.medium,
   },
   opacity: {
     backgroundColor: colors.bg,
@@ -108,13 +108,19 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: '100%',
+    marginTop: Spacing.lg,
     paddingRight: Spacing.lg,
     paddingLeft: Spacing.lg,
     paddingTop: Spacing.md,
     paddingBottom: Spacing.md,
     zIndex: 1,
-    borderRadius: Radius.medium,
-    ...shadow.sm,
+    borderRadius: Radius.large,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
   left: {
     flex: 1,

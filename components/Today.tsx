@@ -31,7 +31,7 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, compact }:
   if (!daySummary) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.todaysHeader}>{t('Forecast unavailable')}</Text>
+        <Text style={styles.todaysHeader}>{t("forecast.states.unavailable")}</Text>
       </View>
     )
   }
@@ -46,15 +46,14 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, compact }:
 };
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
-  // No horizontal margin here — Today is only ever rendered inside
-  // app/(tabs)/index.tsx's contentWrapper, which already provides the
-  // horizontal inset. Duplicating it here made this card narrower than
-  // the alert banner above it, which uses that same single inset.
+  // Negative margin paired with equal padding expands the ViewGroup bounds
+  // so Android does not clip child card elevation shadows on any side while
+  // keeping exact layout alignment with app/(tabs)/index.tsx's contentWrapper.
   wrapper: {
-    marginTop: Spacing.lg,
+    marginTop: 0,
   },
   wrapperCompact: {
-    marginTop: Spacing.md,
+    marginTop: 0,
   },
   todaysHeader: {
     fontSize: 20,
