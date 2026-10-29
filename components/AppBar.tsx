@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-paper';
 
-import { useNavigation, useRouter, Href } from 'expo-router';
+import { useCanGoBack, useNavigation, useRouter, Href } from 'expo-router';
 
 import { SCREENS } from '@/lib/layout/constants';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ const AppBar = (props: AppBarProps) => {
   const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
+  const canGoBack = useCanGoBack();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -43,7 +44,7 @@ const AppBar = (props: AppBarProps) => {
   return (
     <ThemedView type="bg" style={styles.appBar}>
       <View style={styles.appTitleContainer}>
-        {navigation.canGoBack() &&
+        {canGoBack &&
           <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
