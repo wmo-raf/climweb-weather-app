@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
@@ -37,7 +37,15 @@ const WeatherAlert = ({ alert, onPress, extraCount = 0 }: WeatherAlertProps) => 
       onPress={onPress}
       accessibilityLabel={`${leadWord}: ${info.event}. ${subtext}`}
     >
-      {icon && <Icon source={icon} size={28} color={textColor} />}
+      {/* Plain Image, not Paper's Icon: Icon tints image sources to one
+          colour, which flattens the multi-colour warning PNG and hides
+          its exclamation mark. Sits on a white disc so the triangle doesn't
+          blend into a band of its own colour (yellow on yellow, red on red). */}
+      {icon && (
+        <View style={styles.iconDisc}>
+          <Image source={icon} style={styles.icon} resizeMode="contain" />
+        </View>
+      )}
       <View style={styles.textBlock}>
         <Text style={[styles.headline, { color: textColor }]} numberOfLines={2}>{leadWord}: {info.event}</Text>
         <Text style={[styles.subtext, { color: textColor }]}>{subtext}</Text>
@@ -61,6 +69,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 4,
     boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.06)',
+  },
+  iconDisc: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    width: 26,
+    height: 26,
   },
   textBlock: {
     flex: 1,
