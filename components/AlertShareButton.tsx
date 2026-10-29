@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, HostInstance, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { captureRef } from 'react-native-view-shot';
@@ -27,7 +27,7 @@ const MAP_READY_TIMEOUT_MS = 3000;
 // alert card just in case it's shared.
 function AlertShareButton({ alert, textColor, backgroundColor }: AlertShareButtonProps) {
   const { t } = useTranslation();
-  const cardRef = useRef<View>(null);
+  const cardRef = useRef<HostInstance>(null);
   const readyResolveRef = useRef<(() => void) | null>(null);
   const [sharing, setSharing] = useState(false);
 

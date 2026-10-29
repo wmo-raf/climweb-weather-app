@@ -93,7 +93,7 @@ const WarningsScreen = () => {
                   <Text style={styles.emptyTitle}>{t('warnings.empty.title')}</Text>
                   <Text style={styles.emptyText}>{t('warnings.empty.text')}</Text>
                 </View>
-              ) : null
+              ) : undefined
             }
             ListFooterComponent={
               <>
