@@ -62,8 +62,6 @@ jobs:
 
       - run: npm ci
 
-      # Not blocking yet: currently fails on the app.json slug format and on
-      # unmaintained-package advisories. Remove continue-on-error once fixed.
       - name: Expo doctor
         run: npx expo-doctor
 
