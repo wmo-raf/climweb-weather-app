@@ -62,12 +62,9 @@
       ],
       "expo-web-browser",
       [
-        "react-native-edge-to-edge",
+        "expo-navigation-bar",
         {
-          "android": {
-            "parentTheme": "Default",
-            "enforceNavigationBarContrast": false
-          }
+          "enforceContrast": false
         }
       ],
       "expo-sharing",
