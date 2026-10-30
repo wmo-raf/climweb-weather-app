@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Climweb Weather App",
-    "slug": "climweb.weatherapp",
+    "slug": "climweb_weather_app",
     "version": "1.7.1",
     "orientation": "portrait",
     "icon": "./assets/ic_launcher.png",
