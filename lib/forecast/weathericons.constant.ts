@@ -1,175 +1,184 @@
-import { ImageSourcePropType } from 'react-native';
+import React from 'react';
+import type { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { SvgProps } from 'react-native-svg';
 
-const clearsky_day = require('../../assets/weather_icon/png/clearsky_day.png');
-const clearsky_night = require('../../assets/weather_icon/png/clearsky_night.png');
-const clearsky_polartwilight = require('../../assets/weather_icon/png/clearsky_polartwilight.png');
-const cloudy = require('../../assets/weather_icon/png/cloudy.png');
-const fair_day = require('../../assets/weather_icon/png/fair_day.png');
-const fair_night = require('../../assets/weather_icon/png/fair_night.png');
-const fair_polartwilight = require('../../assets/weather_icon/png/fair_polartwilight.png');
-const fog = require('../../assets/weather_icon/png/fog.png');
-const heavyrainandthunder = require('../../assets/weather_icon/png/heavyrainandthunder.png');
-const heavyrain = require('../../assets/weather_icon/png/heavyrain.png');
-const heavyrainshowersandthunder_day = require('../../assets/weather_icon/png/heavyrainshowersandthunder_day.png');
-const heavyrainshowersandthunder_night = require('../../assets/weather_icon/png/heavyrainshowersandthunder_night.png');
-const heavyrainshowersandthunder_polartwilight = require('../../assets/weather_icon/png/heavyrainshowersandthunder_polartwilight.png');
-const heavyrainshowers_day = require('../../assets/weather_icon/png/heavyrainshowers_day.png');
-const heavyrainshowers_night = require('../../assets/weather_icon/png/heavyrainshowers_night.png');
-const heavyrainshowers_polartwilight = require('../../assets/weather_icon/png/heavyrainshowers_polartwilight.png');
-const heavysleetandthunder = require('../../assets/weather_icon/png/heavysleetandthunder.png');
-const heavysleet = require('../../assets/weather_icon/png/heavysleet.png');
-const heavysleetshowersandthunder_day = require('../../assets/weather_icon/png/heavysleetshowersandthunder_day.png');
-const heavysleetshowersandthunder_night = require('../../assets/weather_icon/png/heavysleetshowersandthunder_night.png');
-const heavysleetshowersandthunder_polartwilight = require('../../assets/weather_icon/png/heavysleetshowersandthunder_polartwilight.png');
-const heavysleetshowers_day = require('../../assets/weather_icon/png/heavysleetshowers_day.png');
-const heavysleetshowers_night = require('../../assets/weather_icon/png/heavysleetshowers_night.png');
-const heavysleetshowers_polartwilight = require('../../assets/weather_icon/png/heavysleetshowers_polartwilight.png');
-const heavysnowandthunder = require('../../assets/weather_icon/png/heavysnowandthunder.png');
-const heavysnow = require('../../assets/weather_icon/png/heavysnow.png');
-const heavysnowshowersandthunder_day = require('../../assets/weather_icon/png/heavysnowshowersandthunder_day.png');
-const heavysnowshowersandthunder_night = require('../../assets/weather_icon/png/heavysnowshowersandthunder_night.png');
-const heavysnowshowersandthunder_polartwilight = require('../../assets/weather_icon/png/heavysnowshowersandthunder_polartwilight.png');
-const heavysnowshowers_day = require('../../assets/weather_icon/png/heavysnowshowers_day.png');
-const heavysnowshowers_night = require('../../assets/weather_icon/png/heavysnowshowers_night.png');
-const heavysnowshowers_polartwilight = require('../../assets/weather_icon/png/heavysnowshowers_polartwilight.png');
-const lightrainandthunder = require('../../assets/weather_icon/png/lightrainandthunder.png');
-const lightrain = require('../../assets/weather_icon/png/lightrain.png');
-const lightrainshowersandthunder_day = require('../../assets/weather_icon/png/lightrainshowersandthunder_day.png');
-const lightrainshowersandthunder_night = require('../../assets/weather_icon/png/lightrainshowersandthunder_night.png');
-const lightrainshowersandthunder_polartwilight = require('../../assets/weather_icon/png/lightrainshowersandthunder_polartwilight.png');
-const lightrainshowers_day = require('../../assets/weather_icon/png/lightrainshowers_day.png');
-const lightrainshowers_night = require('../../assets/weather_icon/png/lightrainshowers_night.png');
-const lightrainshowers_polartwilight = require('../../assets/weather_icon/png/lightrainshowers_polartwilight.png');
-const lightsleetandthunder = require('../../assets/weather_icon/png/lightsleetandthunder.png');
-const lightsleet = require('../../assets/weather_icon/png/lightsleet.png');
-const lightsleetshowers_day = require('../../assets/weather_icon/png/lightsleetshowers_day.png');
-const lightsleetshowers_night = require('../../assets/weather_icon/png/lightsleetshowers_night.png');
-const lightsleetshowers_polartwilight = require('../../assets/weather_icon/png/lightsleetshowers_polartwilight.png');
-const lightsnowandthunder = require('../../assets/weather_icon/png/lightsnowandthunder.png');
-const lightsnow = require('../../assets/weather_icon/png/lightsnow.png');
-const lightsnowshowers_day = require('../../assets/weather_icon/png/lightsnowshowers_day.png');
-const lightsnowshowers_night = require('../../assets/weather_icon/png/lightsnowshowers_night.png');
-const lightsnowshowers_polartwilight = require('../../assets/weather_icon/png/lightsnowshowers_polartwilight.png');
-const lightssleetshowersandthunder_day = require('../../assets/weather_icon/png/lightssleetshowersandthunder_day.png');
-const lightssleetshowersandthunder_night = require('../../assets/weather_icon/png/lightssleetshowersandthunder_night.png');
-const lightssleetshowersandthunder_polartwilight = require('../../assets/weather_icon/png/lightssleetshowersandthunder_polartwilight.png');
-const lightssnowshowersandthunder_day = require('../../assets/weather_icon/png/lightssnowshowersandthunder_day.png');
-const lightssnowshowersandthunder_night = require('../../assets/weather_icon/png/lightssnowshowersandthunder_night.png');
-const lightssnowshowersandthunder_polartwilight = require('../../assets/weather_icon/png/lightssnowshowersandthunder_polartwilight.png');
-const partlycloudy_day = require('../../assets/weather_icon/png/partlycloudy_day.png');
-const partlycloudy_night = require('../../assets/weather_icon/png/partlycloudy_night.png');
-const partlycloudy_polartwilight = require('../../assets/weather_icon/png/partlycloudy_polartwilight.png');
-const rainandthunder = require('../../assets/weather_icon/png/rainandthunder.png');
-const rain = require('../../assets/weather_icon/png/rain.png');
-const rainshowersandthunder_day = require('../../assets/weather_icon/png/rainshowersandthunder_day.png');
-const rainshowersandthunder_night = require('../../assets/weather_icon/png/rainshowersandthunder_night.png');
-const rainshowersandthunder_polartwilight = require('../../assets/weather_icon/png/rainshowersandthunder_polartwilight.png');
-const rainshowers_day = require('../../assets/weather_icon/png/rainshowers_day.png');
-const rainshowers_night = require('../../assets/weather_icon/png/rainshowers_night.png');
-const rainshowers_polartwilight = require('../../assets/weather_icon/png/rainshowers_polartwilight.png');
-const sleetandthunder = require('../../assets/weather_icon/png/sleetandthunder.png');
-const sleet = require('../../assets/weather_icon/png/sleet.png');
-const sleetshowersandthunder_day = require('../../assets/weather_icon/png/sleetshowersandthunder_day.png');
-const sleetshowersandthunder_night = require('../../assets/weather_icon/png/sleetshowersandthunder_night.png');
-const sleetshowersandthunder_polartwilight = require('../../assets/weather_icon/png/sleetshowersandthunder_polartwilight.png');
-const sleetshowers_day = require('../../assets/weather_icon/png/sleetshowers_day.png');
-const sleetshowers_night = require('../../assets/weather_icon/png/sleetshowers_night.png');
-const sleetshowers_polartwilight = require('../../assets/weather_icon/png/sleetshowers_polartwilight.png');
-const snowandthunder = require('../../assets/weather_icon/png/snowandthunder.png');
-const snow = require('../../assets/weather_icon/png/snow.png');
-const snowshowersandthunder_day = require('../../assets/weather_icon/png/snowshowersandthunder_day.png');
-const snowshowersandthunder_night = require('../../assets/weather_icon/png/snowshowersandthunder_night.png');
-const snowshowersandthunder_polartwilight = require('../../assets/weather_icon/png/snowshowersandthunder_polartwilight.png');
-const snowshowers_day = require('../../assets/weather_icon/png/snowshowers_day.png');
-const snowshowers_night = require('../../assets/weather_icon/png/snowshowers_night.png');
-const snowshowers_polartwilight = require('../../assets/weather_icon/png/snowshowers_polartwilight.png');
+import ClearskyDay from '../../assets/weather_icon/svg/clearsky_day.svg';
+import ClearskyNight from '../../assets/weather_icon/svg/clearsky_night.svg';
+import ClearskyPolartwilight from '../../assets/weather_icon/svg/clearsky_polartwilight.svg';
+import Cloudy from '../../assets/weather_icon/svg/cloudy.svg';
+import FairDay from '../../assets/weather_icon/svg/fair_day.svg';
+import FairNight from '../../assets/weather_icon/svg/fair_night.svg';
+import FairPolartwilight from '../../assets/weather_icon/svg/fair_polartwilight.svg';
+import Fog from '../../assets/weather_icon/svg/fog.svg';
+import HeavyrainAndThunder from '../../assets/weather_icon/svg/heavyrainandthunder.svg';
+import Heavyrain from '../../assets/weather_icon/svg/heavyrain.svg';
+import HeavyrainshowersAndThunderDay from '../../assets/weather_icon/svg/heavyrainshowersandthunder_day.svg';
+import HeavyrainshowersAndThunderNight from '../../assets/weather_icon/svg/heavyrainshowersandthunder_night.svg';
+import HeavyrainshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/heavyrainshowersandthunder_polartwilight.svg';
+import HeavyrainshowersDay from '../../assets/weather_icon/svg/heavyrainshowers_day.svg';
+import HeavyrainshowersNight from '../../assets/weather_icon/svg/heavyrainshowers_night.svg';
+import HeavyrainshowersPolartwilight from '../../assets/weather_icon/svg/heavyrainshowers_polartwilight.svg';
+import HeavysleetAndThunder from '../../assets/weather_icon/svg/heavysleetandthunder.svg';
+import Heavysleet from '../../assets/weather_icon/svg/heavysleet.svg';
+import HeavysleetshowersAndThunderDay from '../../assets/weather_icon/svg/heavysleetshowersandthunder_day.svg';
+import HeavysleetshowersAndThunderNight from '../../assets/weather_icon/svg/heavysleetshowersandthunder_night.svg';
+import HeavysleetshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/heavysleetshowersandthunder_polartwilight.svg';
+import HeavysleetshowersDay from '../../assets/weather_icon/svg/heavysleetshowers_day.svg';
+import HeavysleetshowersNight from '../../assets/weather_icon/svg/heavysleetshowers_night.svg';
+import HeavysleetshowersPolartwilight from '../../assets/weather_icon/svg/heavysleetshowers_polartwilight.svg';
+import HeavysnowAndThunder from '../../assets/weather_icon/svg/heavysnowandthunder.svg';
+import Heavysnow from '../../assets/weather_icon/svg/heavysnow.svg';
+import HeavysnowshowersAndThunderDay from '../../assets/weather_icon/svg/heavysnowshowersandthunder_day.svg';
+import HeavysnowshowersAndThunderNight from '../../assets/weather_icon/svg/heavysnowshowersandthunder_night.svg';
+import HeavysnowshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/heavysnowshowersandthunder_polartwilight.svg';
+import HeavysnowshowersDay from '../../assets/weather_icon/svg/heavysnowshowers_day.svg';
+import HeavysnowshowersNight from '../../assets/weather_icon/svg/heavysnowshowers_night.svg';
+import HeavysnowshowersPolartwilight from '../../assets/weather_icon/svg/heavysnowshowers_polartwilight.svg';
+import LightrainAndThunder from '../../assets/weather_icon/svg/lightrainandthunder.svg';
+import Lightrain from '../../assets/weather_icon/svg/lightrain.svg';
+import LightrainshowersAndThunderDay from '../../assets/weather_icon/svg/lightrainshowersandthunder_day.svg';
+import LightrainshowersAndThunderNight from '../../assets/weather_icon/svg/lightrainshowersandthunder_night.svg';
+import LightrainshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/lightrainshowersandthunder_polartwilight.svg';
+import LightrainshowersDay from '../../assets/weather_icon/svg/lightrainshowers_day.svg';
+import LightrainshowersNight from '../../assets/weather_icon/svg/lightrainshowers_night.svg';
+import LightrainshowersPolartwilight from '../../assets/weather_icon/svg/lightrainshowers_polartwilight.svg';
+import LightsleetAndThunder from '../../assets/weather_icon/svg/lightsleetandthunder.svg';
+import Lightsleet from '../../assets/weather_icon/svg/lightsleet.svg';
+import LightsleetshowersAndThunderDay from '../../assets/weather_icon/svg/lightsleetshowersandthunder_day.svg';
+import LightsleetshowersAndThunderNight from '../../assets/weather_icon/svg/lightsleetshowersandthunder_night.svg';
+import LightsleetshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/lightsleetshowersandthunder_polartwilight.svg';
+import LightsleetshowersDay from '../../assets/weather_icon/svg/lightsleetshowers_day.svg';
+import LightsleetshowersNight from '../../assets/weather_icon/svg/lightsleetshowers_night.svg';
+import LightsleetshowersPolartwilight from '../../assets/weather_icon/svg/lightsleetshowers_polartwilight.svg';
+import LightsnowAndThunder from '../../assets/weather_icon/svg/lightsnowandthunder.svg';
+import Lightsnow from '../../assets/weather_icon/svg/lightsnow.svg';
+import LightsnowshowersAndThunderDay from '../../assets/weather_icon/svg/lightsnowshowersandthunder_day.svg';
+import LightsnowshowersAndThunderNight from '../../assets/weather_icon/svg/lightsnowshowersandthunder_night.svg';
+import LightsnowshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/lightsnowshowersandthunder_polartwilight.svg';
+import LightsnowshowersDay from '../../assets/weather_icon/svg/lightsnowshowers_day.svg';
+import LightsnowshowersNight from '../../assets/weather_icon/svg/lightsnowshowers_night.svg';
+import LightsnowshowersPolartwilight from '../../assets/weather_icon/svg/lightsnowshowers_polartwilight.svg';
+import PartlycloudyDay from '../../assets/weather_icon/svg/partlycloudy_day.svg';
+import PartlycloudyNight from '../../assets/weather_icon/svg/partlycloudy_night.svg';
+import PartlycloudyPolartwilight from '../../assets/weather_icon/svg/partlycloudy_polartwilight.svg';
+import RainAndThunder from '../../assets/weather_icon/svg/rainandthunder.svg';
+import Rain from '../../assets/weather_icon/svg/rain.svg';
+import RainshowersAndThunderDay from '../../assets/weather_icon/svg/rainshowersandthunder_day.svg';
+import RainshowersAndThunderNight from '../../assets/weather_icon/svg/rainshowersandthunder_night.svg';
+import RainshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/rainshowersandthunder_polartwilight.svg';
+import RainshowersDay from '../../assets/weather_icon/svg/rainshowers_day.svg';
+import RainshowersNight from '../../assets/weather_icon/svg/rainshowers_night.svg';
+import RainshowersPolartwilight from '../../assets/weather_icon/svg/rainshowers_polartwilight.svg';
+import SleetAndThunder from '../../assets/weather_icon/svg/sleetandthunder.svg';
+import Sleet from '../../assets/weather_icon/svg/sleet.svg';
+import SleetshowersAndThunderDay from '../../assets/weather_icon/svg/sleetshowersandthunder_day.svg';
+import SleetshowersAndThunderNight from '../../assets/weather_icon/svg/sleetshowersandthunder_night.svg';
+import SleetshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/sleetshowersandthunder_polartwilight.svg';
+import SleetshowersDay from '../../assets/weather_icon/svg/sleetshowers_day.svg';
+import SleetshowersNight from '../../assets/weather_icon/svg/sleetshowers_night.svg';
+import SleetshowersPolartwilight from '../../assets/weather_icon/svg/sleetshowers_polartwilight.svg';
+import SnowAndThunder from '../../assets/weather_icon/svg/snowandthunder.svg';
+import Snow from '../../assets/weather_icon/svg/snow.svg';
+import SnowshowersAndThunderDay from '../../assets/weather_icon/svg/snowshowersandthunder_day.svg';
+import SnowshowersAndThunderNight from '../../assets/weather_icon/svg/snowshowersandthunder_night.svg';
+import SnowshowersAndThunderPolartwilight from '../../assets/weather_icon/svg/snowshowersandthunder_polartwilight.svg';
+import SnowshowersDay from '../../assets/weather_icon/svg/snowshowers_day.svg';
+import SnowshowersNight from '../../assets/weather_icon/svg/snowshowers_night.svg';
+import SnowshowersPolartwilight from '../../assets/weather_icon/svg/snowshowers_polartwilight.svg';
+
 const icon_warning_wind_yellow = require('../../assets/weather_icon/png/icon-warning-wind-yellow.png');
 const icon_warning_wind_red = require('../../assets/weather_icon/png/icon-warning-wind-red.png');
 
-const icons: {[key: string]: ImageSourcePropType} = {
-  clearsky_day,
-  clearsky_night,
-  clearsky_polartwilight,
-  cloudy,
-  fair_day,
-  fair_night,
-  fair_polartwilight,
-  fog,
-  heavyrainandthunder,
-  heavyrain,
-  heavyrainshowersandthunder_day,
-  heavyrainshowersandthunder_night,
-  heavyrainshowersandthunder_polartwilight,
-  heavyrainshowers_day,
-  heavyrainshowers_night,
-  heavyrainshowers_polartwilight,
-  heavysleetandthunder,
-  heavysleet,
-  heavysleetshowersandthunder_day,
-  heavysleetshowersandthunder_night,
-  heavysleetshowersandthunder_polartwilight,
-  heavysleetshowers_day,
-  heavysleetshowers_night,
-  heavysleetshowers_polartwilight,
-  heavysnowandthunder,
-  heavysnow,
-  heavysnowshowersandthunder_day,
-  heavysnowshowersandthunder_night,
-  heavysnowshowersandthunder_polartwilight,
-  heavysnowshowers_day,
-  heavysnowshowers_night,
-  heavysnowshowers_polartwilight,
-  lightrainandthunder,
-  lightrain,
-  lightrainshowersandthunder_day,
-  lightrainshowersandthunder_night,
-  lightrainshowersandthunder_polartwilight,
-  lightrainshowers_day,
-  lightrainshowers_night,
-  lightrainshowers_polartwilight,
-  lightsleetandthunder,
-  lightsleet,
-  lightsleetshowers_day,
-  lightsleetshowers_night,
-  lightsleetshowers_polartwilight,
-  lightsnowandthunder,
-  lightsnow,
-  lightsnowshowers_day,
-  lightsnowshowers_night,
-  lightsnowshowers_polartwilight,
-  lightssleetshowersandthunder_day,
-  lightssleetshowersandthunder_night,
-  lightssleetshowersandthunder_polartwilight,
-  lightssnowshowersandthunder_day,
-  lightssnowshowersandthunder_night,
-  lightssnowshowersandthunder_polartwilight,
-  partlycloudy_day,
-  partlycloudy_night,
-  partlycloudy_polartwilight,
-  rainandthunder,
-  rain,
-  rainshowersandthunder_day,
-  rainshowersandthunder_night,
-  rainshowersandthunder_polartwilight,
-  rainshowers_day,
-  rainshowers_night,
-  rainshowers_polartwilight,
-  sleetandthunder,
-  sleet,
-  sleetshowersandthunder_day,
-  sleetshowersandthunder_night,
-  sleetshowersandthunder_polartwilight,
-  sleetshowers_day,
-  sleetshowers_night,
-  sleetshowers_polartwilight,
-  snowandthunder,
-  snow,
-  snowshowersandthunder_day,
-  snowshowersandthunder_night,
-  snowshowersandthunder_polartwilight,
-  snowshowers_day,
-  snowshowers_night,
-  snowshowers_polartwilight,
+// react-native-paper's <Icon source={...} /> accepts a render function of the
+// shape (props: { size: number; color: string }) => ReactNode, so each SVG
+// component is wrapped to size itself to the requested icon size.
+const svgIcon = (Svg: React.FC<SvgProps>): IconSource => ({ size }) =>
+  React.createElement(Svg, { width: size, height: size });
+
+const icons: { [key: string]: IconSource } = {
+  clearsky_day: svgIcon(ClearskyDay),
+  clearsky_night: svgIcon(ClearskyNight),
+  clearsky_polartwilight: svgIcon(ClearskyPolartwilight),
+  cloudy: svgIcon(Cloudy),
+  fair_day: svgIcon(FairDay),
+  fair_night: svgIcon(FairNight),
+  fair_polartwilight: svgIcon(FairPolartwilight),
+  fog: svgIcon(Fog),
+  heavyrainandthunder: svgIcon(HeavyrainAndThunder),
+  heavyrain: svgIcon(Heavyrain),
+  heavyrainshowersandthunder_day: svgIcon(HeavyrainshowersAndThunderDay),
+  heavyrainshowersandthunder_night: svgIcon(HeavyrainshowersAndThunderNight),
+  heavyrainshowersandthunder_polartwilight: svgIcon(HeavyrainshowersAndThunderPolartwilight),
+  heavyrainshowers_day: svgIcon(HeavyrainshowersDay),
+  heavyrainshowers_night: svgIcon(HeavyrainshowersNight),
+  heavyrainshowers_polartwilight: svgIcon(HeavyrainshowersPolartwilight),
+  heavysleetandthunder: svgIcon(HeavysleetAndThunder),
+  heavysleet: svgIcon(Heavysleet),
+  heavysleetshowersandthunder_day: svgIcon(HeavysleetshowersAndThunderDay),
+  heavysleetshowersandthunder_night: svgIcon(HeavysleetshowersAndThunderNight),
+  heavysleetshowersandthunder_polartwilight: svgIcon(HeavysleetshowersAndThunderPolartwilight),
+  heavysleetshowers_day: svgIcon(HeavysleetshowersDay),
+  heavysleetshowers_night: svgIcon(HeavysleetshowersNight),
+  heavysleetshowers_polartwilight: svgIcon(HeavysleetshowersPolartwilight),
+  heavysnowandthunder: svgIcon(HeavysnowAndThunder),
+  heavysnow: svgIcon(Heavysnow),
+  heavysnowshowersandthunder_day: svgIcon(HeavysnowshowersAndThunderDay),
+  heavysnowshowersandthunder_night: svgIcon(HeavysnowshowersAndThunderNight),
+  heavysnowshowersandthunder_polartwilight: svgIcon(HeavysnowshowersAndThunderPolartwilight),
+  heavysnowshowers_day: svgIcon(HeavysnowshowersDay),
+  heavysnowshowers_night: svgIcon(HeavysnowshowersNight),
+  heavysnowshowers_polartwilight: svgIcon(HeavysnowshowersPolartwilight),
+  lightrainandthunder: svgIcon(LightrainAndThunder),
+  lightrain: svgIcon(Lightrain),
+  lightrainshowersandthunder_day: svgIcon(LightrainshowersAndThunderDay),
+  lightrainshowersandthunder_night: svgIcon(LightrainshowersAndThunderNight),
+  lightrainshowersandthunder_polartwilight: svgIcon(LightrainshowersAndThunderPolartwilight),
+  lightrainshowers_day: svgIcon(LightrainshowersDay),
+  lightrainshowers_night: svgIcon(LightrainshowersNight),
+  lightrainshowers_polartwilight: svgIcon(LightrainshowersPolartwilight),
+  lightsleetandthunder: svgIcon(LightsleetAndThunder),
+  lightsleet: svgIcon(Lightsleet),
+  lightssleetshowersandthunder_day: svgIcon(LightsleetshowersAndThunderDay),
+  lightssleetshowersandthunder_night: svgIcon(LightsleetshowersAndThunderNight),
+  lightssleetshowersandthunder_polartwilight: svgIcon(LightsleetshowersAndThunderPolartwilight),
+  lightsleetshowers_day: svgIcon(LightsleetshowersDay),
+  lightsleetshowers_night: svgIcon(LightsleetshowersNight),
+  lightsleetshowers_polartwilight: svgIcon(LightsleetshowersPolartwilight),
+  lightsnowandthunder: svgIcon(LightsnowAndThunder),
+  lightsnow: svgIcon(Lightsnow),
+  lightssnowshowersandthunder_day: svgIcon(LightsnowshowersAndThunderDay),
+  lightssnowshowersandthunder_night: svgIcon(LightsnowshowersAndThunderNight),
+  lightssnowshowersandthunder_polartwilight: svgIcon(LightsnowshowersAndThunderPolartwilight),
+  lightsnowshowers_day: svgIcon(LightsnowshowersDay),
+  lightsnowshowers_night: svgIcon(LightsnowshowersNight),
+  lightsnowshowers_polartwilight: svgIcon(LightsnowshowersPolartwilight),
+  partlycloudy_day: svgIcon(PartlycloudyDay),
+  partlycloudy_night: svgIcon(PartlycloudyNight),
+  partlycloudy_polartwilight: svgIcon(PartlycloudyPolartwilight),
+  rainandthunder: svgIcon(RainAndThunder),
+  rain: svgIcon(Rain),
+  rainshowersandthunder_day: svgIcon(RainshowersAndThunderDay),
+  rainshowersandthunder_night: svgIcon(RainshowersAndThunderNight),
+  rainshowersandthunder_polartwilight: svgIcon(RainshowersAndThunderPolartwilight),
+  rainshowers_day: svgIcon(RainshowersDay),
+  rainshowers_night: svgIcon(RainshowersNight),
+  rainshowers_polartwilight: svgIcon(RainshowersPolartwilight),
+  sleetandthunder: svgIcon(SleetAndThunder),
+  sleet: svgIcon(Sleet),
+  sleetshowersandthunder_day: svgIcon(SleetshowersAndThunderDay),
+  sleetshowersandthunder_night: svgIcon(SleetshowersAndThunderNight),
+  sleetshowersandthunder_polartwilight: svgIcon(SleetshowersAndThunderPolartwilight),
+  sleetshowers_day: svgIcon(SleetshowersDay),
+  sleetshowers_night: svgIcon(SleetshowersNight),
+  sleetshowers_polartwilight: svgIcon(SleetshowersPolartwilight),
+  snowandthunder: svgIcon(SnowAndThunder),
+  snow: svgIcon(Snow),
+  snowshowersandthunder_day: svgIcon(SnowshowersAndThunderDay),
+  snowshowersandthunder_night: svgIcon(SnowshowersAndThunderNight),
+  snowshowersandthunder_polartwilight: svgIcon(SnowshowersAndThunderPolartwilight),
+  snowshowers_day: svgIcon(SnowshowersDay),
+  snowshowers_night: svgIcon(SnowshowersNight),
+  snowshowers_polartwilight: svgIcon(SnowshowersPolartwilight),
   icon_warning_wind_yellow,
   icon_warning_wind_red,
 };
