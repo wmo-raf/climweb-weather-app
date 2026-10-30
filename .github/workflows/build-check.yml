@@ -1,6 +1,6 @@
 # Verifies the app still compiles before a PR can merge into main.
 #
-# - "JS check" runs on every PR (Linux, a few minutes): type check plus a
+# - "JS check" runs on every PR (Linux, a few minutes): type check, tests and a
 #   production JS bundle for both platforms, which catches the import,
 #   syntax and type errors most PRs could introduce.
 # - "Android build" / "iOS build" compile the native apps, but only when a
@@ -66,10 +66,14 @@ jobs:
       # unmaintained-package advisories. Remove continue-on-error once fixed.
       - name: Expo doctor
         run: npx expo-doctor
-        continue-on-error: true
 
       - name: Type check
         run: npx tsc --noEmit
+
+      # Calls jest directly: `npm test` runs in watch mode. --forceExit
+      # because an open handle otherwise keeps jest from exiting.
+      - name: Tests
+        run: npx jest --ci --forceExit
 
       # EXPO_PUBLIC_* values are inlined into the bundle; the example values
       # are enough to build it.
