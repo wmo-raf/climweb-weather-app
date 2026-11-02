@@ -566,6 +566,59 @@ The default points at OpenStreetMap's public tile server, which is fine for deve
 
 ---
 
+## At Sea Page
+
+**More › At sea** shows wind, wind/marine warnings and sun times for the selected place. Its code is [app/(tabs)/More/AtSea.tsx](../app/(tabs)/More/AtSea.tsx).
+
+- **Wind** comes from the configured forecast provider (`EXPO_PUBLIC_FORECAST_PROVIDER`, `EXPO_PUBLIC_PRIMARY_API_URL` / `EXPO_PUBLIC_FALLBACK_API_URL`), through the same client and cache as Today and Five Days. For Yr-compatible APIs it reads `wind_speed`, `wind_from_direction` and `wind_speed_of_gust` from `instant.details`. Gusts are hidden when the API doesn't send them. MET's public `compact` format has no gusts.
+- **Sun times** come from MET Norway's [Sunrise 3.0 API](https://api.met.no/weatherapi/sunrise/3.0/documentation). They're requested with `EXPO_PUBLIC_APP_USER_AGENT` as the User-Agent, in the UTC offset of `EXPO_PUBLIC_APP_TIMEZONE`, and cached per place and date ([lib/sun/sunrise.ts](../lib/sun/sunrise.ts)). MET's service (Celestial) can be self-hosted. To use your own instance, point `EXPO_PUBLIC_SUNRISE_API_URL` at it.
+- **Advisory**: an active Yellow-or-above warning covering the place is shown when its event, headline or event code contains one of `EXPO_PUBLIC_AT_SEA_WARNING_KEYWORDS` (comma-separated, whole words, case-insensitive). The defaults are listed in [config/index.ts](../config/index.ts).
+- **Read more** links open in the system browser. The card title is "Read more from `EXPO_PUBLIC_NAME_OF_THE_NHMS`" (default `TMA`).
+
+```env
+EXPO_PUBLIC_SUNRISE_API_URL='https://api.met.no/weatherapi/sunrise/3.0'
+EXPO_PUBLIC_NAME_OF_THE_NHMS='TMA'
+EXPO_PUBLIC_AT_SEA_WARNING_KEYWORDS='wind,gale,marine,sea,wave,swell,cyclone,tropical storm,storm surge,tsunami,coastal,upepo,bahari,mawimbi,kimbunga'
+EXPO_PUBLIC_MARINE_FORECAST_URL='https://www.meteo.go.tz/services/marine-weather-forecast'
+EXPO_PUBLIC_TSUNAMI_CENTRE_URL='https://www.meteo.go.tz/services/tsunami-centre'
+```
+
+All of these are optional. The values above are the defaults.
+
+---
+
+## For Farming Page
+
+**More › For farming** shows water in the soil, soil temperature and sun times for the selected place. Its code is [app/(tabs)/More/Farming.tsx](../app/(tabs)/More/Farming.tsx).
+
+- **Soil data** comes from the [Open-Meteo Forecast API](https://open-meteo.com/en/docs) for now, through the `SoilDataSource` interface in [lib/soil/](../lib/soil/). To move to another source, add an implementation there and set `EXPO_PUBLIC_SOIL_PROVIDER`. The page doesn't change.
+- The defaults use `soil_temperature_6cm` (°C) and `soil_moisture_3_to_9cm` (m³/m³), because they sit near sowing depth. The 0 cm temperature is the bare surface.
+- The value shown is the hour nearest to now. Data is cached per place and refetched at most once an hour. A card is hidden when its value is null or the request fails.
+- **Bands**: `SOIL_MOISTURE_BANDS` and `SOIL_TEMPERATURE_BANDS` in [config/index.ts](../config/index.ts) hold the thresholds and the i18n keys for each band's wording. The thresholds can also be set with the env vars below. **The defaults are placeholders until the agromet team sets them.**
+- **Sun times** use the same shared card and Sunrise 3.0 cache as At sea.
+- **Open-Meteo terms**: the free API is for non-commercial use only. It's limited to under 10,000 calls a day, 5,000 an hour and 600 a minute, counted per IP address. For the commercial plan, set `EXPO_PUBLIC_OPEN_METEO_API_KEY`, and point `EXPO_PUBLIC_OPEN_METEO_API_URL` at the customer API server Open-Meteo gives you.
+
+```env
+EXPO_PUBLIC_SOIL_PROVIDER='open-meteo'
+EXPO_PUBLIC_OPEN_METEO_API_URL='https://api.open-meteo.com/v1/forecast'
+EXPO_PUBLIC_OPEN_METEO_API_KEY=''
+EXPO_PUBLIC_OPEN_METEO_SOIL_TEMPERATURE_VAR='soil_temperature_6cm'
+EXPO_PUBLIC_OPEN_METEO_SOIL_MOISTURE_VAR='soil_moisture_3_to_9cm'
+# m³/m³: dry below, too wet from
+EXPO_PUBLIC_SOIL_MOISTURE_DRY_BELOW='0.15'
+EXPO_PUBLIC_SOIL_MOISTURE_TOO_WET_FROM='0.35'
+# °C: too cold below, cool below, too hot from
+EXPO_PUBLIC_SOIL_TEMPERATURE_COLD_BELOW='12'
+EXPO_PUBLIC_SOIL_TEMPERATURE_COOL_BELOW='20'
+EXPO_PUBLIC_SOIL_TEMPERATURE_HOT_FROM='40'
+EXPO_PUBLIC_SEASONAL_FORECAST_URL='https://www.meteo.go.tz/publications/seasonal-weather-forecast'
+EXPO_PUBLIC_AGROMET_BULLETINS_URL='https://www.meteo.go.tz/publications/agrometeorological-bulletins'
+```
+
+All of these are optional. The values above are the defaults.
+
+---
+
 ## In-app Review Prompt
 
 The app occasionally asks users to rate it, using the platform's native review prompt ([expo-store-review](https://docs.expo.dev/versions/latest/sdk/storereview/)). The logic lives in [lib/review/](lib/review/); the rules are in [lib/review/policy.ts](lib/review/policy.ts).

@@ -15,6 +15,8 @@ export const LANGUAGES = {
   // Machine-translated draft (see Step 6 of the Zanyengo redesign) — every
   // key from english.json is covered, but the wording has not been checked
   // by a native Swahili speaker yet. Treat as a starting point, not final copy.
+  // Keys listed under `_needsReview` in swahili.json were added later and
+  // also still need that review.
   sw: {
     label: 'Kiswahili',
     name: 'Swahili',

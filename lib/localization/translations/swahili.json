@@ -34,7 +34,8 @@
     },
     "alerts": {
       "title": "Alert"
-    }
+    },
+    "updated": "Imesasishwa {{time}}"
   },
   "forecast": {
     "error": {
@@ -375,7 +376,10 @@
     "severe": {
       "label": "Upepo hatari",
       "sentence": "Upepo mkali sana — usiende majini."
-    }
+    },
+    "fromDirection": "{{wind}} kutoka {{direction}}",
+    "fromSpoken": "kutoka {{direction}}",
+    "gusts": "Upepo wa ghafla hadi {{speed}}"
   },
   "condition": {
     "clear": "Anga safi",
@@ -491,6 +495,142 @@
     "intro": "Maelezo zaidi ya hali ya hewa kwa ajili ya kazi yako.",
     "favourites": {
       "description": "Maeneo uliyohifadhi"
+    },
+    "atSea": {
+      "description": "Upepo, tahadhari na nyakati za jua"
+    },
+    "farming": {
+      "description": "Maji ardhini, joto la udongo, nyakati za jua"
+    }
+  },
+  "atSea": {
+    "title": "Baharini",
+    "windNow": "Upepo sasa",
+    "nextHours": "Saa zijazo",
+    "readMore": {
+      "marineForecast": "Utabiri wa hali ya hewa baharini",
+      "tsunamiCentre": "Kituo cha tsunami"
+    }
+  },
+  "beaufort": {
+    "0": "Shwari",
+    "1": "Upepo hafifu sana",
+    "2": "Upepo hafifu",
+    "3": "Upepo mwanana",
+    "4": "Upepo wa wastani",
+    "5": "Upepo mkali kiasi",
+    "6": "Upepo mkali",
+    "7": "Karibu dhoruba",
+    "8": "Dhoruba",
+    "9": "Dhoruba kali",
+    "10": "Tufani",
+    "11": "Tufani kali sana",
+    "12": "Upepo wa kimbunga"
+  },
+  "compass": {
+    "n": {
+      "short": "Kas",
+      "long": "kaskazini"
+    },
+    "ne": {
+      "short": "Kas-Mas",
+      "long": "kaskazini mashariki"
+    },
+    "e": {
+      "short": "Mas",
+      "long": "mashariki"
+    },
+    "se": {
+      "short": "Kus-Mas",
+      "long": "kusini mashariki"
+    },
+    "s": {
+      "short": "Kus",
+      "long": "kusini"
+    },
+    "sw": {
+      "short": "Kus-Mag",
+      "long": "kusini magharibi"
+    },
+    "w": {
+      "short": "Mag",
+      "long": "magharibi"
+    },
+    "nw": {
+      "short": "Kas-Mag",
+      "long": "kaskazini magharibi"
+    }
+  },
+  "sun": {
+    "up": "Jua kuchomoza",
+    "down": "Jua kuzama",
+    "daylight_one": "Takriban saa {{count}} ya mwanga wa mchana leo",
+    "daylight_other": "Takriban saa {{count}} za mwanga wa mchana leo"
+  },
+  "_needsReview": [
+    "more.atSea",
+    "atSea",
+    "wind.fromDirection",
+    "wind.fromSpoken",
+    "wind.gusts",
+    "beaufort",
+    "compass",
+    "sun",
+    "more.farming",
+    "common.updated",
+    "readMore",
+    "farming"
+  ],
+  "readMore": {
+    "title": "Soma zaidi kutoka {{name}}"
+  },
+  "farming": {
+    "title": "Kwa kilimo",
+    "moisture": {
+      "label": "Maji ardhini",
+      "zones": {
+        "dry": "Kavu",
+        "good": "Nzuri",
+        "tooWet": "Maji mengi"
+      },
+      "dry": {
+        "headline": "Kavu mno kupanda",
+        "advice": "Udongo ni mkavu mno kwa kupanda. Subiri mvua kabla ya kupanda."
+      },
+      "good": {
+        "headline": "Unyevu unatosha kupanda",
+        "advice": "Udongo una unyevu wa kutosha kwa kupanda wiki hii."
+      },
+      "tooWet": {
+        "headline": "Maji mengi mno kupanda",
+        "advice": "Udongo umejaa maji. Subiri maji yapungue kabla ya kupanda."
+      }
+    },
+    "temperature": {
+      "label": "Joto la udongo",
+      "value": "{{temp}}, {{words}}",
+      "cold": {
+        "words": "baridi mno",
+        "advice": "Baridi mno kwa mbegu nyingi kuota."
+      },
+      "cool": {
+        "words": "baridi kiasi",
+        "advice": "Mbegu zitaota polepole."
+      },
+      "warm": {
+        "words": "joto la kutosha",
+        "advice": "Mbegu zitaota vizuri."
+      },
+      "hot": {
+        "words": "joto mno",
+        "advice": "Juu ya udongo kuna joto kali. Mbegu zinaweza kukauka."
+      }
+    },
+    "daylight_one": "Takriban saa {{count}} ya mwanga wa mchana kwa kazi za shambani leo",
+    "daylight_other": "Takriban saa {{count}} za mwanga wa mchana kwa kazi za shambani leo",
+    "readMore": {
+      "seasonalForecast": "Utabiri wa msimu",
+      "agrometBulletins": "Taarifa za hali ya hewa kwa kilimo"
     }
   }
 }

@@ -27,6 +27,7 @@ export interface YrForecast {
           ultraviolet_index_clear_sky?: string;
           wind_from_direction?: string;
           wind_speed?: string;
+          wind_speed_of_gust?: string;
         };
       };
       timeseries: YrForecastTimestep[];
@@ -68,6 +69,7 @@ export interface YrForecastTimestep {
           ultraviolet_index_clear_sky?: number;
           wind_from_direction?: number;
           wind_speed?: number;
+          wind_speed_of_gust?: number;
         };
       };
       next_1_hours?: YrForecastPeriod;
@@ -84,6 +86,8 @@ export interface ForecastStepRecord {
   time: string;                 // ISO string — Redux-safe
   temperature?: number;         // °C
   windSpeed?: number;           // m/s
+  windDirection?: number;       // degrees the wind blows FROM (0 = north)
+  windGust?: number;            // m/s; undefined when the provider sends no gusts
   precipitation: number | "-";  // mm, pre-computed
   weatherSymbol: string;        // pre-computed
 }

@@ -35,6 +35,20 @@ export default function MoreConditionsScreen() {
             description={t('more.favourites.description')}
             onPress={() => router.push(SCREENS.Favourites.toString() as Href)}
           />
+          <MoreCard
+            testID="more-at-sea"
+            icon="waves"
+            title={t('atSea.title')}
+            description={t('more.atSea.description')}
+            onPress={() => router.push(SCREENS.AtSea.toString() as Href)}
+          />
+          <MoreCard
+            testID="more-farming"
+            icon="grass"
+            title={t('farming.title')}
+            description={t('more.farming.description')}
+            onPress={() => router.push(SCREENS.Farming.toString() as Href)}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

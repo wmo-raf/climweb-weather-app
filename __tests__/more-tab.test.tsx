@@ -135,6 +135,30 @@ describe('More conditions screen', () => {
     expect(textOf(cards[0])).toContain(en.more.favourites.description);
   });
 
+  test('At sea card comes right after Favourites and opens the At sea page', () => {
+    const { root } = render(<MoreConditionsScreen />);
+    const card = entriesOf(root)[1];
+
+    expect(card.props.testID).toBe('more-at-sea');
+    expect(textOf(card)).toContain(en.atSea.title);
+    expect(textOf(card)).toContain(en.more.atSea.description);
+
+    act(() => card.props.onPress());
+    expect(mockPush).toHaveBeenCalledWith('/More/AtSea');
+  });
+
+  test('For farming card comes right after At sea and opens the For farming page', () => {
+    const { root } = render(<MoreConditionsScreen />);
+    const card = entriesOf(root)[2];
+
+    expect(card.props.testID).toBe('more-farming');
+    expect(textOf(card)).toContain(en.farming.title);
+    expect(textOf(card)).toContain(en.more.farming.description);
+
+    act(() => card.props.onPress());
+    expect(mockPush).toHaveBeenCalledWith('/More/Farming');
+  });
+
   test('tapping the Favourites card opens the Favourites page', () => {
     const { root } = render(<MoreConditionsScreen />);
     const card = entriesOf(root)[0];
@@ -183,6 +207,20 @@ describe('AppBar back arrow', () => {
     act(() => backButtons[0].props.onPress());
     expect(customOnBack).toHaveBeenCalledTimes(1);
     expect(mockNavigation.goBack).not.toHaveBeenCalled();
+  });
+});
+
+describe('AppBar back link', () => {
+  test('reads "← More conditions" and goes back', () => {
+    mockNavigation.canGoBack.mockReturnValue(true);
+    mockNavigation.goBack.mockClear();
+    const { root } = render(<AppBar location="At sea" subtitle="Dar es Salaam" backLabel={en['More conditions']} />);
+    const link = root.find(n => typeof n.type !== 'string' && n.props.accessibilityLabel === 'Go back: More conditions' && !!n.props.onPress);
+
+    expect(textOf(link)).toBe('← More conditions');
+    expect(root.findAll(n => typeof n.type === 'string' && textOf(n) === 'Dar es Salaam').length).toBeGreaterThan(0);
+    act(() => link.props.onPress());
+    expect(mockNavigation.goBack).toHaveBeenCalledTimes(1);
   });
 });
 

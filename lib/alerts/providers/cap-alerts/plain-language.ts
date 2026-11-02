@@ -49,6 +49,13 @@ export function getWhenText(t: Translate, info: CAPInfo | undefined, now: DateTi
   return undefined;
 }
 
+// "Until Wednesday evening." — the end of the window on its own, for compact
+// cards that show the area and expiry instead of the full When line.
+export function getUntilText(t: Translate, info: CAPInfo | undefined, now: DateTime = DateTime.now()): string | undefined {
+  const end = describeMoment(t, info?.expires, now);
+  return end ? t('alert.when.untilOnly', { end }) : undefined;
+}
+
 export function getWhereText(info: CAPInfo | undefined): string | undefined {
   return info?.area?.areaDesc;
 }

@@ -13,7 +13,9 @@
     OnboardingPlaces = "OnboardingPlaces",
     EditFavourites = "EditFavourites",
     More = "/More",
-    Favourites = "/More/Favourites"
+    Favourites = "/More/Favourites",
+    AtSea = "/More/AtSea",
+    Farming = "/More/Farming"
   };
 
   // Bottom tab bar / nav rail order (route names under app/(tabs)).

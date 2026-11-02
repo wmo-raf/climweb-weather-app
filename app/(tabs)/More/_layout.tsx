@@ -15,6 +15,8 @@ export default function MoreLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="Favourites" />
+      <Stack.Screen name="AtSea" />
+      <Stack.Screen name="Farming" />
     </Stack>
   );
 }

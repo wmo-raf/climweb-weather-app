@@ -62,6 +62,8 @@ function parseDayRecord(dayIso: string, rawSteps: YrForecastTimestep[], units: S
 function parseStepRecord(step: YrForecastTimestep, units: SourceUnits): ForecastStepRecord {
   const temperature = step.data.instant.details.air_temperature;
   const windSpeed = step.data.instant.details.wind_speed;
+  const windDirection = step.data.instant.details.wind_from_direction;
+  const windGust = step.data.instant.details.wind_speed_of_gust;
   const precip1h = step.data.next_1_hours?.details?.precipitation_amount;
   const precip6h = step.data.next_6_hours?.details?.precipitation_amount;
   const precipitation = precip1h ?? precip6h;
@@ -70,6 +72,9 @@ function parseStepRecord(step: YrForecastTimestep, units: SourceUnits): Forecast
     time: DateTime.fromISO(step.time).setZone(APP_TIMEZONE).toISO()!,
     temperature: temperature !== undefined ? toCelsius(temperature, units.air_temperature) : undefined,
     windSpeed: windSpeed !== undefined ? toMetresPerSecond(windSpeed, units.wind_speed) : undefined,
+    windDirection,
+    // Gust units fall back to wind_speed's when meta.units doesn't list them.
+    windGust: windGust !== undefined ? toMetresPerSecond(windGust, units.wind_speed_of_gust ?? units.wind_speed) : undefined,
     precipitation: precipitation !== undefined ? toMillimetres(precipitation, units.precipitation_amount) : "-",
     weatherSymbol:
       step.data.next_1_hours?.summary?.symbol_code ??
