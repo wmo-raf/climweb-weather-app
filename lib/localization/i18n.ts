@@ -2,7 +2,7 @@ import i18n, { LanguageDetectorModule } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import { storage } from '@/lib/storage';
-import { LANGUAGES } from './translations';
+import { DEFAULT_LANGUAGE, LANGUAGES, resolveLanguage } from './translations';
 
 const STORE_LANGUAGE_KEY = 'settings.lang';
 
@@ -10,13 +10,16 @@ const STORE_LANGUAGE_KEY = 'settings.lang';
 // callback-based async detector interface.
 const languageDetectorPlugin: LanguageDetectorModule = {
     type: 'languageDetector',
-    detect: () => storage.getString(STORE_LANGUAGE_KEY) ?? 'en',
+    // The user's saved choice, else the default (EXPO_PUBLIC_DEFAULT_LANGUAGE,
+    // see translations/index.ts). A saved language whose file is no longer
+    // present falls back to the default too.
+    detect: () => resolveLanguage(storage.getString(STORE_LANGUAGE_KEY)),
     cacheUserLanguage: (language: string) => {
         storage.set(STORE_LANGUAGE_KEY, language);
     },
 };
 
-// Build resources object from LANGUAGES configuration
+// Resources for every discovered language file (see translations/index.ts)
 const resources: { [key: string]: { translation: any } } = {};
 Object.entries(LANGUAGES).forEach(([key, { resources: res }]) => {
   resources[key] = { translation: res };
@@ -25,7 +28,9 @@ Object.entries(LANGUAGES).forEach(([key, { resources: res }]) => {
 i18n.use(initReactI18next).use(languageDetectorPlugin).init({
     resources,
     compatibilityJSON: 'v4',
-    fallbackLng: 'en',
+    // Missing keys fall back to English, the complete reference file, even
+    // when the default language is another one.
+    fallbackLng: LANGUAGES.en ? 'en' : DEFAULT_LANGUAGE,
     interpolation: {
         escapeValue: false,
     },

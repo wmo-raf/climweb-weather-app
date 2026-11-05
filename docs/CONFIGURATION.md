@@ -108,48 +108,73 @@ Skipping `npx expo prebuild --clean` after changing the logo/icon is the most co
 
 ### Architecture
 
-The app uses **i18next** for internationalization (i18n) with the following structure:
+The app uses **i18next** for internationalization (i18n):
 
 - **[lib/localization/i18n.ts](lib/localization/i18n.ts)** - i18n configuration and initialization
-- **[lib/localization/translations/index.ts](lib/localization/translations/index.ts)** - Centralized LANGUAGES configuration
-- **[lib/localization/translations](lib/localization/translations)** - Translation resource files
-- **[app/Settings.tsx](app/Settings.tsx)** - Language selection UI
+- **[lib/localization/translations/index.ts](lib/localization/translations/index.ts)** - finds the language files and builds `LANGUAGES` from them
+- **[lib/localization/translations](lib/localization/translations)** - the language files
+- **[app/settings/language.tsx](app/settings/language.tsx)** and **[app/Welcome.tsx](app/Welcome.tsx)** - language pickers
 
-Languages are managed through a centralized `LANGUAGES` object that defines each language's key, display label, and translation resources.
+Languages are **discovered, not registered**. Every `*.json` file in `lib/localization/translations/` that follows the schema below is an app language, collected when the app is bundled. Everything else comes from those files:
 
-Registered languages: **English** (`en`) and **Swahili** (`sw`, [swahili.json](lib/localization/translations/swahili.json)). The Swahili file is a machine-translated draft covering every key in `english.json` — it has not been checked by a native speaker and should be reviewed before relying on it for a production deployment.
+- **Which languages exist:** their `code`s. They make up `LANGUAGES` and the i18n resources.
+- **Language pickers** (Welcome, Settings): English first, then by `name`.
+- **CAP alert feeds:** each language's own feed (see [Languages](#languages) under Alerts).
+
+A file that doesn't follow the schema, or repeats a `code`, is skipped, with a warning in development.
+
+The Swahili file is a machine-translated draft. It has not been checked by a native speaker and should be reviewed before relying on it for a production deployment.
+
+### Language files
+
+```json
+{
+  "code": "sw",
+  "name": "Swahili",
+  "native_name": "Kiswahili",
+  "cap_feed_url": "https://cap-sources.s3.amazonaws.com/tz-tma-sw/rss.xml",
+  "fallback_cap_feed_url": "",
+  "cap_sender_id": "met@meteo.go.tz",
+  "cap_language_aliases": ["swa"],
+  "translations": {
+    "settings": { "title": "Mipangilio" }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `code` | App language code (2–3 lowercase letters). Used by i18next, by `EXPO_PUBLIC_DEFAULT_LANGUAGE`, and to match CAP `<info>` languages |
+| `name` | English name of the language |
+| `native_name` | Name shown in the language pickers |
+| `cap_feed_url` | CAP alerts RSS feed for this language. Empty uses the default language's feed, fallback and sender |
+| `fallback_cap_feed_url` | Optional. Used when `cap_feed_url` is down, e.g. the WMO alerts feed |
+| `cap_sender_id` | The `<sender>` of this language's CAP messages; only its messages are shown. Required when `cap_feed_url` is set |
+| `cap_language_aliases` | Optional. Other codes CAP feeds use in `<language>` for this language, besides `code` and its regional variants. For example `["swa"]` for a feed using 3-letter codes |
+| `translations` | The app's text, with the same (nested) keys as `english.json` |
+
+Field rules are in [schema.ts](lib/localization/translations/schema.ts). `npx jest lib/localization` checks every JSON file in the folder against them:
+- it fails on keys that `english.json` doesn't have;
+- it fails on missing keys, except a file's listed known gaps (`KNOWN_GAPS` in [languages.test.ts](lib/localization/translations/languages.test.ts)).
+
+So a broken file fails the tests instead of silently disappearing from the app. Missing keys show in English.
+
+### Default language
+
+A fresh install starts in the language set by `EXPO_PUBLIC_DEFAULT_LANGUAGE`, the `code` of one of the language files. If it is unset or has no language file, the app starts in English (or, with no English file, the first language), and logs a warning in development for an unknown code. Once a user picks a language on the Welcome screen or in Settings, their choice is saved and used instead. A saved language whose file has been removed falls back to the default.
+
+```env
+EXPO_PUBLIC_DEFAULT_LANGUAGE=sw
+```
+
+The default language's CAP feed is also used by languages without a feed of their own.
 
 ### How to Add a Language
 
-Follow these steps to add a new language to the app:
+1. **Add the language file.** Copy [english.json](lib/localization/translations/english.json) to a new file in `lib/localization/translations/` (e.g. `french.json`). Set `code`, `name`, `native_name`, and the feed fields if the language has its own CAP feed. Then translate every value under `translations`, keeping the keys exactly as they are; they're case-sensitive.
+2. **Verify.** Run `npx jest lib/localization`, then restart Metro (`npx expo start -c`). The language appears in the Welcome and Settings pickers. There's nothing to register.
 
-1. **Create a translation resource file**
-   - Create a new JSON file in `lib/localization/translations/` (e.g., `french.json`)
-   - Copy all keys from [english.json](lib/localization/translations/english.json) and translate the values
-   - Ensure all keys match exactly (case-sensitive)
-
-2. **Update translations/index.ts**
-   - Import the new translation resource:
-     ```typescript
-     import frResources from './french.json';
-       - Add an entry to the `LANGUAGES` object:
-     ```typescript
-     export const LANGUAGES = {
-       en: {
-         label: 'English',
-         resources: enResources,
-       },
-       fr: {
-         label: 'Français',
-         resources: frResources,
-       },
-     };
-     ```
-
-3. **Verify**
-   - The language will automatically appear in the Settings language dropdown
-   - The app will properly detect and cache the user's language preference
-   - The language toggle will be available immediately without additional code changes
+To remove a language, delete its file.
 
 ### Translation Keys Reference
 
@@ -441,29 +466,50 @@ The rest of the app — screens, components, and the Redux store — is not awar
 
 ### 1. Using a CAP-standard alerts feed
 
-If the alerts source publishes a CAP RSS feed (each item linking to a CAP XML document), only the URL and supporting environment variables need to be configured. No code changes are required.
+If the alerts source publishes a CAP RSS feed (each item linking to a CAP XML document), only the feed URLs and sender need to be configured, in the language files (see [Languages](#languages) below). No code changes are required.
 
-#### Required environment variables
+In the default language's file (`english.json` unless `EXPO_PUBLIC_DEFAULT_LANGUAGE` says otherwise), which every language without its own feed uses:
 
-```env
-EXPO_PUBLIC_PRIMARY_ALERTS_URL=https://example.com/alerts/rss.xml
-EXPO_PUBLIC_FALLBACK_ALERTS_URL=https://fallback.example.com/alerts/rss.xml
-EXPO_PUBLIC_APP_ALERTS_SENDER_ID=alerts@example.com
+```json
+"cap_feed_url": "https://example.com/alerts/rss.xml",
+"fallback_cap_feed_url": "https://fallback.example.com/alerts/rss.xml",
+"cap_sender_id": "alerts@example.com"
 ```
 
-`EXPO_PUBLIC_ALERTS_PROVIDER` can be omitted or explicitly set to `cap`, which is the default.
+If neither the language nor the default language has a feed, the app shows no alerts. `EXPO_PUBLIC_ALERTS_PROVIDER` can be omitted or explicitly set to `cap`, which is the default.
+
+The old `EXPO_PUBLIC_PRIMARY_ALERTS_URL`, `EXPO_PUBLIC_FALLBACK_ALERTS_URL` and `EXPO_PUBLIC_APP_ALERTS_SENDER_ID` are no longer read. A development build warns if they are still set.
 
 #### Sender ID filtering
 
-Active alerts are filtered to only those where `alert.sender` matches `EXPO_PUBLIC_APP_ALERTS_SENDER_ID`. Set this to the sender address used in the CAP messages for the deployment region:
+Each language shows only alerts whose `<sender>` matches its language file's `cap_sender_id`, for messages from both its feed and its fallback feed. `cap_sender_id` is required whenever `cap_feed_url` is set; a file without one is skipped.
 
-```env
-EXPO_PUBLIC_APP_ALERTS_SENDER_ID=forecasts@meteo.go.ke
-```
+Agencies can use a **different sender per feed**. For example, TMA's English feed comes from `severe@meteo.go.tz` and its Swahili feed from `met@meteo.go.tz`, so each language file needs its own `cap_sender_id`. A wrong sender silently hides every warning for that language, so check the `<sender>` in a recent message from each feed. A fallback feed should use the same sender as its main feed.
 
 #### Primary and fallback feed URLs
 
-The app uses the primary URL first. A circuit breaker opens after repeated failures and routes requests to the fallback URL until the primary recovers.
+The app reads the primary URL first, through three policies (`FEED_POLICY` in [rss.ts](lib/alerts/providers/cap-alerts/rss.ts)):
+
+1. **Retry:** a failed request is retried up to 3 times, waiting longer each time (about 0.5 s, 1 s, 2 s).
+2. **Circuit breaker:** if all the retries fail, the circuit opens. For the next 10 seconds the primary isn't called at all. After that it's tried again, and the circuit closes once it answers.
+3. **Fallback:** whenever the primary fails after its retries, or the circuit is open, the fallback URL is read instead. Without a fallback URL, the error is shown.
+
+A "not modified" (HTTP 304) answer counts as success. Each primary feed has its own retry and breaker, so one language's feed being down doesn't affect the others.
+
+#### Languages
+
+Each app language reads its **own** CAP feed, set in that language's file (see [Language files](#language-files)):
+
+- The same URL can be repeated across languages, for example one feed carrying several languages, or the WMO feed as every language's fallback. Languages with the same feed and sender share one download.
+- Switching the app language switches the feed and the alert text straight away. Each language's alerts are cached separately, so switching back is instant.
+
+For each alert, the app shows the `<info>` block whose `<language>` matches the app language. Only the main part of the tag counts, so `sw` and `sw-TZ` both match Swahili. Other codes match when the language file lists them in `cap_language_aliases` (the shipped files list the 3-letter codes, such as `swa`). If there isn't one, it shows the first `<info>` block. If the chosen block has no `<area>`, the area of another block is used for the map. An alert counts as covering the user's location if **any** of its `<info>` blocks' areas does.
+
+| Agency publishes | Set `cap_feed_url` to |
+|---|---|
+| One feed with an `<info>` block per language | The same URL in every language file (or only in the default language's) |
+| A separate feed per language | Each language's own URL and sender |
+| One feed in one language | That URL in the default language's file (alerts show in the feed's language) |
 
 ---
 
@@ -477,7 +523,7 @@ All alerts providers — built-in and custom — implement the same interface, d
 
 ```ts
 export interface AlertsProviderInterface {
-  getAlerts(): Promise<CAPAlert[]>;
+  getAlerts(language: string): Promise<CAPAlert[]>;
 }
 ```
 
@@ -490,9 +536,9 @@ import { AlertsProviderInterface } from '@/lib/alerts/interfaces';
 import { CAPAlert } from '@/lib/alerts/alert';
 
 export class CustomAlertsProvider implements AlertsProviderInterface {
-  async getAlerts(): Promise<CAPAlert[]> {
-    // 1. Fetch data from the custom source
-    // 2. Convert to CAPAlert[]
+  async getAlerts(language: string): Promise<CAPAlert[]> {
+    // 1. Fetch data from the custom source (for `language`, if it has per-language data)
+    // 2. Convert to CAPAlert[], setting each <info> block's `language`
     // 3. Return the result
   }
 }
@@ -525,8 +571,8 @@ EXPO_PUBLIC_ALERTS_PROVIDER=my-provider
 ### 3. Quick reference
 
 ```txt
-CAP-standard feed  →  set EXPO_PUBLIC_PRIMARY_ALERTS_URL (and optionally FALLBACK),
-                      set EXPO_PUBLIC_APP_ALERTS_SENDER_ID
+CAP-standard feed  →  set cap_feed_url, cap_sender_id (and optionally
+                      fallback_cap_feed_url) in the language files
 Different source   →  implement AlertsProviderInterface, register in factory.ts,
                       set EXPO_PUBLIC_ALERTS_PROVIDER
 ```
@@ -538,7 +584,7 @@ Different source   →  implement AlertsProviderInterface, register in factory.t
 For a new deployment:
 
 1. Confirm whether the alerts source publishes a CAP RSS feed.
-2. If it does, set `EXPO_PUBLIC_PRIMARY_ALERTS_URL`, `EXPO_PUBLIC_FALLBACK_ALERTS_URL`, and `EXPO_PUBLIC_APP_ALERTS_SENDER_ID`. Leave `EXPO_PUBLIC_ALERTS_PROVIDER` unset or set it to `cap`.
+2. If it does, set `cap_feed_url`, `cap_sender_id` and optionally `fallback_cap_feed_url` in the default language's file, and in any other language file with its own feed. Check each feed's `<sender>` in a recent message. Leave `EXPO_PUBLIC_ALERTS_PROVIDER` unset or set it to `cap`.
 3. Test alert loading and verify that relevant alerts appear for locations within the deployment region.
 4. If the source uses a different format, implement `AlertsProviderInterface`, register the provider in `factory.ts`, and set `EXPO_PUBLIC_ALERTS_PROVIDER` to the registered key.
 

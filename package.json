@@ -12,7 +12,10 @@
     "lint": "expo lint"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "^\\./language-files$": "<rootDir>/lib/localization/translations/language-files.node.ts"
+    }
   },
   "dependencies": {
     "@expo-google-fonts/open-sans": "^0.4.2",
