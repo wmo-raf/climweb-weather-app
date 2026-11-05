@@ -3,7 +3,7 @@ import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 
-import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
+import { CAPAlert, alertLevel, selectInfo } from '@/lib/alerts/providers/cap-alerts/alert';
 import { ALERT_LEAD_WORD_KEYS, WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
 import { Fonts, Radius, Spacing } from '@/lib/theme';
 
@@ -17,8 +17,8 @@ type WeatherAlertProps = {
 }
 
 const WeatherAlert = ({ alert, onPress, extraCount = 0 }: WeatherAlertProps) => {
-  const { t } = useTranslation();
-  const info = alert.info?.[0];
+  const { t, i18n } = useTranslation();
+  const info = selectInfo(alert, i18n.language);
 
   if (!info) return null;
 

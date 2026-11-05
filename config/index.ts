@@ -1,10 +1,16 @@
 export const PRIMARY_API_URL= process.env.EXPO_PUBLIC_PRIMARY_API_URL as string;
 export const FALLBACK_API_URL= process.env.EXPO_PUBLIC_FALLBACK_API_URL as string;
-export const PRIMARY_ALERTS_URL= process.env.EXPO_PUBLIC_PRIMARY_ALERTS_URL as string;
-export const FALLBACK_ALERTS_URL= process.env.EXPO_PUBLIC_FALLBACK_ALERTS_URL as string;
 export const APP_USER_AGENT= process.env.EXPO_PUBLIC_APP_USER_AGENT as string;
-export const APP_ALERTS_SENDER_ID= process.env.EXPO_PUBLIC_APP_ALERTS_SENDER_ID as string;
 export const APP_TIMEZONE = process.env.EXPO_PUBLIC_APP_TIMEZONE as string;
+// App language on a fresh install: the "code" of one of the language files
+// in lib/localization/translations. Users can change it on the Welcome
+// screen or in Settings. Unset or unknown means English.
+export const DEFAULT_LANGUAGE = process.env.EXPO_PUBLIC_DEFAULT_LANGUAGE;
+// CAP alert feeds and senders now come from each language file
+// (cap_feed_url, fallback_cap_feed_url, cap_sender_id).
+if (__DEV__ && (process.env.EXPO_PUBLIC_PRIMARY_ALERTS_URL || process.env.EXPO_PUBLIC_FALLBACK_ALERTS_URL || process.env.EXPO_PUBLIC_APP_ALERTS_SENDER_ID)) {
+  console.warn('EXPO_PUBLIC_PRIMARY_ALERTS_URL, EXPO_PUBLIC_FALLBACK_ALERTS_URL and EXPO_PUBLIC_APP_ALERTS_SENDER_ID are no longer used; set cap_feed_url, fallback_cap_feed_url and cap_sender_id in the language files instead.');
+}
 export const FORECAST_PROVIDER = process.env.EXPO_PUBLIC_FORECAST_PROVIDER ?? 'yr';
 export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
 // XYZ raster tile URL template for the alert detail mini-map (AlertAreaMap).

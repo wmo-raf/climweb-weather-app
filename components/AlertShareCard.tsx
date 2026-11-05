@@ -4,7 +4,7 @@ import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
 import AlertAreaMap from './AlertAreaMap';
-import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
+import { CAPAlert, alertLevel, selectInfo } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getShareSourceLine, getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
 import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
@@ -35,10 +35,10 @@ type AlertShareCardProps = {
 // top action, source), since it has to stand alone after being forwarded
 // several times down a chain with no surrounding app context.
 const AlertShareCard = forwardRef<HostInstance, AlertShareCardProps>(({ alert, onReady }, ref) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const info = alert.info?.[0];
+  const info = selectInfo(alert, i18n.language);
 
   if (!info) return null;
 

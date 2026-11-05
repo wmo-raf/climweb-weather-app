@@ -1,466 +1,477 @@
 {
-  "settings": {
-    "title": "Qopheewwan",
-    "alwaysShowStartPage": "Yeroo Hunda Fuula Jalqabaa Agarsiisi",
-    "appearance": "Mul'ata",
-    "language": {
-      "title": "Afaan",
-      "english": "English",
-      "placeholder": "Afaan filadhu"
-    },
-    "sections": {
-      "preferences": "Filannoowwan",
-      "about": "Waa'ee Keenya"
-    },
-    "preferences": {
-      "appearance": {
-        "darkMode": "Haala Dukkanaa (Dark Mode)"
+  "code": "om",
+  "name": "Oromo",
+  "native_name": "Afaan Oromoo",
+  "cap_feed_url": "",
+  "fallback_cap_feed_url": "",
+  "cap_sender_id": "",
+  "cap_language_aliases": [
+    "orm"
+  ],
+  "translations": {
+    "settings": {
+      "title": "Qopheewwan",
+      "alwaysShowStartPage": "Yeroo Hunda Fuula Jalqabaa Agarsiisi",
+      "appearance": "Mul'ata",
+      "language": {
+        "title": "Afaan",
+        "english": "English",
+        "placeholder": "Afaan filadhu"
       },
-      "showOnboarding": "Qajeelfama Jalqabaa Agarsiisi"
-    },
-    "about": {
-      "appVersion": "Gosa Appii (App Version)"
-    }
-  },
-  "common": {
-    "actions": {
-      "retry": "Irra deebi'ii yaali",
-      "dismiss": "Dhiisi / Haquu"
-    },
-    "states": {
-      "notAvailable": "Hin jiru",
-      "loading": "Fe'amaa jira..."
-    },
-    "alerts": {
-      "title": "Beeksisni Akeekkachiisaa"
-    }
-  },
-  "forecast": {
-    "error": {
-      "title": "Raaga qilleensaa fe'uu hin dandeenye",
-      "unavailable": "Ammaaf raagiin qilleensaa hin jiru. Maaloo booda irra deebi'aa yaalaa.",
-      "generic": "Raaga qilleensaa argachuu irratti dogoggorni uumamee jira"
-    },
-    "lastUpdated": "Raagiin qilleensaa kan haaromfame yeroo {{time}} irratti",
-    "states": {
-      "unavailable": "Raagiin qilleensaa hin jiru"
-    }
-  },
-  "warnings": {
-    "error": {
-      "title": "Akeekkachiisota fe'uu hin dandeenye"
-    },
-    "title": "Akeekkachiisota",
-    "empty": {
-      "title": "Amma akeekkachiisni tokkoyyoo hin jiru",
-      "text": "Amma yeroo kana akeekkachiisni qilleensaa hojii irra jiru hin jiru."
-    },
-    "group": {
-      "yourArea": "Naannoo keessan",
-      "elsewhere": "Bakka biroo biyyattii keessatti"
-    }
-  },
-  "location": {
-    "notSet": {
-      "title": "Bakki hin murtaa'in",
-      "text": "Raaga qilleensaa fi akeekkachiisa isaa argachuuf bakka tokko filadhaa.",
-      "action": "Bakka tokko filadhu"
-    }
-  },
-  "aboutUs": {
-    "title": "Waa'ee keenya",
-    "partners": {
-      "dccms": "Departimanti Jijjiirrama Qilleensaa fi Tajaajila Raaga Qilleensaa (DCCMS)"
-    },
-    "emi": {
-      "title": "Inistiitiyuutii Meetoroolojii Itoophiyaa",
-      "description": "Inistiitiyuutii Meetoroolojii Itoophiyaa (EMI) aboo mootummaa Itoophiyaa guutuu keessatti tajaajila qilleensaa, jijjiirrama qilleensaa, fi akeekkachiisa dursaa dhiyeessuuf itti gaafatamummaa qabuudha.",
-      "mission": {
-        "title": "Ergama",
-        "description": "Guddinarratti hundaa'ee misooma biyyaalessaa deeggaruufi nageenya hawaasaa mirkaneessuuf jecha haala qilleensaa, jijjiirrama qilleensaa, fi qilleensa qonnaa hordofuu, xiinxaluu, fi raaguu."
+      "sections": {
+        "preferences": "Filannoowwan",
+        "about": "Waa'ee Keenya"
+      },
+      "preferences": {
+        "appearance": {
+          "darkMode": "Haala Dukkanaa (Dark Mode)"
+        },
+        "showOnboarding": "Qajeelfama Jalqabaa Agarsiisi"
+      },
+      "about": {
+        "appVersion": "Gosa Appii (App Version)"
       }
     },
-    "forecastServices": {
-      "title": "Tajaajiloota Raaga Qilleensaa",
-      "products": {
-        "title": "Oomishaalee Meetoroolojii",
-        "description": "EMI buufatoota meetoroolojii aanaa ammayyaa, odeeffannoo saatalaayitii, fi moodeelota lakkoofsaa fayyadamuun raaga qilleensaa mijaawaa dhiyeessa:"
+    "common": {
+      "actions": {
+        "retry": "Irra deebi'ii yaali",
+        "dismiss": "Dhiisi / Haquu"
       },
-      "nowcasting": {
-        "title": "Raaga Yeroo Dhihoo & Sa'aatii",
-        "description": "Haala qilleensaa tasa jijjiirramuuf akeekkachiisa yeroo-harka-qabutti kennamu."
+      "states": {
+        "notAvailable": "Hin jiru",
+        "loading": "Fe'amaa jira..."
       },
-      "daily": {
-        "title": "Guyyaa & Giddu-galeessa",
-        "description": "Imalaaf, nageenya hawaasaaf, fi karoora waliigalaaf raaga guyyaa 1 hanga 10."
-      },
-      "seasonal": {
-        "title": "Raaga Waqtii",
-        "description": "Raaga barbaachisoo ta'an kan akka waqtii Qulqulluu/Bonaa fi Gannaaf."
+      "alerts": {
+        "title": "Beeksisni Akeekkachiisaa"
       }
-    }
-  },
-  "aboutApp": {
-    "title": "Waa'ee appii kanaa",
-    "icons": "Mallattoowwan (Icons)",
-    "partners": "Hirmaattonni pirojekti kana keessa turan",
-    "geographicalData": "Odeeffannoo Lafaa (Geographical Data)",
-    "forecasts": {
-      "title": "Appichaa fi raagiwwan qilleensaa isaa",
-      "description": "Misooma appichaa kan durfamu \nWMO-RAF - Dhaabbata Qilleensaa Addunyaa, Waajjira Naannoo Afrikaa, fi Norway MET - Meteorologisk institutt.\n\n Raagiwwan qilleensaa hundi kan kenname Norway MET tiin."
-    }
-  },
-  "privacy": {
-    "title": "Imaammata Dhuunfaa (Privacy Policy)",
-    "intro": "Climweb Weather App kan misoome WMO-RAF (Dhaabbata Qilleensaa Addunyaa - Waajjira Naannoo Afrikaa) fi Norway MET (Meteorologisk institutt) tiin. Nuti iccitii fi mirga dhuunfaa keessan eeguuf kutannoo qabna.",
-    "dataCollected": {
-      "title": "Odeeffannoo Nuti Walitti Qabnu",
-      "text": "Appiin Qilleensaa Climweb odeeffannoo dhuunfaa kamiyyuu hin walitti qabu, hin kuusu, ykn hin qoodu. Appicha fayyadamuuf galmaa'uun ykn ragaa dhuunfaa kennuun isin irraa hin barbaachisu."
+    },
+    "forecast": {
+      "error": {
+        "title": "Raaga qilleensaa fe'uu hin dandeenye",
+        "unavailable": "Ammaaf raagiin qilleensaa hin jiru. Maaloo booda irra deebi'aa yaalaa.",
+        "generic": "Raaga qilleensaa argachuu irratti dogoggorni uumamee jira"
+      },
+      "lastUpdated": "Raagiin qilleensaa kan haaromfame yeroo {{time}} irratti",
+      "states": {
+        "unavailable": "Raagiin qilleensaa hin jiru"
+      }
+    },
+    "warnings": {
+      "error": {
+        "title": "Akeekkachiisota fe'uu hin dandeenye"
+      },
+      "title": "Akeekkachiisota",
+      "empty": {
+        "title": "Amma akeekkachiisni tokkoyyoo hin jiru",
+        "text": "Amma yeroo kana akeekkachiisni qilleensaa hojii irra jiru hin jiru."
+      },
+      "group": {
+        "yourArea": "Naannoo keessan",
+        "elsewhere": "Bakka biroo biyyattii keessatti"
+      }
     },
     "location": {
-      "title": "Fayyida Odeeffannoo Bakkaa (Location Data)",
-      "text": "Naannoo keessaniif raaga qilleensaa sirrii fi akeekkachiisa isinitti agarsiisuuf, appichi bakka meeshaa keessan (location) fayyadama. Bakki keessan tajaajila ragaa qilleensaa bakka sana qofa argachuuf kan oolu malee eenyummaa keessan wajjin hin qabatu ykn sarvarewwan keenya irratti hin kuufamu."
-    },
-    "favourites": {
-      "title": "Bakkeewwan Jaallataman",
-      "text": "Bakkeewwan jaallataman yoo olkaa'attan, isaan kun meeshaa keessan qofa irratti kuufamu. Odeeffannoon kun matumaa gara keenyatti hin ergamu ykn namoota biroof hin qoodamu. Tabii 'Bakkeewwan' irraa yeroo barbaaddanitti bakkeewwan jaallataman dabaluu, jijjiiruu, ykn haquu dandeessu."
-    },
-    "security": {
-      "title": "Nageenya Odeeffannoo",
-      "text": "Nageenya odeeffannoo cimaatti ilaalla. Odeeffannoo dhuunfaa kan hin walitti qabne ykn hin kuusne ta'uu keenyaan, xiyyeeffannoon keenya tajaajiloonni raaga qilleensaa fi akeekkachiisa appichaa sirrii fi amanamaa akka ta'an taasisuudha."
-    },
-    "children": {
-      "title": "Iccitii Dhuunfaa Daa'immanii",
-      "text": "Appiin Qilleensaa Climweb umrii hundaaaf, dabalataanis daa'immanif kan qophaa'eedha. Nuti daa'imman irraa ykn fayyadamtoota biroo kamirraayyuu odeeffannoo dhuunfaa hin walitti qabnu."
-    },
-    "thirdParty": {
-      "title": "Tajaajiloota Qaama Sadaffaa",
-      "text": "Appichi marsariitiiwwan ykn tajaajiloota qaama sadaffaa kan nuti hin bulchineef geessituu qabaachuu danda'a. Yoo geessituu qaama sadaffaa tuqte, gara marsariitii qaama sanaatti geessita. Qabiyyee ykn gocha isaaniitiif itti gaafatamummaa waan hin qabneef, imaammata dhuunfaa isaanii akka dubbiftan jajjabeessina."
-    },
-    "changes": {
-      "title": "Jijjiirama Imaammata Kanaa",
-      "text": "Yeroo gara yerootti Imaammata Dhuunfaa kana fooyyessuu dandeenya. Jijjiirni kamiyyuu fuula kana irratti ni calaqqisiifama."
-    },
-    "contact": {
-      "title": "Nu Quunnamaa",
-      "text": "Imaammata Dhuunfaa kana irratti gaaffii yoo qabaattan, maaloo WMO-RAF (Dhaabbata Qilleensaa Addunyaa - Waajjira Naannoo Afrikaa) ykn Norway MET (Meteorologisk institutt) quunnamaa."
-    }
-  },
-  "time": {
-    "today": "Har'a",
-    "fiveDays": "Guyyoota 5",
-    "nextFiveDays": "Guyyoota 5 dhufan",
-    "time": "Yeroo",
-    "days": {
-      "sun": "Dilbata",
-      "mon": "Wixata",
-      "tue": "Kibxata",
-      "wed": "Roobii",
-      "thu": "Kamisa",
-      "fri": "Jimaata",
-      "sat": "Sanbataa"
-    },
-    "periods": {
-      "morning": "Ganama",
-      "afternoon": "Guyyaa / Waaree Booda",
-      "evening": "Galgala",
-      "night": "Halkan"
-    },
-    "morning": "ganama",
-    "afternoon": "waaree booda",
-    "evening": "galgala",
-    "night": "halkan"
-  },
-  "alerts": {
-    "title": "Akeekkachiisota"
-  },
-  "places": {
-    "title": "Bakkeewwan",
-    "tapToChange": "Bakka jijjiiruuf tuqi",
-    "pickerTitle": "Bakkeewwan jaallataman filadhu",
-    "pickerSubtitle": "Bakkeewwan ati barbaaddu hanga 5 barbaaddii filadhu.",
-    "selectedCount": "{{count}}/5 filatamaniru",
-    "maxReached": "Bakkeewwan 5 kan ta'an olaanaaf filatteetta.",
-    "finish": "Xumuri",
-    "removeChip": "{{name}} haqi",
-    "empty": {
-      "title": "Ammaaf bakkeewwan jaallataman hin jiran",
-      "text": "Asitti raaga qilleensaa isaanii ilaaluuf bakkeewwan hanga 5 dabali."
-    },
-    "setFavourites": "Bakkeewwan jaallataman murteessi",
-    "edit": "Bakkeewwan jaallataman gulaali",
-    "yourPlaces": "Bakkeewwan kee",
-    "searchLocation": "Bakka barbaadi",
-    "locationError": {
-      "message": "Bakka dhihoo jiru argachuuf bakka kee fayyadamuu hin dandeenye."
-    }
-  },
-  "fiveDays": {
-    "footnote": "Odeeffannoon raaga qilleensaa tajaajila qilleensaa biyyaalessaan dhiyaate."
-  },
-  "welcome": {
-    "subtitle": "Raaga qilleensaa fi akeekkachiisota, jechoota salphaadhaan.",
-    "getStarted": "Jalqabi",
-    "next": "Itti fufi"
-  },
-  "today": {
-    "tomorrow": "Bor",
-    "warmer": "ho'aa dha",
-    "cooler": "qabbanaa'aa dha",
-    "tapToSeeFiveDays": "Guyyoota 5 dhufan ilaaluuf tuqi",
-    "hourByHour": "Har'a, sa'aatiidhaan",
-    "tapToSeeHourly": "Raaga qilleensaa sa'aatii sa'aatiidhaan ilaaluuf tuqi"
-  },
-  "day": {
-    "conditionWindy": "{{condition}} fi bubbee cimaa qaba."
-  },
-  "weather": {
-    "min": "Xiqqaa (Min)",
-    "max": "Guddaa (Max)",
-    "kmh": "Km/h",
-    "rain": "Bokkaa",
-    "mm": "mm",
-    "wind": "Bubbee",
-    "temp": "Ho'ina (Temp)"
-  },
-  "how": {
-    "we": {
-      "started": "Akkaataa itti jalqabne"
-    }
-  },
-  "our": {
-    "mandate": "Aango fi hojiin keenya",
-    "mission": "Ergama keenya",
-    "vision": "Mul'ata keenya"
-  },
-  "app": {
-    "and": {
-      "forecasts": "Appichaa fi raagiwwan qilleensaa isaa"
-    }
-  },
-  "icons": {
-    "disclaimer": "Mallattoowwan qilleensaa hayyama kan qaban"
-  },
-  "warning": {
-    "icons": {
-      "disclaimer": "Mallattoowwan akeekkachiisaa kan gumaachame Dhaabbata Qilleensaa Addunyaatiini."
-    }
-  },
-  "geographical": {
-    "data": {
-      "disclaimer": "Odeeffannoon lafaa appichaa keessa jiru kan buufame"
-    }
-  },
-  "clearsky_day": "Qilleensa qulqulluu",
-  "clearsky_night": "Qilleensa qulqulluu",
-  "clearsky_polartwilight": "Qilleensa qulqulluu polarii gannaa/bultii",
-  "cloudy": "Dduumessa",
-  "fair_day": "Qilleensa gaarii",
-  "fair_night": "Qilleensa gaarii halkanii",
-  "fair_polartwilight": "Qilleensa gaarii polarii",
-  "fog": "Hurka/Gunguubuu",
-  "heavyrainandthunder": "Bokkaa cimaa fi tilmaama lolaa/bakakkaa",
-  "heavyrain": "Bokkaa cimaa",
-  "heavyrainshowersandthunder_day": "Bokkaa facaasaa cimaa fi bakakkaa",
-  "heavyrainshowersandthunder_night": "Bokkaa facaasaa cimaa fi bakakkaa",
-  "heavyrainshowersandthunder_polartwilight": "Bokkaa facaasaa cimaa fi bakakkaa polarii",
-  "heavyrainshowers_day": "Bokkaa facaasaa cimaa",
-  "heavyrainshowers_night": "Bokkaa facaasaa cimaa",
-  "heavyrainshowers_polartwilight": "Bokkaa facaasaa cimaa polarii",
-  "heavysleetandthunder": "Qolaa bokkaa/cabbii cimaa fi bakakkaa",
-  "heavysleet": "Qolaa bokkaa/cabbii cimaa",
-  "heavysleetshowersandthunder_day": "Bokkaa cabbii makaa fi bakakkaa cimaa",
-  "heavysleetshowersandthunder_night": "Bokkaa cabbii makaa fi bakakkaa cimaa",
-  "heavysleetshowersandthunder_polartwilight": "Bokkaa cabbii makaa fi bakakkaa cimaa polarii",
-  "heavysleetshowers_day": "Facaasaa cabbii makaa cimaa",
-  "heavysleetshowers_night": "Facaasaa cabbii makaa cimaa",
-  "heavysleetshowers_polartwilight": "Facaasaa cabbii makaa cimaa polarii",
-  "heavysnowandthunder": "Cabbii cimaa fi bakakkaa",
-  "heavysnow": "Cabbii cimaa",
-  "heavysnowshowersandthunder_day": "Facaasaa cabbii cimaa fi bakakkaa",
-  "heavysnowshowersandthunder_night": "Facaasaa cabbii cimaa fi bakakkaa",
-  "heavysnowshowersandthunder_polartwilight": "Facaasaa cabbii cimaa fi bakakkaa polarii",
-  "heavysnowshowers_day": "Facaasaa cabbii cimaa",
-  "heavysnowshowers_night": "Facaasaa cabbii cimaa",
-  "heavysnowshowers_polartwilight": "Facaasaa cabbii cimaa polarii",
-  "lightrainandthunder": "Bokkaa xiqqoo fi bakakkaa",
-  "lightrain": "Bokkaa xiqqoo",
-  "lightrainshowersandthunder_day": "Facaasaa bokkaa xiqqoo fi bakakkaa",
-  "lightrainshowersandthunder_night": "Facaasaa bokkaa xiqqoo fi bakakkaa",
-  "lightrainshowersandthunder_polartwilight": "Facaasaa bokkaa xiqqoo fi bakakkaa polarii",
-  "lightrainshowers_day": "Facaasaa bokkaa xiqqoo",
-  "lightrainshowers_night": "Facaasaa bokkaa xiqqoo",
-  "lightrainshowers_polartwilight": "Facaasaa bokkaa xiqqoo polarii",
-  "lightsleetandthunder": "Qolaa cabbii xiqqoo fi bakakkaa",
-  "lightsleet": "Qolaa cabbii xiqqoo",
-  "lightsleetshowers_day": "Facaasaa qolaa cabbii xiqqoo",
-  "lightsleetshowers_night": "Facaasaa qolaa cabbii xiqqoo",
-  "lightsleetshowers_polartwilight": "Facaasaa qolaa cabbii xiqqoo polarii",
-  "lightsnowandthunder": "Cabbii xiqqoo fi bakakkaa",
-  "lightsnow": "Cabbii xiqqoo",
-  "lightsnowshowers_day": "Facaasaa cabbii xiqqoo",
-  "lightsnowshowers_night": "Facaasaa cabbii xiqqoo",
-  "lightsnowshowers_polartwilight": "Facaasaa cabbii xiqqoo polarii",
-  "lightssleetshowersandthunder_day": "Facaasaa qolaa cabbii xiqqoo fi bakakkaa",
-  "lightssleetshowersandthunder_night": "Facaasaa qolaa cabbii xiqqoo fi bakakkaa",
-  "lightssleetshowersandthunder_polartwilight": "Facaasaa qolaa cabbii xiqqoo fi bakakkaa polarii",
-  "lightssnowshowersandthunder_day": "Facaasaa cabbii xiqqoo fi bakakkaa",
-  "lightssnowshowersandthunder_night": "Facaasaa cabbii xiqqoo fi bakakkaa",
-  "lightssnowshowersandthunder_polartwilight": "Facaasaa cabbii xiqqoo fi bakakkaa polarii",
-  "partlycloudy_day": "Harkaan duumessa",
-  "partlycloudy_night": "Harkaan duumessa",
-  "partlycloudy_polartwilight": "Harkaan duumessa polarii",
-  "rainandthunder": "Bokkaa fi bakakkaa",
-  "conditions": {
-    "rain": {
-      "none": {
-        "label": "Bokkaan hin jiru",
-        "sentence": "Bokkaan ni eegama miti."
-      },
-      "light": {
-        "label": "Bokkaa xiqqoo",
-        "sentence": "Bokkaan xiqqoo ni eegama."
-      },
-      "moderate": {
-        "label": "Bokkaa",
-        "sentence": "Bokkaan ni eegama."
-      },
-      "heavy": {
-        "label": "Bokkaa cimaa",
-        "sentence": "Bokkaan cimaan ni eegama."
+      "notSet": {
+        "title": "Bakki hin murtaa'in",
+        "text": "Raaga qilleensaa fi akeekkachiisa isaa argachuuf bakka tokko filadhaa.",
+        "action": "Bakka tokko filadhu"
       }
-    }
-  },
-  "rainshowersandthunder_day": "Facaasaa bokkaa fi bakakkaa",
-  "rainshowersandthunder_night": "Facaasaa bokkaa fi bakakkaa",
-  "rainshowersandthunder_polartwilight": "Facaasaa bokkaa fi bakakkaa polarii",
-  "rainshowers_day": "Facaasaa bokkaa",
-  "rainshowers_night": "Facaasaa bokkaa",
-  "rainshowers_polartwilight": "Facaasaa bokkaa polarii",
-  "sleetandthunder": "Qolaa bokkaa/cabbiif bakakkaa",
-  "sleet": "Qolaa bokkaa/cabbii",
-  "sleetshowersandthunder_day": "Facaasaa qolaa bokkaa cabbiif bakakkaa",
-  "sleetshowersandthunder_night": "Facaasaa qolaa bokkaa cabbiif bakakkaa",
-  "sleetshowersandthunder_polartwilight": "Facaasaa qolaa bokkaa cabbiif bakakkaa polarii",
-  "sleetshowers_day": "Facaasaa qolaa bokkaa cabbii",
-  "sleetshowers_night": "Facaasaa qolaa bokkaa cabbii",
-  "sleetshowers_polartwilight": "Facaasaa qolaa bokkaa cabbii polarii",
-  "snowandthunder": "Cabbii fi bakakkaa",
-  "snow": "Cabbii",
-  "snowshowersandthunder_day": "Facaasaa cabbiif bakakkaa",
-  "snowshowersandthunder_night": "Facaasaa cabbiif bakakkaa",
-  "snowshowersandthunder_polartwilight": "Facaasaa cabbiif bakakkaa polarii",
-  "snowshowers_day": "Facaasaa cabbii",
-  "snowshowers_night": "Facaasaa cabbii",
-  "snowshowers_polartwilight": "Facaasaa cabbii polarii",
-  "wind": {
-    "calm": {
-      "label": "Tasgabbaa'aa",
-      "sentence": "Tasgabbaa'aa — dooniileef qilleensa nageenya qabu."
     },
-    "gentle": {
-      "label": "Laafaa",
-      "sentence": "Bubbee laafaa — dooniileef qilleensa nageenya qabu."
+    "aboutUs": {
+      "title": "Waa'ee keenya",
+      "partners": {
+        "dccms": "Departimanti Jijjiirrama Qilleensaa fi Tajaajila Raaga Qilleensaa (DCCMS)"
+      },
+      "emi": {
+        "title": "Inistiitiyuutii Meetoroolojii Itoophiyaa",
+        "description": "Inistiitiyuutii Meetoroolojii Itoophiyaa (EMI) aboo mootummaa Itoophiyaa guutuu keessatti tajaajila qilleensaa, jijjiirrama qilleensaa, fi akeekkachiisa dursaa dhiyeessuuf itti gaafatamummaa qabuudha.",
+        "mission": {
+          "title": "Ergama",
+          "description": "Guddinarratti hundaa'ee misooma biyyaalessaa deeggaruufi nageenya hawaasaa mirkaneessuuf jecha haala qilleensaa, jijjiirrama qilleensaa, fi qilleensa qonnaa hordofuu, xiinxaluu, fi raaguu."
+        }
+      },
+      "forecastServices": {
+        "title": "Tajaajiloota Raaga Qilleensaa",
+        "products": {
+          "title": "Oomishaalee Meetoroolojii",
+          "description": "EMI buufatoota meetoroolojii aanaa ammayyaa, odeeffannoo saatalaayitii, fi moodeelota lakkoofsaa fayyadamuun raaga qilleensaa mijaawaa dhiyeessa:"
+        },
+        "nowcasting": {
+          "title": "Raaga Yeroo Dhihoo & Sa'aatii",
+          "description": "Haala qilleensaa tasa jijjiirramuuf akeekkachiisa yeroo-harka-qabutti kennamu."
+        },
+        "daily": {
+          "title": "Guyyaa & Giddu-galeessa",
+          "description": "Imalaaf, nageenya hawaasaaf, fi karoora waliigalaaf raaga guyyaa 1 hanga 10."
+        },
+        "seasonal": {
+          "title": "Raaga Waqtii",
+          "description": "Raaga barbaachisoo ta'an kan akka waqtii Qulqulluu/Bonaa fi Gannaaf."
+        }
+      }
     },
-    "breezy": {
-      "label": "Qilleensa qabowwaa/Bubbeeffamaa",
-      "sentence": "Bubbeeffamaa — bishaan irratti eeggannoo godhaa."
+    "aboutApp": {
+      "title": "Waa'ee appii kanaa",
+      "icons": "Mallattoowwan (Icons)",
+      "partners": "Hirmaattonni pirojekti kana keessa turan",
+      "geographicalData": "Odeeffannoo Lafaa (Geographical Data)",
+      "forecasts": {
+        "title": "Appichaa fi raagiwwan qilleensaa isaa",
+        "description": "Misooma appichaa kan durfamu \nWMO-RAF - Dhaabbata Qilleensaa Addunyaa, Waajjira Naannoo Afrikaa, fi Norway MET - Meteorologisk institutt.\n\n Raagiwwan qilleensaa hundi kan kenname Norway MET tiin."
+      }
     },
-    "strong": {
-      "label": "Bubbee cimaa",
-      "sentence": "Bubbee cimaa — dooniileef balaa qaba."
+    "privacy": {
+      "title": "Imaammata Dhuunfaa (Privacy Policy)",
+      "intro": "Climweb Weather App kan misoome WMO-RAF (Dhaabbata Qilleensaa Addunyaa - Waajjira Naannoo Afrikaa) fi Norway MET (Meteorologisk institutt) tiin. Nuti iccitii fi mirga dhuunfaa keessan eeguuf kutannoo qabna.",
+      "dataCollected": {
+        "title": "Odeeffannoo Nuti Walitti Qabnu",
+        "text": "Appiin Qilleensaa Climweb odeeffannoo dhuunfaa kamiyyuu hin walitti qabu, hin kuusu, ykn hin qoodu. Appicha fayyadamuuf galmaa'uun ykn ragaa dhuunfaa kennuun isin irraa hin barbaachisu."
+      },
+      "location": {
+        "title": "Fayyida Odeeffannoo Bakkaa (Location Data)",
+        "text": "Naannoo keessaniif raaga qilleensaa sirrii fi akeekkachiisa isinitti agarsiisuuf, appichi bakka meeshaa keessan (location) fayyadama. Bakki keessan tajaajila ragaa qilleensaa bakka sana qofa argachuuf kan oolu malee eenyummaa keessan wajjin hin qabatu ykn sarvarewwan keenya irratti hin kuufamu."
+      },
+      "favourites": {
+        "title": "Bakkeewwan Jaallataman",
+        "text": "Bakkeewwan jaallataman yoo olkaa'attan, isaan kun meeshaa keessan qofa irratti kuufamu. Odeeffannoon kun matumaa gara keenyatti hin ergamu ykn namoota biroof hin qoodamu. Tabii 'Bakkeewwan' irraa yeroo barbaaddanitti bakkeewwan jaallataman dabaluu, jijjiiruu, ykn haquu dandeessu."
+      },
+      "security": {
+        "title": "Nageenya Odeeffannoo",
+        "text": "Nageenya odeeffannoo cimaatti ilaalla. Odeeffannoo dhuunfaa kan hin walitti qabne ykn hin kuusne ta'uu keenyaan, xiyyeeffannoon keenya tajaajiloonni raaga qilleensaa fi akeekkachiisa appichaa sirrii fi amanamaa akka ta'an taasisuudha."
+      },
+      "children": {
+        "title": "Iccitii Dhuunfaa Daa'immanii",
+        "text": "Appiin Qilleensaa Climweb umrii hundaaaf, dabalataanis daa'immanif kan qophaa'eedha. Nuti daa'imman irraa ykn fayyadamtoota biroo kamirraayyuu odeeffannoo dhuunfaa hin walitti qabnu."
+      },
+      "thirdParty": {
+        "title": "Tajaajiloota Qaama Sadaffaa",
+        "text": "Appichi marsariitiiwwan ykn tajaajiloota qaama sadaffaa kan nuti hin bulchineef geessituu qabaachuu danda'a. Yoo geessituu qaama sadaffaa tuqte, gara marsariitii qaama sanaatti geessita. Qabiyyee ykn gocha isaaniitiif itti gaafatamummaa waan hin qabneef, imaammata dhuunfaa isaanii akka dubbiftan jajjabeessina."
+      },
+      "changes": {
+        "title": "Jijjiirama Imaammata Kanaa",
+        "text": "Yeroo gara yerootti Imaammata Dhuunfaa kana fooyyessuu dandeenya. Jijjiirni kamiyyuu fuula kana irratti ni calaqqisiifama."
+      },
+      "contact": {
+        "title": "Nu Quunnamaa",
+        "text": "Imaammata Dhuunfaa kana irratti gaaffii yoo qabaattan, maaloo WMO-RAF (Dhaabbata Qilleensaa Addunyaa - Waajjira Naannoo Afrikaa) ykn Norway MET (Meteorologisk institutt) quunnamaa."
+      }
     },
-    "severe": {
-      "label": "Bubbee hamaan",
-      "sentence": "Bubbee baay'ee cimaa — bishaan irraa fagaadhaa."
-    }
-  },
-  "condition": {
-    "clear": "Qilleensa qulqulluu",
-    "fair": "Gaarii",
-    "partlycloudy": "Harkaan duumessa",
-    "cloudy": "Duumessa",
-    "fog": "Hurka",
-    "lightrain": "Bokkaa xiqqoo",
-    "rain": "Bokkaa",
+    "time": {
+      "today": "Har'a",
+      "fiveDays": "Guyyoota 5",
+      "nextFiveDays": "Guyyoota 5 dhufan",
+      "time": "Yeroo",
+      "days": {
+        "sun": "Dilbata",
+        "mon": "Wixata",
+        "tue": "Kibxata",
+        "wed": "Roobii",
+        "thu": "Kamisa",
+        "fri": "Jimaata",
+        "sat": "Sanbataa"
+      },
+      "periods": {
+        "morning": "Ganama",
+        "afternoon": "Guyyaa / Waaree Booda",
+        "evening": "Galgala",
+        "night": "Halkan"
+      },
+      "morning": "ganama",
+      "afternoon": "waaree booda",
+      "evening": "galgala",
+      "night": "halkan"
+    },
+    "alerts": {
+      "title": "Akeekkachiisota"
+    },
+    "places": {
+      "title": "Bakkeewwan",
+      "tapToChange": "Bakka jijjiiruuf tuqi",
+      "pickerTitle": "Bakkeewwan jaallataman filadhu",
+      "pickerSubtitle": "Bakkeewwan ati barbaaddu hanga 5 barbaaddii filadhu.",
+      "selectedCount": "{{count}}/5 filatamaniru",
+      "maxReached": "Bakkeewwan 5 kan ta'an olaanaaf filatteetta.",
+      "finish": "Xumuri",
+      "removeChip": "{{name}} haqi",
+      "empty": {
+        "title": "Ammaaf bakkeewwan jaallataman hin jiran",
+        "text": "Asitti raaga qilleensaa isaanii ilaaluuf bakkeewwan hanga 5 dabali."
+      },
+      "setFavourites": "Bakkeewwan jaallataman murteessi",
+      "edit": "Bakkeewwan jaallataman gulaali",
+      "yourPlaces": "Bakkeewwan kee",
+      "searchLocation": "Bakka barbaadi",
+      "locationError": {
+        "message": "Bakka dhihoo jiru argachuuf bakka kee fayyadamuu hin dandeenye."
+      }
+    },
+    "fiveDays": {
+      "footnote": "Odeeffannoon raaga qilleensaa tajaajila qilleensaa biyyaalessaan dhiyaate."
+    },
+    "welcome": {
+      "subtitle": "Raaga qilleensaa fi akeekkachiisota, jechoota salphaadhaan.",
+      "getStarted": "Jalqabi",
+      "next": "Itti fufi"
+    },
+    "today": {
+      "tomorrow": "Bor",
+      "warmer": "ho'aa dha",
+      "cooler": "qabbanaa'aa dha",
+      "tapToSeeFiveDays": "Guyyoota 5 dhufan ilaaluuf tuqi",
+      "hourByHour": "Har'a, sa'aatiidhaan",
+      "tapToSeeHourly": "Raaga qilleensaa sa'aatii sa'aatiidhaan ilaaluuf tuqi"
+    },
+    "day": {
+      "conditionWindy": "{{condition}} fi bubbee cimaa qaba."
+    },
+    "weather": {
+      "min": "Xiqqaa (Min)",
+      "max": "Guddaa (Max)",
+      "kmh": "Km/h",
+      "rain": "Bokkaa",
+      "mm": "mm",
+      "wind": "Bubbee",
+      "temp": "Ho'ina (Temp)"
+    },
+    "how": {
+      "we": {
+        "started": "Akkaataa itti jalqabne"
+      }
+    },
+    "our": {
+      "mandate": "Aango fi hojiin keenya",
+      "mission": "Ergama keenya",
+      "vision": "Mul'ata keenya"
+    },
+    "app": {
+      "and": {
+        "forecasts": "Appichaa fi raagiwwan qilleensaa isaa"
+      }
+    },
+    "icons": {
+      "disclaimer": "Mallattoowwan qilleensaa hayyama kan qaban"
+    },
+    "warning": {
+      "icons": {
+        "disclaimer": "Mallattoowwan akeekkachiisaa kan gumaachame Dhaabbata Qilleensaa Addunyaatiini."
+      }
+    },
+    "geographical": {
+      "data": {
+        "disclaimer": "Odeeffannoon lafaa appichaa keessa jiru kan buufame"
+      }
+    },
+    "clearsky_day": "Qilleensa qulqulluu",
+    "clearsky_night": "Qilleensa qulqulluu",
+    "clearsky_polartwilight": "Qilleensa qulqulluu polarii gannaa/bultii",
+    "cloudy": "Dduumessa",
+    "fair_day": "Qilleensa gaarii",
+    "fair_night": "Qilleensa gaarii halkanii",
+    "fair_polartwilight": "Qilleensa gaarii polarii",
+    "fog": "Hurka/Gunguubuu",
+    "heavyrainandthunder": "Bokkaa cimaa fi tilmaama lolaa/bakakkaa",
     "heavyrain": "Bokkaa cimaa",
-    "lightsleet": "Qolaa cabbii xiqqoo",
-    "sleet": "Qolaa cabbii",
-    "heavysleet": "Qolaa cabbii cimaa",
-    "lightsnow": "Cabbii xiqqoo",
-    "snow": "Cabbii",
+    "heavyrainshowersandthunder_day": "Bokkaa facaasaa cimaa fi bakakkaa",
+    "heavyrainshowersandthunder_night": "Bokkaa facaasaa cimaa fi bakakkaa",
+    "heavyrainshowersandthunder_polartwilight": "Bokkaa facaasaa cimaa fi bakakkaa polarii",
+    "heavyrainshowers_day": "Bokkaa facaasaa cimaa",
+    "heavyrainshowers_night": "Bokkaa facaasaa cimaa",
+    "heavyrainshowers_polartwilight": "Bokkaa facaasaa cimaa polarii",
+    "heavysleetandthunder": "Qolaa bokkaa/cabbii cimaa fi bakakkaa",
+    "heavysleet": "Qolaa bokkaa/cabbii cimaa",
+    "heavysleetshowersandthunder_day": "Bokkaa cabbii makaa fi bakakkaa cimaa",
+    "heavysleetshowersandthunder_night": "Bokkaa cabbii makaa fi bakakkaa cimaa",
+    "heavysleetshowersandthunder_polartwilight": "Bokkaa cabbii makaa fi bakakkaa cimaa polarii",
+    "heavysleetshowers_day": "Facaasaa cabbii makaa cimaa",
+    "heavysleetshowers_night": "Facaasaa cabbii makaa cimaa",
+    "heavysleetshowers_polartwilight": "Facaasaa cabbii makaa cimaa polarii",
+    "heavysnowandthunder": "Cabbii cimaa fi bakakkaa",
     "heavysnow": "Cabbii cimaa",
-    "thunder": "Bokkaa bakakkaa",
-    "now": "{{condition}} amma"
-  },
-  "daypart": {
-    "morning": "ganama",
-    "afternoon": "waaree booda",
-    "evening": "galgala",
-    "night": "halkan kana"
-  },
-  "summary": {
-    "lead": "{{location}}tti {{condition}}.",
-    "morerain": "{{part}} kana bokkaan dabalataa dhufaa jira.",
-    "raineasing": "{{part}} kana bokkaan hirrisuu qaba.",
-    "coolertonight": "Halkan kana qabbanaa'aa dha, gara {{temp}}°."
-  },
-  "alert": {
-    "lead": {
-      "red": "Balaa",
-      "orange": "Akeekkachiisa",
-      "yellow": "Eeggannoo",
-      "notice": "Beeksisa"
+    "heavysnowshowersandthunder_day": "Facaasaa cabbii cimaa fi bakakkaa",
+    "heavysnowshowersandthunder_night": "Facaasaa cabbii cimaa fi bakakkaa",
+    "heavysnowshowersandthunder_polartwilight": "Facaasaa cabbii cimaa fi bakakkaa polarii",
+    "heavysnowshowers_day": "Facaasaa cabbii cimaa",
+    "heavysnowshowers_night": "Facaasaa cabbii cimaa",
+    "heavysnowshowers_polartwilight": "Facaasaa cabbii cimaa polarii",
+    "lightrainandthunder": "Bokkaa xiqqoo fi bakakkaa",
+    "lightrain": "Bokkaa xiqqoo",
+    "lightrainshowersandthunder_day": "Facaasaa bokkaa xiqqoo fi bakakkaa",
+    "lightrainshowersandthunder_night": "Facaasaa bokkaa xiqqoo fi bakakkaa",
+    "lightrainshowersandthunder_polartwilight": "Facaasaa bokkaa xiqqoo fi bakakkaa polarii",
+    "lightrainshowers_day": "Facaasaa bokkaa xiqqoo",
+    "lightrainshowers_night": "Facaasaa bokkaa xiqqoo",
+    "lightrainshowers_polartwilight": "Facaasaa bokkaa xiqqoo polarii",
+    "lightsleetandthunder": "Qolaa cabbii xiqqoo fi bakakkaa",
+    "lightsleet": "Qolaa cabbii xiqqoo",
+    "lightsleetshowers_day": "Facaasaa qolaa cabbii xiqqoo",
+    "lightsleetshowers_night": "Facaasaa qolaa cabbii xiqqoo",
+    "lightsleetshowers_polartwilight": "Facaasaa qolaa cabbii xiqqoo polarii",
+    "lightsnowandthunder": "Cabbii xiqqoo fi bakakkaa",
+    "lightsnow": "Cabbii xiqqoo",
+    "lightsnowshowers_day": "Facaasaa cabbii xiqqoo",
+    "lightsnowshowers_night": "Facaasaa cabbii xiqqoo",
+    "lightsnowshowers_polartwilight": "Facaasaa cabbii xiqqoo polarii",
+    "lightssleetshowersandthunder_day": "Facaasaa qolaa cabbii xiqqoo fi bakakkaa",
+    "lightssleetshowersandthunder_night": "Facaasaa qolaa cabbii xiqqoo fi bakakkaa",
+    "lightssleetshowersandthunder_polartwilight": "Facaasaa qolaa cabbii xiqqoo fi bakakkaa polarii",
+    "lightssnowshowersandthunder_day": "Facaasaa cabbii xiqqoo fi bakakkaa",
+    "lightssnowshowersandthunder_night": "Facaasaa cabbii xiqqoo fi bakakkaa",
+    "lightssnowshowersandthunder_polartwilight": "Facaasaa cabbii xiqqoo fi bakakkaa polarii",
+    "partlycloudy_day": "Harkaan duumessa",
+    "partlycloudy_night": "Harkaan duumessa",
+    "partlycloudy_polartwilight": "Harkaan duumessa polarii",
+    "rainandthunder": "Bokkaa fi bakakkaa",
+    "conditions": {
+      "rain": {
+        "none": {
+          "label": "Bokkaan hin jiru",
+          "sentence": "Bokkaan ni eegama miti."
+        },
+        "light": {
+          "label": "Bokkaa xiqqoo",
+          "sentence": "Bokkaan xiqqoo ni eegama."
+        },
+        "moderate": {
+          "label": "Bokkaa",
+          "sentence": "Bokkaan ni eegama."
+        },
+        "heavy": {
+          "label": "Bokkaa cimaa",
+          "sentence": "Bokkaan cimaan ni eegama."
+        }
+      }
     },
-    "tapToSeeWhatToDo": "Maal gochuun akka qabdu ilaaluuf as tuqi",
-    "moreWarningsSingular": "+{{count}} akeekkachiisa dabalataa · hundumaa ilaaluuf tuqi",
-    "moreWarningsPlural": "+{{count}} akeekkachiisota dabalataa · hundumaa ilaaluuf tuqi",
-    "band": {
-      "red": "DIIMAO — ammuma tarkaanfii fudhadhaa",
-      "orange": "BURQAA/OOLOLA — qophaa'aa",
-      "yellow": "ELOOWII — eeggannoo godhaa",
-      "notice": "BEEKSISA"
+    "rainshowersandthunder_day": "Facaasaa bokkaa fi bakakkaa",
+    "rainshowersandthunder_night": "Facaasaa bokkaa fi bakakkaa",
+    "rainshowersandthunder_polartwilight": "Facaasaa bokkaa fi bakakkaa polarii",
+    "rainshowers_day": "Facaasaa bokkaa",
+    "rainshowers_night": "Facaasaa bokkaa",
+    "rainshowers_polartwilight": "Facaasaa bokkaa polarii",
+    "sleetandthunder": "Qolaa bokkaa/cabbiif bakakkaa",
+    "sleet": "Qolaa bokkaa/cabbii",
+    "sleetshowersandthunder_day": "Facaasaa qolaa bokkaa cabbiif bakakkaa",
+    "sleetshowersandthunder_night": "Facaasaa qolaa bokkaa cabbiif bakakkaa",
+    "sleetshowersandthunder_polartwilight": "Facaasaa qolaa bokkaa cabbiif bakakkaa polarii",
+    "sleetshowers_day": "Facaasaa qolaa bokkaa cabbii",
+    "sleetshowers_night": "Facaasaa qolaa bokkaa cabbii",
+    "sleetshowers_polartwilight": "Facaasaa qolaa bokkaa cabbii polarii",
+    "snowandthunder": "Cabbii fi bakakkaa",
+    "snow": "Cabbii",
+    "snowshowersandthunder_day": "Facaasaa cabbiif bakakkaa",
+    "snowshowersandthunder_night": "Facaasaa cabbiif bakakkaa",
+    "snowshowersandthunder_polartwilight": "Facaasaa cabbiif bakakkaa polarii",
+    "snowshowers_day": "Facaasaa cabbii",
+    "snowshowers_night": "Facaasaa cabbii",
+    "snowshowers_polartwilight": "Facaasaa cabbii polarii",
+    "wind": {
+      "calm": {
+        "label": "Tasgabbaa'aa",
+        "sentence": "Tasgabbaa'aa — dooniileef qilleensa nageenya qabu."
+      },
+      "gentle": {
+        "label": "Laafaa",
+        "sentence": "Bubbee laafaa — dooniileef qilleensa nageenya qabu."
+      },
+      "breezy": {
+        "label": "Qilleensa qabowwaa/Bubbeeffamaa",
+        "sentence": "Bubbeeffamaa — bishaan irratti eeggannoo godhaa."
+      },
+      "strong": {
+        "label": "Bubbee cimaa",
+        "sentence": "Bubbee cimaa — dooniileef balaa qaba."
+      },
+      "severe": {
+        "label": "Bubbee hamaan",
+        "sentence": "Bubbee baay'ee cimaa — bishaan irraa fagaadhaa."
+      }
     },
-    "whenLabel": "Yoom",
-    "whereLabel": "Eessa",
-    "whatToDo": "Maal gochuu qabda",
-    "affectedArea": "Naannoo miidhaan ga'e",
-    "map": {
-      "attribution": "Odeeffannoo kaartaa © gumaachitoota OpenStreetMap"
+    "condition": {
+      "clear": "Qilleensa qulqulluu",
+      "fair": "Gaarii",
+      "partlycloudy": "Harkaan duumessa",
+      "cloudy": "Duumessa",
+      "fog": "Hurka",
+      "lightrain": "Bokkaa xiqqoo",
+      "rain": "Bokkaa",
+      "heavyrain": "Bokkaa cimaa",
+      "lightsleet": "Qolaa cabbii xiqqoo",
+      "sleet": "Qolaa cabbii",
+      "heavysleet": "Qolaa cabbii cimaa",
+      "lightsnow": "Cabbii xiqqoo",
+      "snow": "Cabbii",
+      "heavysnow": "Cabbii cimaa",
+      "thunder": "Bokkaa bakakkaa",
+      "now": "{{condition}} amma"
     },
-    "when": {
-      "now": "amma",
-      "range": "{{start}} irraa kaasee hanga {{end}}tti.",
-      "fromOnly": "{{start}} irraa kaasee.",
-      "untilOnly": "Hanga {{end}}tti."
+    "daypart": {
+      "morning": "ganama",
+      "afternoon": "waaree booda",
+      "evening": "galgala",
+      "night": "halkan kana"
     },
-    "listen": "Dhaggeeffadhu",
-    "stop": "Dhiisi / Dhaabi",
-    "missing": "Akeekkachiisni dhabameera! Maaloo deebi'ii irra deebi'ii yaali.",
-    "share": "Qoodi"
-  },
-  "legend": {
-    "title": "Hiika halluuwwanii",
-    "red": {
-      "label": "Diimaa",
-      "description": "Ammuma tarkaanfii fudhadhaa — balaan cimaan uumamaa jira ykn dhiyeenyatti ni eegama."
+    "summary": {
+      "lead": "{{location}}tti {{condition}}.",
+      "morerain": "{{part}} kana bokkaan dabalataa dhufaa jira.",
+      "raineasing": "{{part}} kana bokkaan hirrisuu qaba.",
+      "coolertonight": "Halkan kana qabbanaa'aa dha, gara {{temp}}°."
     },
-    "orange": {
-      "label": "Oorenji",
-      "description": "Qophaa'aa — balaan cimaan dhiyeenyatti ni eegama."
+    "alert": {
+      "lead": {
+        "red": "Balaa",
+        "orange": "Akeekkachiisa",
+        "yellow": "Eeggannoo",
+        "notice": "Beeksisa"
+      },
+      "tapToSeeWhatToDo": "Maal gochuun akka qabdu ilaaluuf as tuqi",
+      "moreWarningsSingular": "+{{count}} akeekkachiisa dabalataa · hundumaa ilaaluuf tuqi",
+      "moreWarningsPlural": "+{{count}} akeekkachiisota dabalataa · hundumaa ilaaluuf tuqi",
+      "band": {
+        "red": "DIIMAO — ammuma tarkaanfii fudhadhaa",
+        "orange": "BURQAA/OOLOLA — qophaa'aa",
+        "yellow": "ELOOWII — eeggannoo godhaa",
+        "notice": "BEEKSISA"
+      },
+      "whenLabel": "Yoom",
+      "whereLabel": "Eessa",
+      "whatToDo": "Maal gochuu qabda",
+      "affectedArea": "Naannoo miidhaan ga'e",
+      "map": {
+        "attribution": "Odeeffannoo kaartaa © gumaachitoota OpenStreetMap"
+      },
+      "when": {
+        "now": "amma",
+        "range": "{{start}} irraa kaasee hanga {{end}}tti.",
+        "fromOnly": "{{start}} irraa kaasee.",
+        "untilOnly": "Hanga {{end}}tti."
+      },
+      "listen": "Dhaggeeffadhu",
+      "stop": "Dhiisi / Dhaabi",
+      "missing": "Akeekkachiisni dhabameera! Maaloo deebi'ii irra deebi'ii yaali.",
+      "share": "Qoodi"
     },
-    "yellow": {
-      "label": "Keelloo",
-      "description": "Eeggannoo godhaa — qilleensi hamaa uumamuu danda'a."
+    "legend": {
+      "title": "Hiika halluuwwanii",
+      "red": {
+        "label": "Diimaa",
+        "description": "Ammuma tarkaanfii fudhadhaa — balaan cimaan uumamaa jira ykn dhiyeenyatti ni eegama."
+      },
+      "orange": {
+        "label": "Oorenji",
+        "description": "Qophaa'aa — balaan cimaan dhiyeenyatti ni eegama."
+      },
+      "yellow": {
+        "label": "Keelloo",
+        "description": "Eeggannoo godhaa — qilleensi hamaa uumamuu danda'a."
+      },
+      "green": {
+        "label": "Magariisa",
+        "description": "Ammaaf akeekkachiisni tokkoyyoo hin jiru."
+      }
     },
-    "green": {
-      "label": "Magariisa",
-      "description": "Ammaaf akeekkachiisni tokkoyyoo hin jiru."
+    "placeholders": {
+      "loremIpsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
+      "appTitle": "Appii Qilleensaa ClimWeb",
+      "appDescription": "Appiin Qilleensaa ClimWeb bakkeewwan addunyaa maratti argamaniif raaga qilleensaa sirrii fi yeroo ammaa dhiyeessa."
     }
-  },
-  "placeholders": {
-    "loremIpsum": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit tempore quod aperiam obcaecati nihil expedita, sint veniam reprehenderit veritatis soluta corporis beatae eligendi quos dicta culpa maxime. Vel, unde tempora.",
-    "appTitle": "Appii Qilleensaa ClimWeb",
-    "appDescription": "Appiin Qilleensaa ClimWeb bakkeewwan addunyaa maratti argamaniif raaga qilleensaa sirrii fi yeroo ammaa dhiyeessa."
   }
 }

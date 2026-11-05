@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { CAPAlert, CAPInfo } from './alert';
+import { CAPAlert, CAPInfo, selectInfo } from './alert';
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -56,7 +56,7 @@ export function getWhereText(info: CAPInfo | undefined): string | undefined {
 // "Ethiopian Meteorology and Hydrology Institute · ethiomet.gov.et" — built
 // from the CAP feed's own data (senderName, sender address) rather than a
 // hardcoded org name, since this app is deployed per-country against
-// whichever feed EXPO_PUBLIC_APP_ALERTS_SENDER_ID points to (see
+// whichever feeds and senders the language files point to (see
 // docs/CONFIGURATION.md).
 export function getShareSourceLine(alert: CAPAlert, info: CAPInfo | undefined): string | undefined {
   const name = info?.senderName?.trim() || undefined;
@@ -70,12 +70,12 @@ export function getShareSourceLine(alert: CAPAlert, info: CAPInfo | undefined): 
 // Finds the first alert (already filtered to relevant ones by the caller)
 // whose effective window overlaps the given calendar day — used to show an
 // inline warning chip under a day in the 5-day list.
-export function getAlertForDay(alerts: CAPAlert[], day: DateTime): CAPAlert | undefined {
+export function getAlertForDay(alerts: CAPAlert[], day: DateTime, language: string): CAPAlert | undefined {
   const dayStart = day.startOf('day');
   const dayEnd = day.endOf('day');
 
   return alerts.find(alert => {
-    const info = alert.info?.[0];
+    const info = selectInfo(alert, language);
     if (!info) return false;
 
     const start = DateTime.fromISO(info.onset ?? info.effective ?? alert.sent);

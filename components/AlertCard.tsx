@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import ListenButton from './ListenButton';
 import AlertShareButton from './AlertShareButton';
 import AlertAreaMap from './AlertAreaMap';
-import { CAPAlert, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
+import { CAPAlert, alertLevel, selectInfo } from '@/lib/alerts/providers/cap-alerts/alert';
 import { WARNING_BAND_TEXT_COLORS, WARNING_COLORS, getWarningTintColors } from '@/lib/alerts/providers/cap-alerts/icons';
 import { getWhatToDo, getWhenText, getWhereText } from '@/lib/alerts/providers/cap-alerts/plain-language';
 import { ThemeColors, Fonts, Colors, Radius, Spacing } from '@/lib/theme';
@@ -40,10 +40,10 @@ type AlertCardProps = {
 // row). Used standalone on the single-alert deep link (WeatherWarning.tsx)
 // and repeated (compact) in the Warnings tab's list.
 function AlertCard({ alert, compact = false, onPress }: AlertCardProps): JSX.Element | null {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
-  const info = alert.info?.[0];
+  const info = selectInfo(alert, i18n.language);
 
   if (!info) return null;
 
