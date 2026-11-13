@@ -2,18 +2,10 @@ import { DateTime } from 'luxon'
 import { parseString } from 'xml2js';
 import Axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
 
-import {
-  ConsecutiveBreaker,
-  ExponentialBackoff,
-  IPolicy,
-  circuitBreaker,
-  fallback,
-  handleAll,
-  retry,
-  wrap,
-} from 'cockatiel';
+import { IPolicy } from 'cockatiel';
 
 import { APP_USER_AGENT } from '@/config';
+import { executeWithFallback, requestPolicy } from '@/lib/network/request-policy';
 import { DEFAULT_LANGUAGE, LANGUAGES } from '@/lib/localization/translations';
 import { baseLanguage } from './alert';
 
@@ -58,61 +50,17 @@ export function alertsFeed(language: string): AlertsFeed | null {
   };
 }
 
-/**
- * How a feed is read: the primary URL is retried up to `retries` times with
- * exponential backoff. If that still fails, the circuit opens and requests
- * go straight to the fallback URL for `openFor` ms; after that the primary
- * is tried again, and the circuit closes once it answers.
- */
-export const FEED_POLICY = {
-  retries: 3,
-  initialDelay: 200, // ms before the first retry; doubles each retry
-  maxDelay: 2_000,
-  openFor: 10_000,
-};
-
-/**
- * Retry wrapped in a circuit breaker, for one primary feed URL. One failed
- * execution means every retry failed, so the breaker opens on the first.
- */
-export function feedPolicy(url: string, options = FEED_POLICY): IPolicy {
-  const retryPolicy = retry(handleAll, {
-    maxAttempts: options.retries,
-    backoff: new ExponentialBackoff({ initialDelay: options.initialDelay, maxDelay: options.maxDelay }),
-  });
-  const breakerPolicy = circuitBreaker(handleAll, {
-    halfOpenAfter: options.openFor,
-    breaker: new ConsecutiveBreaker(1),
-  });
-
-  retryPolicy.onRetry(({ delay }) => console.warn(`⚠️ Alerts feed ${url} failed; retrying in ${Math.round(delay)} ms`));
-  breakerPolicy.onBreak(() => console.warn(`🚨 Alerts feed ${url} still failing; using the fallback feed for ${options.openFor / 1000} s`));
-  breakerPolicy.onHalfOpen(() => console.info(`⚡ Trying alerts feed ${url} again`));
-  breakerPolicy.onReset(() => console.log(`✅ Alerts feed ${url} is back`));
-
-  return wrap(breakerPolicy, retryPolicy);
-}
-
-// One policy per primary feed URL, so one language's feed being down
+// Feeds are read through the shared request policy (lib/network/request-policy.ts),
+// with one policy per primary feed URL, so one language's feed being down
 // doesn't push the other languages onto their fallback feeds.
 const policies = new Map<string, IPolicy>();
 function policyFor(url: string): IPolicy {
   let policy = policies.get(url);
   if (!policy) {
-    policy = feedPolicy(url);
+    policy = requestPolicy(`Alerts feed ${url}`);
     policies.set(url, policy);
   }
   return policy;
-}
-
-/**
- * Runs `primary` through `policy`, falling back to `fallbackRoute` (when
- * given) if the primary fails after its retries or the circuit is open.
- */
-export function executeWithFallback<T>(policy: IPolicy, primary: () => Promise<T>, fallbackRoute?: () => Promise<T>): Promise<T> {
-  return fallbackRoute
-    ? wrap(fallback(handleAll, fallbackRoute), policy).execute(primary)
-    : policy.execute(primary);
 }
 
 /**

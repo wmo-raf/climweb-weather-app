@@ -1,14 +1,17 @@
 import Axios from 'axios';
 import { DateTime } from 'luxon';
 
-import { FEED_POLICY, executeWithFallback, feedPolicy, readCapFeedIfModified } from './rss';
+import { REQUEST_POLICY } from '@/lib/network/request-policy';
+import { readCapFeedIfModified } from './rss';
+
+// The retry / circuit-breaker / fallback behaviour itself is covered by
+// lib/network/request-policy.test.ts; these tests cover how feeds use it.
 
 jest.mock('axios');
 const mockedGet = Axios.get as jest.Mock;
 
-// Same shape as FEED_POLICY, with delays short enough for a test.
+// Same shape as REQUEST_POLICY, with delays short enough for a test.
 const FAST = { retries: 3, initialDelay: 1, maxDelay: 2, openFor: 50 };
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -17,61 +20,13 @@ beforeEach(() => {
 });
 afterEach(() => jest.restoreAllMocks());
 
-describe('feed policy', () => {
-  test('retries the main feed three times, then serves the fallback', async () => {
-    const primary = jest.fn().mockRejectedValue(new Error('timeout'));
-    const fallbackRoute = jest.fn().mockResolvedValue('fallback feed');
-
-    await expect(executeWithFallback(feedPolicy('main', FAST), primary, fallbackRoute)).resolves.toBe('fallback feed');
-    expect(primary).toHaveBeenCalledTimes(4); // first try + 3 retries
-    expect(fallbackRoute).toHaveBeenCalledTimes(1);
-  });
-
-  test('while the circuit is open, goes straight to the fallback', async () => {
-    const policy = feedPolicy('main', FAST);
-    const primary = jest.fn().mockRejectedValue(new Error('timeout'));
-    const fallbackRoute = jest.fn().mockResolvedValue('fallback feed');
-
-    await executeWithFallback(policy, primary, fallbackRoute); // trips the breaker
-    primary.mockClear();
-
-    await expect(executeWithFallback(policy, primary, fallbackRoute)).resolves.toBe('fallback feed');
-    expect(primary).not.toHaveBeenCalled();
-  });
-
-  test('after the open period, tries the main feed again and resets once it answers', async () => {
-    const policy = feedPolicy('main', FAST);
-    const primary = jest.fn().mockRejectedValue(new Error('timeout'));
-    const fallbackRoute = jest.fn().mockResolvedValue('fallback feed');
-    await executeWithFallback(policy, primary, fallbackRoute);
-
-    await sleep(FAST.openFor + 10);
-    primary.mockReset().mockResolvedValue('main feed');
-
-    await expect(executeWithFallback(policy, primary, fallbackRoute)).resolves.toBe('main feed');
-    await expect(executeWithFallback(policy, primary, fallbackRoute)).resolves.toBe('main feed');
-    expect(primary).toHaveBeenCalledTimes(2);
-  });
-
-  test('a main feed that recovers during the retries is used', async () => {
-    const primary = jest.fn().mockRejectedValueOnce(new Error('timeout')).mockResolvedValue('main feed');
-    const fallbackRoute = jest.fn();
-
-    await expect(executeWithFallback(feedPolicy('main', FAST), primary, fallbackRoute)).resolves.toBe('main feed');
-    expect(fallbackRoute).not.toHaveBeenCalled();
-  });
-
-  test('without a fallback feed, the error comes through', async () => {
-    const primary = jest.fn().mockRejectedValue(new Error('timeout'));
-    await expect(executeWithFallback(feedPolicy('main', FAST), primary)).rejects.toThrow('timeout');
-  });
-});
-
 describe('readCapFeedIfModified', () => {
   beforeEach(() => {
     mockedGet.mockReset();
-    // Keep the real retry count, with test-sized delays (read when each feed's policy is first created).
-    Object.assign(FEED_POLICY, FAST);
+    // Keep the real retry count, with test-sized delays (read when each feed's
+    // policy is first created). Jest gives each test file its own module
+    // instance, so this doesn't leak into other suites.
+    Object.assign(REQUEST_POLICY, FAST);
   });
 
   const RSS = `<?xml version="1.0"?><rss version="2.0"><channel><title>TMA</title>
