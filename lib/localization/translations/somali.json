@@ -446,8 +446,6 @@
         "fromOnly": "From {{start}}.",
         "untilOnly": "Until {{end}}."
       },
-      "listen": "Listen",
-      "stop": "Stop",
       "missing": "Missing alert! Please go back and try again.",
       "share": "Share"
     },
