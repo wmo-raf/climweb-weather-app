@@ -68,7 +68,7 @@ const AppBar = (props: AppBarProps) => {
     <>
       {(props.isPlace || props.titleIcon) && <Icon size={18} color={colors.primary} source={props.titleIcon ?? 'map-marker'} />}
       <View style={styles.titleTextBlock}>
-        <ThemedText type="default" themeColor="textStrong" style={styles.appTitle} numberOfLines={1}>{props.location || "Climweb Weather App"}</ThemedText>
+        <ThemedText type="default" themeColor="textStrong" style={styles.appTitle}>{props.location || "Climweb Weather App"}</ThemedText>
         {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t("places.tapToChange")}</ThemedText>}
       </View>
     </>

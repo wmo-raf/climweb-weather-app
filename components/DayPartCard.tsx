@@ -29,7 +29,7 @@ function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
       <View style={styles.leftCol}>
         <Text style={styles.partLabel}>{t(DAY_PART_LABEL_KEYS[part])}</Text>
         <Text style={styles.temp}>{units.temp(summary.temperature || 0)}</Text>
-        <Text style={styles.condition} numberOfLines={1}>{conditionLabel}</Text>
+        <Text style={styles.condition}>{conditionLabel}</Text>
       </View>
       <View style={styles.rightCol}>
         {iconSource && <Icon source={iconSource} size={48} />}

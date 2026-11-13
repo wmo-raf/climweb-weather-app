@@ -127,7 +127,7 @@ function AppTabBar({ state, descriptors, emitter, navigateToTab }: TabBarProps) 
             </Badge>
           )}
         </View>
-        <Text style={[styles.label, { color: focused ? colors.primary : colors.textSubtle }]} numberOfLines={1}>{label}</Text>
+        <Text style={[styles.label, { color: focused ? colors.primary : colors.textSubtle }]}>{label}</Text>
       </TouchableOpacity>
     );
   });
@@ -212,6 +212,7 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.sans.bold,
     marginTop: 2,
+    textAlign: 'center',
   },
 });
 
