@@ -494,9 +494,9 @@ Agencies can use a **different sender per feed**. For example, TMA's English fee
 
 #### Primary and fallback feed URLs
 
-The app reads the primary URL first, through three policies (`FEED_POLICY` in [rss.ts](lib/alerts/providers/cap-alerts/rss.ts)):
+The app reads the primary URL first, through the same shared request policy as the forecast API (`REQUEST_POLICY` in [lib/network/request-policy.ts](lib/network/request-policy.ts)):
 
-1. **Retry:** a failed request is retried up to 3 times, waiting longer each time (about 0.5 s, 1 s, 2 s).
+1. **Retry:** a failed request is retried up to 3 times, waiting longer each time (about 0.2 s, 0.4 s, 0.8 s, at most 2 s).
 2. **Circuit breaker:** if all the retries fail, the circuit opens. For the next 10 seconds the primary isn't called at all. After that it's tried again, and the circuit closes once it answers.
 3. **Fallback:** whenever the primary fails after its retries, or the circuit is open, the fallback URL is read instead. Without a fallback URL, the error is shown.
 
