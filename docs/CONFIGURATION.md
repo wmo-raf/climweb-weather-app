@@ -316,7 +316,13 @@ https://example.com/weatherapi/locationforecast/2.0/compact?lat=-13.9626&lon=33.
 
 #### Primary and fallback APIs
 
-The app uses the primary API first. If the primary API fails repeatedly, a circuit breaker opens and all requests fall through to the fallback API until the primary recovers. Configure both to ensure the app continues serving forecasts during outages.
+The app uses the primary API first, through the shared request policy (`REQUEST_POLICY` in [lib/network/request-policy.ts](lib/network/request-policy.ts)):
+
+1. **Retry:** a failed request is retried up to 3 times, waiting longer each time (about 0.2 s, 0.4 s, 0.8 s, at most 2 s).
+2. **Circuit breaker:** if all the retries fail, the circuit opens. For the next 10 seconds the primary API isn't called at all. After that it's tried again, and the circuit closes once it answers.
+3. **Fallback:** whenever the primary fails after its retries, or the circuit is open, the fallback API is used instead. Without `EXPO_PUBLIC_FALLBACK_API_URL`, the error is shown.
+
+A response that isn't a forecast (for example an HTML error page sent with status 200) counts as a failure. Configure both URLs to keep the app serving forecasts during outages.
 
 #### User-Agent
 

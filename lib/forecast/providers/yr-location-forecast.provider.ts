@@ -1,31 +1,30 @@
-import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import {
-  ConsecutiveBreaker,
-  handleAll,
-  circuitBreaker,
-  CircuitBreakerPolicy,
-  CircuitState,
-} from 'cockatiel';
+import Axios, { AxiosRequestConfig } from 'axios';
+import { IPolicy } from 'cockatiel';
 
 import { YrForecast } from '../types'
 import { PRIMARY_API_URL, FALLBACK_API_URL, APP_USER_AGENT } from '../../../config';
 import { LocationForecastInterface } from '../interfaces';
+import { executeWithFallback, requestPolicy } from '@/lib/network/request-policy';
 
 /**
  * Download a weather forecast from api.met.no/weatherapi/locationforecast or a similar service.
  *
- * Ensures that a uses agent is set on each request.
+ * Ensures that a uses agent is set on each request. Requests go through
+ * the shared request policy (lib/network/request-policy.ts): the primary
+ * API is retried with exponential backoff, then the circuit opens and the
+ * fallback API is used until the primary answers again.
  */
 export class YrLocationForecastProvider implements LocationForecastInterface<YrForecast> {
   private readonly userAgent: string = APP_USER_AGENT;
   private readonly apiUrl: string = PRIMARY_API_URL;
   private readonly fallbackApiUrl: string = FALLBACK_API_URL;
   private config: AxiosRequestConfig;
-  private breakerPolicy: CircuitBreakerPolicy;
+  private readonly policy: IPolicy;
 
-  constructor(userAgent?: string, baseURL?: string) {
+  constructor(userAgent?: string, baseURL?: string, policy: IPolicy = requestPolicy('Forecast API')) {
     userAgent && (this.userAgent = userAgent);
     baseURL && (this.apiUrl = baseURL);
+    this.policy = policy;
     this.config = {
       headers: {
         'User-Agent': this.userAgent,
@@ -33,27 +32,6 @@ export class YrLocationForecastProvider implements LocationForecastInterface<YrF
       },
       timeout: 5_000,
     };
-
-    // Stop calling the executed function for 15 seconds if it fails 3 times in a row
-    this.breakerPolicy = circuitBreaker(handleAll, {
-      halfOpenAfter: 15_000,
-      breaker: new ConsecutiveBreaker(2),
-    });
-    this.setBreakerLogging();
-  }
-
-  private setBreakerLogging(): void {
-    this.breakerPolicy.onBreak(() => {
-      console.warn('💥 Breaker tripped after consecutive failures');
-    });
-
-    this.breakerPolicy.onReset(() => {
-      console.log('✅ Breaker reset — primary API re-enabled');
-    });
-
-    this.breakerPolicy.onStateChange((state) => {
-      console.info(`⚡ Breaker state changed to: ${state}`);
-    });
   }
 
   private buildUrl(base: string, lat: number, lon: number, alt?: number): string {
@@ -62,26 +40,24 @@ export class YrLocationForecastProvider implements LocationForecastInterface<YrF
     return url;
   }
 
-  async getForecast(lat: number, lon: number, alt?: number): Promise<YrForecast> {
-    try {
-      console.log(`Querying primary API for forecast over ${lat},${lon} with breaker in state ${this.breakerPolicy.state}...`);
-      const url = this.buildUrl(this.apiUrl, lat, lon, alt);
-
-      const { data } = await this.breakerPolicy.execute(() => Axios.get<YrForecast>(url, this.config));
-      console.log('✅ Successfully got data from primary API.');
-      return data;
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      console.warn('⚠️ Error from primary API:', axiosError.message);
-
-      if (this.breakerPolicy.state === CircuitState.Open) {
-        console.warn('🚨 Breaker is OPEN. Using fallback API.');
-        const fallback = this.buildUrl(this.fallbackApiUrl, lat, lon, alt);
-        const { data } = await Axios.get<YrForecast>(fallback, this.config);
-        return data;
+  // Downloads and checks the response, so a 200 that isn't a forecast (e.g.
+  // an HTML error page) counts as a failure: it's retried, then the fallback
+  // API is used.
+  private route(base: string, lat: number, lon: number, alt?: number) {
+    return async (): Promise<YrForecast> => {
+      const { data } = await Axios.get<YrForecast>(this.buildUrl(base, lat, lon, alt), this.config);
+      if (!Array.isArray(data?.properties?.timeseries)) {
+        throw new Error(`Response from ${base} is not a forecast`);
       }
+      return data;
+    };
+  }
 
-      throw axiosError;
-    }
+  async getForecast(lat: number, lon: number, alt?: number): Promise<YrForecast> {
+    return executeWithFallback(
+      this.policy,
+      this.route(this.apiUrl, lat, lon, alt),
+      this.fallbackApiUrl ? this.route(this.fallbackApiUrl, lat, lon, alt) : undefined,
+    );
   }
 }
