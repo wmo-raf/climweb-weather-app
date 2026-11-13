@@ -78,7 +78,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
           accessibilityLabel={`${t(ALERT_LEAD_WORD_KEYS[level])}: ${alertInfo.event}`}
         >
           <Icon source="alert" size={18} color={tint.text} />
-          <Text style={[styles.alertChipText, { color: tint.text }]} numberOfLines={1}>
+          <Text style={[styles.alertChipText, { color: tint.text }]}>
             {t(ALERT_LEAD_WORD_KEYS[level])}: {alertInfo.event}
           </Text>
           <Icon source="chevron-right" size={18} color={tint.text} />

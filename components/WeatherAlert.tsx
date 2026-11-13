@@ -47,7 +47,7 @@ const WeatherAlert = ({ alert, onPress, extraCount = 0 }: WeatherAlertProps) => 
         </View>
       )}
       <View style={styles.textBlock}>
-        <Text style={[styles.headline, { color: textColor }]} numberOfLines={2}>{leadWord}: {info.event}</Text>
+        <Text style={[styles.headline, { color: textColor }]}>{leadWord}: {info.event}</Text>
         <Text style={[styles.subtext, { color: textColor }]}>{subtext}</Text>
       </View>
       <Icon source="chevron-right" size={24} color={textColor} />
