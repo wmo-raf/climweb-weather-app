@@ -39,6 +39,11 @@ jest.mock('expo-font', () => ({ ...jest.requireActual('expo-font'), isLoaded: ()
 jest.mock('react-native-safe-area-context',() => require('react-native-safe-area-context/jest/mock').default);
 jest.mock('@/lib/hooks/use-color-scheme', () => ({ useColorScheme: () => 'light' }));
 jest.mock('@/lib/hooks/alerts.hook', () => ({ useAlertsQuery: () => ({ data: [] }) }));
+// TMA's deployment: both More tab plugins, At sea first.
+jest.mock('@/config', () => ({ ...jest.requireActual('@/config'), MORE_PLUGINS: ['at-sea', 'farming'] }));
+// The plugin pages themselves aren't rendered here (see plugin-route.test).
+jest.mock('@/plugins/at-sea/AtSeaScreen', () => ({ __esModule: true, default: () => null }));
+jest.mock('@/plugins/farming/FarmingScreen', () => ({ __esModule: true, default: () => null }));
 jest.mock('@/lib/hooks/use-units', () => ({
   useUnits: () => ({
     temp: (v?: number) => `${v ?? 0}°C`,
@@ -144,7 +149,7 @@ describe('More conditions screen', () => {
     expect(textOf(card)).toContain(en.more.atSea.description);
 
     act(() => card.props.onPress());
-    expect(mockPush).toHaveBeenCalledWith('/More/AtSea');
+    expect(mockPush).toHaveBeenCalledWith('/More/at-sea');
   });
 
   test('For farming card comes right after At sea and opens the For farming page', () => {
@@ -156,7 +161,7 @@ describe('More conditions screen', () => {
     expect(textOf(card)).toContain(en.more.farming.description);
 
     act(() => card.props.onPress());
-    expect(mockPush).toHaveBeenCalledWith('/More/Farming');
+    expect(mockPush).toHaveBeenCalledWith('/More/farming');
   });
 
   test('tapping the Favourites card opens the Favourites page', () => {

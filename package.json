@@ -12,7 +12,10 @@
     "lint": "expo lint"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "^\\./plugin-discovery$": "<rootDir>/plugins/plugin-discovery.node.ts"
+    }
   },
   "dependencies": {
     "@expo-google-fonts/open-sans": "^0.4.2",

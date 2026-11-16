@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
-import { soilMoistureWords } from '@/lib/soil/plain-language';
+import { soilMoistureWords } from './soil/plain-language';
 import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 

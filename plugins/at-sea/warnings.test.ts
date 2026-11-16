@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import { polygon } from '@turf/turf';
 
 import { CAPAlert, CAPInfo } from '@/lib/alerts/providers/cap-alerts/alert';
-import { atSeaWarningsFor, isAtSeaWarning } from './at-sea';
+import { atSeaWarningsFor, isAtSeaWarning } from './warnings';
 
 const KEYWORDS = ['wind', 'sea', 'wave', 'cyclone', 'upepo'];
 const NOW = DateTime.fromISO('2026-11-02T09:00:00+03:00');

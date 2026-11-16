@@ -1,4 +1,4 @@
-import { SOIL_PROVIDER } from '@/config';
+import { SOIL_PROVIDER } from '../settings';
 import { SoilDataSource } from './soil-data-source';
 import { OpenMeteoSoilDataSource } from './open-meteo';
 

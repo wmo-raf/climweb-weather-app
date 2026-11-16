@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { createSoilDataSource, SoilData } from '@/lib/soil';
+import { createSoilDataSource, SoilData } from './soil';
 
 const soilDataSource = createSoilDataSource();
 

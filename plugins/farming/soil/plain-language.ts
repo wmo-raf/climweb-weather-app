@@ -1,4 +1,4 @@
-import { SOIL_MOISTURE_BANDS, SOIL_TEMPERATURE_BANDS } from '@/config';
+import { SOIL_MOISTURE_BANDS, SOIL_TEMPERATURE_BANDS } from '../settings';
 
 // Bands soil readings into plain words for the For farming page. Thresholds
 // and i18n keys live in config (SOIL_MOISTURE_BANDS / SOIL_TEMPERATURE_BANDS)

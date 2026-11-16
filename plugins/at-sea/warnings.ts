@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { AT_SEA_WARNING_KEYWORDS } from '@/config';
+import { AT_SEA_WARNING_KEYWORDS } from './settings';
 import { CAPAlert, alertInLocation, alertLevel } from '@/lib/alerts/providers/cap-alerts/alert';
 import { ALERT_SEVERITY_RANK } from '@/lib/alerts/providers/cap-alerts/icons';
 

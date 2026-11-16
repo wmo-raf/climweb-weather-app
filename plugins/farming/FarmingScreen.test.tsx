@@ -1,7 +1,7 @@
 import React from 'react';
 import TestRenderer, { act, ReactTestInstance } from 'react-test-renderer';
 
-// Kept out of app/ so expo-router doesn't treat it as a route.
+// Kept out of app/ (here in the plugin) so expo-router doesn't treat it as a route.
 
 const mockSoil: { data?: unknown; isLoading: boolean } = { isLoading: false };
 
@@ -27,7 +27,7 @@ jest.mock('@/lib/hooks/use-units', () => ({
 jest.mock('@/lib/store/location.store', () => ({
   useLocationStore: (select: (s: object) => unknown) => select({ name: 'Morogoro', lat: -6.82, lon: 37.66 }),
 }));
-jest.mock('@/lib/hooks/soil.hook', () => ({
+jest.mock('./soil.hook', () => ({
   useSoilQuery: () => ({ ...mockSoil, dataUpdatedAt: mockSoil.data ? Date.now() : 0 }),
 }));
 jest.mock('@/components/SunTimesCard', () => {
@@ -36,7 +36,7 @@ jest.mock('@/components/SunTimesCard', () => {
 });
 
 // eslint-disable-next-line import/first
-import FarmingScreen from '@/app/(tabs)/More/Farming';
+import FarmingScreen from './FarmingScreen';
 
 const render = () => {
   let renderer!: TestRenderer.ReactTestRenderer;

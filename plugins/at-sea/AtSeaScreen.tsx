@@ -8,24 +8,25 @@ import { useTranslation } from 'react-i18next';
 
 import AppBar from '@/components/AppBar';
 import ReadMoreCard from '@/components/ReadMoreCard';
-import SoilMoistureCard from '@/components/SoilMoistureCard';
-import SoilTemperatureCard from '@/components/SoilTemperatureCard';
 import StatusCard from '@/components/StatusCard';
 import SunTimesCard from '@/components/SunTimesCard';
+import WeatherAlert from '@/components/WeatherAlert';
+import WindCard from './WindCard';
 
-import { AGROMET_BULLETINS_URL, APP_TIMEZONE, NAME_OF_THE_NHMS, SEASONAL_FORECAST_URL } from '@/config';
+import { APP_TIMEZONE, NAME_OF_THE_NHMS } from '@/config';
+import { MARINE_FORECAST_URL, TSUNAMI_CENTRE_URL } from './settings';
+import { atSeaWarningsFor } from './warnings';
+import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
-import { useSoilQuery } from '@/lib/hooks/soil.hook';
+import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { SCREENS } from '@/lib/layout/constants';
-import { soilNow } from '@/lib/soil';
 import { useLocationStore } from '@/lib/store/location.store';
 import { ThemeColors, Fonts, navRailWidth, Spacing } from '@/lib/theme';
 
-// "For farming" — water in the soil, soil temperature and sun times for the
-// selected place. Opened from More conditions, inside the More tab's stack.
-// Soil cards hide when their value is missing or the soil source fails.
-export default function FarmingScreen() {
+// "At sea" — wind, wind/marine warnings and sun times for the selected
+// place. Opened from More conditions, inside the More tab's stack.
+export default function AtSeaScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const colors = useTheme();
@@ -35,43 +36,67 @@ export default function FarmingScreen() {
   const location = useLocationStore(s => s.name);
   const lat = useLocationStore(s => s.lat);
   const lon = useLocationStore(s => s.lon);
-  const { data: soil, isLoading, dataUpdatedAt } = useSoilQuery(lat, lon);
+  const { data: forecast, isLoading, error, refetch, dataUpdatedAt } = useForecastQuery(lat, lon);
+  const { data: alerts = [] } = useAlertsQuery();
 
   const hasPlace = lat !== undefined && lon !== undefined;
-  const { temperature, moisture } = soilNow(soil);
-  const hasSoil = temperature !== undefined || moisture !== undefined;
+  const warnings = hasPlace ? atSeaWarningsFor(alerts, { latitude: lat, longitude: lon }) : [];
 
   const readMoreLinks = [
-    { icon: 'calendar-month', label: t('farming.readMore.seasonalForecast'), url: SEASONAL_FORECAST_URL },
-    { icon: 'file-document-outline', label: t('farming.readMore.agrometBulletins'), url: AGROMET_BULLETINS_URL },
+    { icon: 'sail-boat', label: t('atSea.readMore.marineForecast'), url: MARINE_FORECAST_URL },
+    { icon: 'tsunami', label: t('atSea.readMore.tsunamiCentre'), url: TSUNAMI_CENTRE_URL },
   ];
+
+  let windContent: React.ReactNode = null;
+  if (!hasPlace) {
+    windContent = (
+      <StatusCard
+        icon="map-marker-off-outline"
+        title={t('location.notSet.title')}
+        text={t('location.notSet.text')}
+        actionLabel={t('location.notSet.action')}
+        onRetry={() => router.push(SCREENS.Search.toString() as Href)}
+      />
+    );
+  } else if (forecast) {
+    windContent = <WindCard forecast={forecast} />;
+  } else if (isLoading) {
+    windContent = (
+      <View style={styles.loader}>
+        <ActivityIndicator animating={true} color={colors.primary} size="large" />
+      </View>
+    );
+  } else if (error) {
+    windContent = (
+      <StatusCard
+        icon="cloud-off-outline"
+        iconColor={colors.danger}
+        title={t('forecast.error.title')}
+        text={error.message}
+        onRetry={() => refetch()}
+      />
+    );
+  }
 
   return (
     // No bottom edge: the tab bar already pads for the home indicator.
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
-      <AppBar location={t('farming.title')} subtitle={location} backLabel={t('More conditions')} />
+      <AppBar location={t('atSea.title')} subtitle={location} backLabel={t('More conditions')} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.cards}>
-          {!hasPlace && (
-            <StatusCard
-              icon="map-marker-off-outline"
-              title={t('location.notSet.title')}
-              text={t('location.notSet.text')}
-              actionLabel={t('location.notSet.action')}
-              onRetry={() => router.push(SCREENS.Search.toString() as Href)}
+          {warnings.map(alert => (
+            <WeatherAlert
+              key={alert.identifier}
+              alert={alert}
+              showAreaAndExpiry
+              onPress={() => router.push({ pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier } })}
             />
-          )}
-          {hasPlace && isLoading && (
-            <View style={styles.loader}>
-              <ActivityIndicator animating={true} color={colors.primary} size="large" />
-            </View>
-          )}
-          <SoilMoistureCard moisture={moisture} />
-          <SoilTemperatureCard temperature={temperature} />
-          {hasPlace && <SunTimesCard lat={lat} lon={lon} daylightKey="farming.daylight" />}
+          ))}
+          {windContent}
+          {hasPlace && <SunTimesCard lat={lat} lon={lon} />}
           <ReadMoreCard title={t('readMore.title', { name: NAME_OF_THE_NHMS })} links={readMoreLinks} />
         </View>
-        {hasSoil && !!dataUpdatedAt && (
+        {!!forecast && !!dataUpdatedAt && (
           <Text style={styles.updated}>
             {t('common.updated', { time: DateTime.fromMillis(dataUpdatedAt).setZone(APP_TIMEZONE).toFormat('yyyy-MM-dd HH:mm') })}
           </Text>

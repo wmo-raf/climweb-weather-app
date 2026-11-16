@@ -1,14 +1,13 @@
 import Axios from 'axios';
 import { DateTime, FixedOffsetZone } from 'luxon';
 
+import { APP_TIMEZONE, APP_USER_AGENT } from '@/config';
 import {
-  APP_TIMEZONE,
-  APP_USER_AGENT,
   OPEN_METEO_API_KEY,
   OPEN_METEO_API_URL,
   OPEN_METEO_SOIL_MOISTURE_VAR,
   OPEN_METEO_SOIL_TEMPERATURE_VAR,
-} from '@/config';
+} from '../settings';
 import { SoilData, SoilDataSource, SoilHour } from './soil-data-source';
 
 // Open-Meteo Forecast API (https://open-meteo.com/en/docs). Soil
