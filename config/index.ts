@@ -13,6 +13,21 @@ if (__DEV__ && (process.env.EXPO_PUBLIC_PRIMARY_ALERTS_URL || process.env.EXPO_P
 }
 export const FORECAST_PROVIDER = process.env.EXPO_PUBLIC_FORECAST_PROVIDER ?? 'yr';
 export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
+// MET Norway Sunrise 3.0 (lib/sun). The service ("Celestial") can also be
+// self-hosted, so a deployment may point this at its own instance.
+export const SUNRISE_API_URL = process.env.EXPO_PUBLIC_SUNRISE_API_URL ?? 'https://api.met.no/weatherapi/sunrise/3.0';
+
+// Today (landing page) sections. "true"/"false", any case; anything else
+// keeps the default.
+const flag = (value: string | undefined, fallback: boolean): boolean => {
+  const v = value?.trim().toLowerCase();
+  return v === 'true' ? true : v === 'false' ? false : fallback;
+};
+// "Today, hour by hour" (FiveHourSummary), phone layout only. Off by default:
+// the wind and sun cards took its place.
+export const SHOW_TODAY_HOURLY_SUMMARY = flag(process.env.EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY, false);
+// The wind and sunrise/sunset cards, on both phone and tablet layouts.
+export const SHOW_TODAY_WIND_AND_SUN = flag(process.env.EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN, true);
 // XYZ raster tile URL template for the alert detail mini-map (AlertAreaMap).
 // Defaults to the public OSM tile server, which is fine for development but
 // not for production traffic (see OSM's tile usage policy) — deployments

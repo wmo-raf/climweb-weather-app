@@ -10,7 +10,9 @@ export type { LanguageFile, Translations } from './schema';
 // derived from those files. Country builds supply their own files here.
 //
 // Note: Swahili (swahili.json) is a machine-translated draft — every key is
-// covered, but it hasn't been checked by a native speaker yet.
+// covered, but it hasn't been checked by a native speaker yet. Keys listed
+// under `_needsReview` in swahili.json were added later and also still need
+// that review.
 
 export type LanguageConfig = {
   label: string;

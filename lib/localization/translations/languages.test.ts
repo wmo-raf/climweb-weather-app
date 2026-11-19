@@ -12,6 +12,17 @@ const keysOf = (obj: object, prefix = ''): string[] =>
 const english = RAW_LANGUAGE_FILES.find(f => f.file === './english.json')!.data as { translations: object };
 const englishKeys = new Set(keysOf(english.translations));
 
+// The Today wind and sun cards' strings: only English and Swahili have them
+// so far.
+const TODAY_CARD_KEYS = [
+  'compass.n.long', 'compass.ne.long', 'compass.e.long', 'compass.se.long',
+  'compass.s.long', 'compass.sw.long', 'compass.w.long', 'compass.nw.long',
+  'sun.daylight_one', 'sun.daylight_other', 'sun.down', 'sun.up',
+  'units.spoken.kmh_one', 'units.spoken.kmh_other', 'units.spoken.knots_one', 'units.spoken.knots_other',
+  'units.spoken.mph_one', 'units.spoken.mph_other', 'units.spoken.ms_one', 'units.spoken.ms_other',
+  'wind.fromSpoken', 'wind.speedDirection', 'wind.speedOnly', 'wind.speedZero',
+];
+
 // Keys a language file is known to be missing; they show in English until
 // translated. Anything missing beyond these fails, so new gaps get noticed.
 const KNOWN_GAPS: Record<string, string[]> = {
@@ -20,7 +31,11 @@ const KNOWN_GAPS: Record<string, string[]> = {
     'units.celsius', 'units.fahrenheit', 'units.in', 'units.kmh', 'units.knots', 'units.mm', 'units.mph', 'units.ms',
     'units.precipitation', 'units.spoken.celsius', 'units.spoken.fahrenheit', 'units.temperature', 'units.title',
     'units.wind', 'welcome.title',
+    ...TODAY_CARD_KEYS,
   ],
+  './amharic.json': TODAY_CARD_KEYS,
+  './somali.json': TODAY_CARD_KEYS,
+  './tigrinya.json': TODAY_CARD_KEYS,
 };
 
 describe.each(RAW_LANGUAGE_FILES.map(f => [f.file, f.data] as const))('language file %s', (file, data) => {

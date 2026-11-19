@@ -13,9 +13,13 @@ import Alerts from '@/components/Alerts';
 import CurrentConditionsCard from '@/components/CurrentConditionsCard';
 import DayPartsGrid from '@/components/DayPartsGrid';
 import FiveDays from '@/components/FiveDays';
+import FiveHourSummary from '@/components/FiveHourSummary';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
+import SunTimesCard from '@/components/SunTimesCard';
+import TodayWindCard from '@/components/TodayWindCard';
 
+import { SHOW_TODAY_HOURLY_SUMMARY, SHOW_TODAY_WIND_AND_SUN } from '@/config';
 import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
@@ -205,6 +209,15 @@ const MainScreen = () => {
           <View style={styles.xlLeftPane}>
             <Alerts lat={lat} lon={lon} location={location} />
             <CurrentConditionsCard daySummary={todaySummary} location={location} tempFontSize={tempSize.xl} showWindSummary />
+            {SHOW_TODAY_HOURLY_SUMMARY && todaySummary && (
+              <FiveHourSummary daySummary={todaySummary} location={location} />
+            )}
+            {SHOW_TODAY_WIND_AND_SUN && !isUndefined(lat) && !isUndefined(lon) && (
+              <View style={styles.todayCards}>
+                <TodayWindCard forecast={forecast} />
+                <SunTimesCard lat={lat} lon={lon} />
+              </View>
+            )}
           </View>
           <View style={styles.xlRightPane}>
             <DayPartsGrid dayParts={getDayParts(todaySummary)} columns={4} />
@@ -219,6 +232,15 @@ const MainScreen = () => {
       mainContent = (
         <View style={styles.opacity}>
           <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} compact={breakpoint === 'small'} />
+          {SHOW_TODAY_HOURLY_SUMMARY && todaySummary && (
+            <FiveHourSummary daySummary={todaySummary} location={location} />
+          )}
+          {SHOW_TODAY_WIND_AND_SUN && todaySummary && !isUndefined(lat) && !isUndefined(lon) && (
+            <View style={styles.todayCards}>
+              <TodayWindCard forecast={forecast} />
+              <SunTimesCard lat={lat} lon={lon} />
+            </View>
+          )}
         </View>
       )
     }
@@ -307,6 +329,12 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   xlRightPane: {
     flex: 1.3,
+  },
+  // Wind then sun. Either card can be left out (no data), so spacing is a
+  // gap rather than card margins.
+  todayCards: {
+    marginTop: Spacing.lg,
+    gap: Spacing.lg,
   },
   xlFiveDaysSection: {
     marginTop: Spacing.xl,

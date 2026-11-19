@@ -618,6 +618,39 @@ The default points at OpenStreetMap's public tile server, which is fine for deve
 
 ---
 
+## Today Sections
+
+Two optional flags choose which sections appear on Today, the landing page, below the day parts. Both take `'true'` or `'false'`; any other value keeps the default.
+
+```env
+EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY='false'
+EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN='true'
+```
+
+| Flag | Default | Shows |
+|---|---|---|
+| `EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY` | `false` | "Today, hour by hour": the next five hours, tapping through to the hourly forecast. Phone layout only; the tablet layout never had it. |
+| `EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN` | `true` | The wind card (direction and speed now) and the sunrise/sunset card. Phone and tablet layouts. |
+
+With both on, hour by hour comes first, then wind, then sun. These are build-time values: rebuild or restart the bundler after changing them.
+
+---
+
+## Sunrise and Sunset
+
+Today's sun card ([components/SunTimesCard.tsx](../components/SunTimesCard.tsx)) shows "Sun up", "Sun down" and the hours of daylight. The times come from MET Norway's [Sunrise 3.0 API](https://api.met.no/weatherapi/sunrise/3.0/documentation) through [lib/sun/sunrise.ts](../lib/sun/sunrise.ts). They are never calculated on the device.
+
+```env
+EXPO_PUBLIC_SUNRISE_API_URL='https://api.met.no/weatherapi/sunrise/3.0'
+```
+
+- Requests send `EXPO_PUBLIC_APP_USER_AGENT`. MET refuses requests without one.
+- Responses are cached per place and date until their `Expires` time, then checked again with `If-Modified-Since`. The cache is also what's shown offline.
+- When there's no network and nothing cached for today, the card is hidden.
+- The service can be self-hosted, so a deployment can point the URL at its own instance.
+
+---
+
 ## In-app Review Prompt
 
 The app occasionally asks users to rate it, using the platform's native review prompt ([expo-store-review](https://docs.expo.dev/versions/latest/sdk/storereview/)). The logic lives in [lib/review/](lib/review/); the rules are in [lib/review/policy.ts](lib/review/policy.ts).

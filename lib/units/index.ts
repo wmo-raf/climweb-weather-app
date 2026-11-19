@@ -140,9 +140,13 @@ export function formatTemperature(celsius: number | undefined, unit: Temperature
   return celsius === undefined ? '' : `${roundTemperature(celsius, unit)}${TEMPERATURE_SYMBOLS[unit]}`;
 }
 
+// Whole wind units, as shown on screen.
+export function roundWind(metresPerSecond: number, unit: WindUnit): number {
+  return Math.round(convertWind(metresPerSecond, unit)) || 0;
+}
+
 export function formatWind(metresPerSecond: number | undefined, unit: WindUnit): string {
-  const value = Math.round(convertWind(metresPerSecond ?? 0, unit)) || 0;
-  return `${value} ${WIND_SYMBOLS[unit]}`;
+  return `${roundWind(metresPerSecond ?? 0, unit)} ${WIND_SYMBOLS[unit]}`;
 }
 
 export function formatPrecipitation(millimetres: number, unit: PrecipitationUnit): string {

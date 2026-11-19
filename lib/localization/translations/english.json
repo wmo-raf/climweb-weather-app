@@ -385,7 +385,11 @@
       "severe": {
         "label": "Severe wind",
         "sentence": "Very strong wind — stay off the water."
-      }
+      },
+      "speedDirection": "Wind from the {{direction}} at {{speed}}.",
+      "speedOnly": "Wind at {{speed}}.",
+      "speedZero": "Wind speed {{speed}}.",
+      "fromSpoken": "from {{direction}}"
     },
     "condition": {
       "clear": "Clear sky",
@@ -488,7 +492,15 @@
       "in": "Inches (in)",
       "spoken": {
         "celsius": "{{value}} degrees Celsius",
-        "fahrenheit": "{{value}} degrees Fahrenheit"
+        "fahrenheit": "{{value}} degrees Fahrenheit",
+        "kmh_one": "{{count}} kilometre per hour",
+        "kmh_other": "{{count}} kilometres per hour",
+        "ms_one": "{{count}} metre per second",
+        "ms_other": "{{count}} metres per second",
+        "knots_one": "{{count}} knot",
+        "knots_other": "{{count}} knots",
+        "mph_one": "{{count}} mile per hour",
+        "mph_other": "{{count}} miles per hour"
       }
     },
     "More": "More",
@@ -500,6 +512,38 @@
       "favourites": {
         "description": "Your saved places"
       }
+    },
+    "compass": {
+      "n": {
+        "long": "north"
+      },
+      "ne": {
+        "long": "north-east"
+      },
+      "e": {
+        "long": "east"
+      },
+      "se": {
+        "long": "south-east"
+      },
+      "s": {
+        "long": "south"
+      },
+      "sw": {
+        "long": "south-west"
+      },
+      "w": {
+        "long": "west"
+      },
+      "nw": {
+        "long": "north-west"
+      }
+    },
+    "sun": {
+      "up": "Sun up",
+      "down": "Sun down",
+      "daylight_one": "About {{count}} hour of daylight today",
+      "daylight_other": "About {{count}} hours of daylight today"
     }
   }
 }

@@ -385,7 +385,11 @@
       "severe": {
         "label": "Upepo mkali sana",
         "sentence": "Upepo mkali sana — epuka kwenda majini."
-      }
+      },
+      "speedDirection": "Upepo kutoka {{direction}} kwa kasi ya {{speed}}.",
+      "speedOnly": "Upepo kwa kasi ya {{speed}}.",
+      "speedZero": "Kasi ya upepo {{speed}}.",
+      "fromSpoken": "kutoka {{direction}}"
     },
     "condition": {
       "clear": "Anga angavu",
@@ -488,7 +492,15 @@
       "in": "Inchi (in)",
       "spoken": {
         "celsius": "{{value}} digrii za Selsiasi",
-        "fahrenheit": "{{value}} digrii za Fahrenheit"
+        "fahrenheit": "{{value}} digrii za Fahrenheit",
+        "kmh_one": "kilomita {{count}} kwa saa",
+        "kmh_other": "kilomita {{count}} kwa saa",
+        "ms_one": "mita {{count}} kwa sekunde",
+        "ms_other": "mita {{count}} kwa sekunde",
+        "knots_one": "noti {{count}}",
+        "knots_other": "noti {{count}}",
+        "mph_one": "maili {{count}} kwa saa",
+        "mph_other": "maili {{count}} kwa saa"
       }
     },
     "More": "Zaidi",
@@ -500,6 +512,52 @@
       "favourites": {
         "description": "Maeneo uliyohifadhi"
       }
+    },
+    "compass": {
+      "n": {
+        "long": "kaskazini"
+      },
+      "ne": {
+        "long": "kaskazini-mashariki"
+      },
+      "e": {
+        "long": "mashariki"
+      },
+      "se": {
+        "long": "kusini-mashariki"
+      },
+      "s": {
+        "long": "kusini"
+      },
+      "sw": {
+        "long": "kusini-magharibi"
+      },
+      "w": {
+        "long": "magharibi"
+      },
+      "nw": {
+        "long": "kaskazini-magharibi"
+      }
+    },
+    "sun": {
+      "up": "Jua kuchomoza",
+      "down": "Jua kuzama",
+      "daylight_one": "Takribani saa {{count}} za mwanga wa jua leo",
+      "daylight_other": "Takribani saa {{count}} za mwanga wa jua leo"
     }
-  }
+  },
+  "_needsReview": [
+    "wind.speedDirection",
+    "wind.speedOnly",
+    "wind.speedZero",
+    "wind.fromSpoken",
+    "units.spoken.kmh_one",
+    "units.spoken.kmh_other",
+    "units.spoken.ms_one",
+    "units.spoken.ms_other",
+    "units.spoken.knots_one",
+    "units.spoken.knots_other",
+    "units.spoken.mph_one",
+    "units.spoken.mph_other"
+  ]
 }

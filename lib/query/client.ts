@@ -42,8 +42,9 @@ export const persistOptions = {
   maxAge: PERSIST_MAX_AGE,
   // Bump when the shape or units of cached data change, so caches saved by
   // an older build are discarded instead of misread. v2: forecast values
-  // stored in canonical units (wind in m/s, previously km/h).
-  buster: 'v2-canonical-units',
+  // stored in canonical units (wind in m/s, previously km/h). v3: forecast
+  // steps carry wind direction and gusts (At sea page).
+  buster: 'v3-wind-direction',
 };
 
 // React Native has no browser "window focus" event; Query's web default
