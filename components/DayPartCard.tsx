@@ -15,6 +15,22 @@ type DayPartCardProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+const ICON_SIZE = 48;
+
+// Break lines only between words: no hyphenation on Android, and the plain
+// word-wrap strategy on both platforms. DayPartsGrid picks a column count
+// wide enough that no single word needs splitting.
+const WRAP_AT_SPACES = {
+  android_hyphenationFrequency: 'none',
+  textBreakStrategy: 'simple',
+  lineBreakStrategyIOS: 'standard',
+} as const;
+
+// One day part, stacked so it works at any width the grid gives it:
+//   Asubuhi
+//   20°C          [icon]
+//   Mawingu kiasi
+// The same layout in 1, 2 or 4 columns. Read as one item by screen readers.
 function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const { t } = useTranslation();
   const units = useUnits();
@@ -22,34 +38,37 @@ function DayPartCard({ part, summary, style }: DayPartCardProps): JSX.Element {
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const iconSource = summary.weatherSymbol ? weatherIcons[summary.weatherSymbol] : undefined;
+  const partLabel = t(DAY_PART_LABEL_KEYS[part]);
   const conditionLabel = t(CONDITION_LABEL_KEYS[conditionBucket(summary.weatherSymbol)]);
 
   return (
-    <View style={[styles.card, style]} accessible={true} accessibilityLabel={`${t(DAY_PART_LABEL_KEYS[part])}: ${units.tempSpoken(summary.temperature || 0)}, ${conditionLabel}`}>
-      <View style={styles.leftCol}>
-        <Text style={styles.partLabel}>{t(DAY_PART_LABEL_KEYS[part])}</Text>
-        <Text style={styles.temp}>{units.temp(summary.temperature || 0)}</Text>
-        <Text style={styles.condition}>{conditionLabel}</Text>
+    <View
+      style={[styles.card, style]}
+      accessible={true}
+      accessibilityLabel={`${partLabel}, ${units.tempSpoken(summary.temperature || 0)}, ${conditionLabel}`}
+      testID={`day-part-${part}`}
+    >
+      <Text style={styles.partLabel} {...WRAP_AT_SPACES}>{partLabel}</Text>
+      <View style={styles.tempRow}>
+        <Text style={styles.temp} numberOfLines={1}>{units.temp(summary.temperature || 0)}</Text>
+        <View style={styles.icon}>
+          {iconSource && <Icon source={iconSource} size={ICON_SIZE} />}
+        </View>
       </View>
-      <View style={styles.rightCol}>
-        {iconSource && <Icon source={iconSource} size={48} />}
-      </View>
+      <Text style={styles.condition} numberOfLines={2} {...WRAP_AT_SPACES}>{conditionLabel}</Text>
     </View>
   );
 }
 
 const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   card: {
-    width: '48%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: colors.bg,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: Radius.large,
     paddingVertical: Spacing.lg,
     paddingHorizontal: Spacing.lg,
+    gap: Spacing.xs,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
@@ -57,28 +76,35 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     shadowRadius: 4,
     boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.05)',
   },
-  leftCol: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: Spacing.xs,
-  },
-  rightCol: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    marginLeft: Spacing.sm,
-  },
   partLabel: {
+    flexShrink: 1,
+    minWidth: 0,
     fontSize: 14,
     fontFamily: Fonts.sans.bold,
     color: colors.textSubtle,
   },
+  tempRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
+  },
   temp: {
+    flexShrink: 1,
+    minWidth: 0,
     fontSize: 24,
     fontFamily: Fonts.sans.bold,
     color: colors.textStrong,
   },
+  // Fixed size even when empty, so cards without an icon line up.
+  icon: {
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    flexShrink: 0,
+  },
   condition: {
+    flexShrink: 1,
+    minWidth: 0,
     fontSize: 14,
     fontFamily: Fonts.sans.regular,
     color: colors.text,
