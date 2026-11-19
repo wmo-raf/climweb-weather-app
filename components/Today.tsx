@@ -40,7 +40,7 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, compact }:
   return (
     <View style={[styles.wrapper, compact && styles.wrapperCompact]}>
       <CurrentConditionsCard daySummary={daySummary} location={location} tempFontSize={tempFontSize} compact={compact} />
-      <DayPartsGrid dayParts={getDayParts(daySummary)} columns={2} />
+      <DayPartsGrid dayParts={getDayParts(daySummary)} />
     </View>
   );
 };
