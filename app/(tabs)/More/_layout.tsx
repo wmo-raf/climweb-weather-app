@@ -15,6 +15,8 @@ export default function MoreLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="Favourites" />
+      {/* Plugin pages, /More/<id> (see plugins/). */}
+      <Stack.Screen name="[plugin]" />
     </Stack>
   );
 }

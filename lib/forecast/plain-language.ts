@@ -61,3 +61,38 @@ export const RAIN_LEVEL_SENTENCE_KEYS: Record<RainLevel, string> = {
   moderate: 'conditions.rain.moderate.sentence',
   heavy: 'conditions.rain.heavy.sentence',
 };
+
+// --- Beaufort wind words ------------------------------------------------------
+// Used where the exact band matters (At sea page), unlike the coarser
+// WindLevel buckets above. Upper bounds in m/s for forces 0-11 (WMO Beaufort
+// scale); anything at or above the last bound is force 12.
+export type BeaufortForce = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+const BEAUFORT_UPPER_MS = [0.5, 1.6, 3.4, 5.5, 8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7];
+
+export function beaufortForce(windSpeedMs: number): BeaufortForce {
+  const index = BEAUFORT_UPPER_MS.findIndex(upper => windSpeedMs < upper);
+  return (index === -1 ? 12 : index) as BeaufortForce;
+}
+
+// i18next key for a band's plain label, e.g. "Strong wind" for force 6.
+export const beaufortLabelKey = (force: BeaufortForce): string => `beaufort.${force}`;
+
+// 8-point compass, from the direction the wind blows FROM in degrees.
+export type CompassPoint = 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw';
+const COMPASS_POINTS: CompassPoint[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
+
+export function compassPoint(degrees: number): CompassPoint {
+  const normalised = ((degrees % 360) + 360) % 360;
+  return COMPASS_POINTS[Math.round(normalised / 45) % 8];
+}
+
+type Translate = (key: string, options?: Record<string, unknown>) => string;
+
+// "Strong wind from the south-east" / "Calm". Direction is left out when
+// it's unknown or the air is calm (force 0 has no meaningful direction).
+export function describeWind(t: Translate, windSpeedMs: number, fromDegrees?: number): string {
+  const force = beaufortForce(windSpeedMs);
+  const label = t(beaufortLabelKey(force));
+  if (force === 0 || fromDegrees === undefined) return label;
+  return t('wind.fromDirection', { wind: label, direction: t(`compass.${compassPoint(fromDegrees)}.long`) });
+}

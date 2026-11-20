@@ -23,6 +23,11 @@ type AppBarProps = {
   // Icon shown before a plain (non-place) title, same size/colour as the
   // place pin.
   titleIcon?: string,
+  // Second line under a plain title, e.g. the selected place.
+  subtitle?: string,
+  // Replaces the back arrow with a "← {backLabel}" text link on its own row
+  // above the title, naming the screen it returns to.
+  backLabel?: string,
   onBack?: () => void,
 };
 
@@ -70,14 +75,17 @@ const AppBar = (props: AppBarProps) => {
       <View style={styles.titleTextBlock}>
         <ThemedText type="default" themeColor="textStrong" style={styles.appTitle}>{props.location || "Climweb Weather App"}</ThemedText>
         {props.isPlace && <ThemedText type="small" themeColor="primary" style={styles.placeSubtitle}>{t("places.tapToChange")}</ThemedText>}
+        {!props.isPlace && !!props.subtitle && <ThemedText type="small" themeColor="textSubtle" style={styles.subtitle} numberOfLines={2}>{props.subtitle}</ThemedText>}
       </View>
     </>
   );
 
-  return (
-    <ThemedView type="bg" style={styles.appBar}>
+  const showBack = !props.hideBack && (canGoBack || !!props.onBack);
+
+  const bar = (
+    <ThemedView type="bg" style={[styles.appBar, !!props.backLabel && styles.appBarUnderBackLink]}>
       <View style={styles.appTitleContainer}>
-        {!props.hideBack && (canGoBack || !!props.onBack) &&
+        {showBack && !props.backLabel &&
           <TouchableOpacity accessible={true} accessibilityLabel={t('Go back')} onPress={onBack} style={styles.backButton}>
             <Icon size={28} color={colors.primary} source={backArrow} />
           </TouchableOpacity>}
@@ -107,6 +115,27 @@ const AppBar = (props: AppBarProps) => {
       )}
     </ThemedView>
   );
+
+  if (!props.backLabel) {
+    return bar;
+  }
+
+  return (
+    <ThemedView type="bg" style={styles.stacked}>
+      {showBack && (
+        <TouchableOpacity
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('Go back')}: ${props.backLabel}`}
+          onPress={onBack}
+          style={styles.backLink}
+        >
+          <ThemedText type="default" themeColor="primary" style={styles.backLinkText}>← {props.backLabel}</ThemedText>
+        </TouchableOpacity>
+      )}
+      {bar}
+    </ThemedView>
+  );
 }
 
 export default AppBar;
@@ -119,6 +148,29 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     minHeight: touchTarget.nav + Spacing.lg,
+  },
+  stacked: {
+    backgroundColor: colors.bg,
+  },
+  // Tighter under the back link row, which already adds its own height.
+  appBarUnderBackLink: {
+    minHeight: touchTarget.nav,
+  },
+  backLink: {
+    alignSelf: 'flex-start',
+    minHeight: touchTarget.nav,
+    justifyContent: 'center',
+    paddingHorizontal: Spacing.lg,
+  },
+  backLinkText: {
+    fontSize: 16,
+    fontFamily: Fonts.sans.bold,
+    color: colors.primary,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontFamily: Fonts.sans.regular,
+    color: colors.textSubtle,
   },
   appTitleContainer: {
     paddingLeft: Spacing.md,

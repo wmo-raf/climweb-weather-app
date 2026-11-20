@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { CAPAlert, alertLevel, selectInfo } from '@/lib/alerts/providers/cap-alerts/alert';
 import { ALERT_LEAD_WORD_KEYS, WARNING_BAND_TEXT_COLORS, WARNING_COLORS, WEATHER_WARNING_ICONS } from "@/lib/alerts/providers/cap-alerts/icons";
+import { getUntilText, getWhereText } from "@/lib/alerts/providers/cap-alerts/plain-language";
 import { Fonts, Radius, Spacing } from '@/lib/theme';
 
 type WeatherAlertProps = {
@@ -14,9 +15,12 @@ type WeatherAlertProps = {
   // becomes a consolidated "+N more warnings" summary instead of pointing
   // at this specific alert's detail.
   extraCount?: number;
+  // Shows the affected area and "Until …" under the event instead of the
+  // "tap to see what to do" hint (At sea page's advisory).
+  showAreaAndExpiry?: boolean;
 }
 
-const WeatherAlert = ({ alert, onPress, extraCount = 0 }: WeatherAlertProps) => {
+const WeatherAlert = ({ alert, onPress, extraCount = 0, showAreaAndExpiry = false }: WeatherAlertProps) => {
   const { t, i18n } = useTranslation();
   const info = selectInfo(alert, i18n.language);
 
@@ -27,9 +31,12 @@ const WeatherAlert = ({ alert, onPress, extraCount = 0 }: WeatherAlertProps) => 
   const backgroundColor = WARNING_COLORS[level];
   const textColor = WARNING_BAND_TEXT_COLORS[level];
   const icon = WEATHER_WARNING_ICONS[level.toLowerCase()];
+  const areaAndExpiry = showAreaAndExpiry
+    ? [getWhereText(info), getUntilText(t, info)].filter(Boolean).join('\n')
+    : '';
   const subtext = extraCount > 0
     ? t(extraCount === 1 ? 'alert.moreWarningsSingular' : 'alert.moreWarningsPlural', { count: extraCount })
-    : t('alert.tapToSeeWhatToDo');
+    : areaAndExpiry || t('alert.tapToSeeWhatToDo');
 
   return (
     <TouchableOpacity

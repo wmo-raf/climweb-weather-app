@@ -44,7 +44,8 @@
       },
       "alerts": {
         "title": "ማንቂያ"
-      }
+      },
+      "updated": "Updated {{time}}"
     },
     "forecast": {
       "error": {
@@ -385,7 +386,10 @@
       "severe": {
         "label": "ከባድ ንፋስ",
         "sentence": "በጣም ኃይለኛ ንፋስ — ከውሃ ላይ ይራቁ።"
-      }
+      },
+      "fromDirection": "{{wind}} from the {{direction}}",
+      "fromSpoken": "from {{direction}}",
+      "gusts": "Gusts up to {{speed}}"
     },
     "condition": {
       "clear": "ግልጽ ሰማይ",
@@ -499,6 +503,128 @@
       "intro": "More weather details for your work.",
       "favourites": {
         "description": "Your saved places"
+      },
+      "atSea": {
+        "description": "Wind, warnings and sun times"
+      },
+      "farming": {
+        "description": "Water in the soil, soil heat, sun times"
+      }
+    },
+    "atSea": {
+      "title": "At sea",
+      "windNow": "Wind now",
+      "nextHours": "Next hours",
+      "readMore": {
+        "marineForecast": "Marine weather forecast",
+        "tsunamiCentre": "Tsunami centre"
+      }
+    },
+    "beaufort": {
+      "0": "Calm",
+      "1": "Light air",
+      "2": "Light wind",
+      "3": "Gentle wind",
+      "4": "Moderate wind",
+      "5": "Fresh wind",
+      "6": "Strong wind",
+      "7": "Near gale",
+      "8": "Gale",
+      "9": "Strong gale",
+      "10": "Storm",
+      "11": "Violent storm",
+      "12": "Hurricane-force wind"
+    },
+    "compass": {
+      "n": {
+        "short": "N",
+        "long": "north"
+      },
+      "ne": {
+        "short": "NE",
+        "long": "north-east"
+      },
+      "e": {
+        "short": "E",
+        "long": "east"
+      },
+      "se": {
+        "short": "SE",
+        "long": "south-east"
+      },
+      "s": {
+        "short": "S",
+        "long": "south"
+      },
+      "sw": {
+        "short": "SW",
+        "long": "south-west"
+      },
+      "w": {
+        "short": "W",
+        "long": "west"
+      },
+      "nw": {
+        "short": "NW",
+        "long": "north-west"
+      }
+    },
+    "sun": {
+      "up": "Sun up",
+      "down": "Sun down",
+      "daylight_one": "About {{count}} hour of daylight today",
+      "daylight_other": "About {{count}} hours of daylight today"
+    },
+    "readMore": {
+      "title": "Read more from {{name}}"
+    },
+    "farming": {
+      "title": "For farming",
+      "moisture": {
+        "label": "Water in the soil",
+        "zones": {
+          "dry": "Dry",
+          "good": "Good",
+          "tooWet": "Too wet"
+        },
+        "dry": {
+          "headline": "Too dry to plant",
+          "advice": "The soil is too dry for planting. Wait for rain before sowing."
+        },
+        "good": {
+          "headline": "Enough to plant",
+          "advice": "The soil is wet enough for planting this week."
+        },
+        "tooWet": {
+          "headline": "Too wet to plant",
+          "advice": "The soil is waterlogged. Wait for it to drain before planting."
+        }
+      },
+      "temperature": {
+        "label": "Soil temperature",
+        "value": "{{temp}}, {{words}}",
+        "cold": {
+          "words": "too cold",
+          "advice": "Too cold for most seeds to sprout."
+        },
+        "cool": {
+          "words": "cool",
+          "advice": "Seeds will sprout slowly."
+        },
+        "warm": {
+          "words": "warm enough",
+          "advice": "Seeds will sprout well."
+        },
+        "hot": {
+          "words": "too hot",
+          "advice": "The top of the soil is very hot. Seeds may dry out."
+        }
+      },
+      "daylight_one": "About {{count}} hour of daylight for field work today",
+      "daylight_other": "About {{count}} hours of daylight for field work today",
+      "readMore": {
+        "seasonalForecast": "Seasonal forecast",
+        "agrometBulletins": "Agromet bulletins"
       }
     }
   }

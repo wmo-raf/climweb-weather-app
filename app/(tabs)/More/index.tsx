@@ -11,9 +11,10 @@ import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { SCREENS } from '@/lib/layout/constants';
 import { ThemeColors, Fonts, navRailWidth, Spacing } from '@/lib/theme';
+import { ENABLED_PLUGINS, pluginHref } from '@/plugins/registry';
 
-// "More conditions" — landing page of the More tab. Favourites stays the
-// first card; further conditions (and country-specific cards) go below it.
+// "More conditions" — landing page of the More tab. Favourites is built in
+// and always first; the deployment's plugins (see plugins/) follow it.
 export default function MoreConditionsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -35,6 +36,17 @@ export default function MoreConditionsScreen() {
             description={t('more.favourites.description')}
             onPress={() => router.push(SCREENS.Favourites.toString() as Href)}
           />
+          {/* This deployment's plugins (EXPO_PUBLIC_MORE_PLUGINS), in its order. */}
+          {ENABLED_PLUGINS.map(plugin => (
+            <MoreCard
+              key={plugin.id}
+              testID={`more-${plugin.id}`}
+              icon={plugin.icon}
+              title={t(plugin.titleKey)}
+              description={t(plugin.descriptionKey)}
+              onPress={() => router.push(pluginHref(plugin.id) as Href)}
+            />
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
