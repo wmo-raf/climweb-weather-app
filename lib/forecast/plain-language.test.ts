@@ -1,5 +1,7 @@
-import en from '@/lib/localization/translations/english.json';
+import englishFile from '@/lib/localization/translations/english.json';
 import { beaufortForce, compassPoint, describeWind } from './plain-language';
+
+const en = englishFile.translations;
 
 // Resolves keys against english.json, with {{var}} interpolation.
 const t = (key: string, options: Record<string, unknown> = {}): string => {
@@ -18,7 +20,7 @@ describe('beaufortForce', () => {
   });
 
   test('every force has an English and Swahili label', () => {
-    const sw = require('@/lib/localization/translations/swahili.json');
+    const sw = require('@/lib/localization/translations/swahili.json').translations;
     for (let force = 0; force <= 12; force++) {
       expect(typeof (en as any).beaufort[force]).toBe('string');
       expect(typeof sw.beaufort[force]).toBe('string');

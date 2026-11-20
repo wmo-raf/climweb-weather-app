@@ -1,8 +1,10 @@
 import React from 'react';
 import TestRenderer, { act, ReactTestInstance } from 'react-test-renderer';
 
-import en from '@/lib/localization/translations/english.json';
+import englishFile from '@/lib/localization/translations/english.json';
 import { SCREENS, TAB_ROUTES } from '@/lib/layout/constants';
+
+const en = englishFile.translations;
 
 // Kept out of app/ so expo-router doesn't treat it as a route.
 
@@ -20,7 +22,7 @@ const mockNavigation = {
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
-      const dict = require('@/lib/localization/translations/english.json') as Record<string, any>;
+      const dict = require('@/lib/localization/translations/english.json').translations as Record<string, any>;
       if (typeof dict[key] === 'string') return dict[key];
       const nested = key.split('.').reduce<any>((obj, k) => obj?.[k], dict);
       return typeof nested === 'string' ? nested : key;

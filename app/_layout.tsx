@@ -22,8 +22,12 @@ import { ThemeProvider, DarkTheme, DefaultTheme } from 'expo-router/react-naviga
 import { useColorScheme } from '@/lib/hooks/use-color-scheme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useRecordAppOpens } from '@/lib/hooks/use-review';
+import { applyAppTimezone } from '@/lib/time/app-timezone';
 
 global.Buffer = global.Buffer || Buffer;
+
+// Before anything renders, so every date is read in the deployment's zone.
+applyAppTimezone();
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({

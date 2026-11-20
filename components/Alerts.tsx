@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
 import { useRouter, Href } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { useAlertsQuery } from "@/lib/hooks/alerts.hook";
 import { SCREENS } from "@/lib/layout/constants";
-import { CAPAlert, alertInLocation, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
+import { CAPAlert, alertInLocation, alertLevel, selectInfo } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_SEVERITY_RANK } from "@/lib/alerts/providers/cap-alerts/icons";
 import WeatherAlert from "./WeatherAlert";
 import { FadeIn } from "./FadeIn";
@@ -18,6 +19,7 @@ type AlertsProps = {
 const Alerts = (props: AlertsProps) => {
   const { lat, lon, location } = props;
   const { data: alerts = [] } = useAlertsQuery();
+  const { i18n } = useTranslation();
 
   const router = useRouter();
 
@@ -36,8 +38,8 @@ const Alerts = (props: AlertsProps) => {
     // summary that opens the Warnings tab, rather than stacking one banner
     // per alert or picking an arbitrary one to deep-link into.
     const sorted = [...relevantAlerts].sort((a, b) => {
-      const aInfo = a.info?.[0];
-      const bInfo = b.info?.[0];
+      const aInfo = selectInfo(a, i18n.language);
+      const bInfo = selectInfo(b, i18n.language);
       const aRank = aInfo ? ALERT_SEVERITY_RANK[alertLevel(aInfo)] : Infinity;
       const bRank = bInfo ? ALERT_SEVERITY_RANK[alertLevel(bInfo)] : Infinity;
       return aRank - bRank;

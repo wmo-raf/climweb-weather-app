@@ -8,7 +8,7 @@ const mockSoil: { data?: unknown; isLoading: boolean } = { isLoading: false };
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options: Record<string, unknown> = {}) => {
-      const dict = require('@/lib/localization/translations/english.json') as Record<string, any>;
+      const dict = require('@/lib/localization/translations/english.json').translations as Record<string, any>;
       const value = typeof dict[key] === 'string' ? dict[key] : key.split('.').reduce<any>((obj, k) => obj?.[k], dict);
       return typeof value === 'string' ? value.replace(/{{(\w+)}}/g, (_: string, n: string) => String(options[n])) : key;
     },

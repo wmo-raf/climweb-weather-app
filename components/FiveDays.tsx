@@ -23,7 +23,7 @@ type FiveDaysProps = {
     onSelectAlert?: (alert: CAPAlert) => void;
 }
 function FiveDays(props: FiveDaysProps): JSX.Element {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const colors = useTheme();
     const styles = useMemo(() => makeStyles(colors), [colors]);
     const { startDate, forecast, alerts, onSelectAlert } = props
@@ -44,7 +44,7 @@ function FiveDays(props: FiveDaysProps): JSX.Element {
         return <View style={styles.fiveDaysWrapper}>
             {fiveDays.map((d, idx) => {
                 const day = DateTime.fromISO(d.day);
-                const dayAlert = alerts ? getAlertForDay(alerts, day) : undefined;
+                const dayAlert = alerts ? getAlertForDay(alerts, day, i18n.language) : undefined;
 
                 return (
                     <TouchableOpacity key={d.day} onPress={() => props.onClick(day)}>

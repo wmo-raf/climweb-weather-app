@@ -35,7 +35,7 @@ export default function SettingItem({
         <View style={[styles.iconContainer, { backgroundColor: leftIconBgColor }]}>
           <Ionicons name={leftIcon} size={20} color={leftIconColor} />
         </View>
-        <ThemedText type="smallBold">{label}</ThemedText>
+        <ThemedText type="smallBold" style={styles.label}>{label}</ThemedText>
       </View>
       <View style={styles.rowRight}>
         {rightText ? (
@@ -70,16 +70,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: Spacing.md,
     paddingVertical: Spacing.lg,
     minHeight: 48,
   },
   rowPressed: {
     opacity: 0.6,
   },
+  // flexShrink on the left side and its label lets a long (translated) label
+  // wrap instead of running into the switch or value on the right.
   rowLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
+    flexShrink: 1,
+  },
+  label: {
+    flexShrink: 1,
   },
   iconContainer: {
     width: 32,
@@ -92,5 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
+    flexShrink: 0,
   },
 });

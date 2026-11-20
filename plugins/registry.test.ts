@@ -1,5 +1,8 @@
-import en from '@/lib/localization/translations/english.json';
-import sw from '@/lib/localization/translations/swahili.json';
+import englishFile from '@/lib/localization/translations/english.json';
+import swahiliFile from '@/lib/localization/translations/swahili.json';
+
+const en = englishFile.translations;
+const sw = swahiliFile.translations;
 
 import { AVAILABLE_PLUGINS, resolveEnabledPlugins } from './registry';
 import { RegisteredPlugin } from './types';

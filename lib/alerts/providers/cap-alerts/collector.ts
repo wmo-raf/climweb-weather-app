@@ -1,9 +1,8 @@
 import { DateTime } from "luxon"
 
-import { readCapFeedIfModified } from "./rss"
+import { AlertsFeed, readCapFeedIfModified } from "./rss"
 import { CAPAlert } from './alert';
 import { fetchCAPAlert } from './alert';
-import { APP_ALERTS_SENDER_ID } from '@/config';
 
 /**
  * CAPCollector keeps track of active CAP alerts.
@@ -11,10 +10,15 @@ import { APP_ALERTS_SENDER_ID } from '@/config';
  * In these docs, when we say active, we mean messages that are not cancelled, and are either ongoing or expected.
  */
 export class CAPCollector {
+    _feed: AlertsFeed
     _messages: { [id: string]: CAPAlert }
     _lastUpdate: DateTime
 
-    public constructor() {
+    /**
+     * @param feed The CAP RSS feed this collector follows.
+     */
+    public constructor(feed: AlertsFeed) {
+        this._feed = feed
         this._messages = {}
         this._lastUpdate = DateTime.fromMillis(0)
     }
@@ -28,7 +32,7 @@ export class CAPCollector {
         let ret: CAPAlert[] = []
         const updateTime = DateTime.now()
 
-        const refs = await readCapFeedIfModified(this._lastUpdate)
+        const refs = await readCapFeedIfModified(this._feed, this._lastUpdate)
         if (!refs) {
             return []
         }
@@ -84,7 +88,7 @@ export class CAPCollector {
         if (!alert.info) return false;
         const info = alert.info[0]
 
-        if (alert.sender !== APP_ALERTS_SENDER_ID) return false;
+        if (alert.sender !== this._feed.senderId) return false;
         if (alert.status !== 'Actual') return false;
         if (alert.scope !== 'Public') return false;
         //commenting out this filter for now to make dev testing of alerts UI/UX changes easier

@@ -55,7 +55,7 @@ function HourlyTable(props: HourlyTableProps): JSX.Element {
                 <Icon source={weatherIcons[step.weatherSymbol]} size={26} />
                 <Text style={styles.time}>{timeLabel}</Text>
               </View>
-              <Text style={styles.description} numberOfLines={2}>
+              <Text style={styles.description}>
                 {precipText} {rainWord} · {windText} {windWord}
               </Text>
               <Text style={styles.temp}>{temp}</Text>

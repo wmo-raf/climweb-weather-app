@@ -1,4 +1,4 @@
-import { LANGUAGES } from '@/lib/localization/translations';
+import { LANGUAGES, resolveLanguage } from '@/lib/localization/translations';
 
 // Just data + a lookup here — no Zustand store. The "current language" is
 // i18next's own state (see lib/hooks/use-language.ts), which already
@@ -22,6 +22,9 @@ export const SUPPORTED_LANGUAGES: Language[] = Object.entries(LANGUAGES).map(
   })
 );
 
+// A code without a language file (e.g. dropped from a country build) gives
+// the default language.
 export function getLanguage(code: string): Language {
-  return SUPPORTED_LANGUAGES.find((lang) => lang.code === code) || SUPPORTED_LANGUAGES[0];
+  const resolved = resolveLanguage(code);
+  return SUPPORTED_LANGUAGES.find((lang) => lang.code === resolved) || SUPPORTED_LANGUAGES[0];
 }

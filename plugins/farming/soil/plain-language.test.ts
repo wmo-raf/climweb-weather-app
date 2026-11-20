@@ -48,8 +48,8 @@ describe('soilMoistureWords', () => {
   });
 
   test('uses the config defaults, whose keys all exist in English and Swahili', () => {
-    const en = require('@/lib/localization/translations/english.json');
-    const sw = require('@/lib/localization/translations/swahili.json');
+    const en = require('@/lib/localization/translations/english.json').translations;
+    const sw = require('@/lib/localization/translations/swahili.json').translations;
     const lookup = (dict: any, key: string) => key.split('.').reduce((o, k) => o?.[k], dict);
     for (const value of [0.05, 0.25, 0.45]) {
       const words = soilMoistureWords(value);
@@ -74,7 +74,7 @@ describe('soilTemperatureWords', () => {
   });
 
   test('default wording reads "warm enough" / "Seeds will sprout well."', () => {
-    const en = require('@/lib/localization/translations/english.json');
+    const en = require('@/lib/localization/translations/english.json').translations;
     const words = soilTemperatureWords(24);
     expect(words.words.split('.').reduce((o: any, k: string) => o?.[k], en)).toBe('warm enough');
     expect(words.advice.split('.').reduce((o: any, k: string) => o?.[k], en)).toBe('Seeds will sprout well.');

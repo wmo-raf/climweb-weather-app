@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import weatherIcons from "@/lib/forecast/weathericons.constant";
 import { ForecastDayRecord } from "@/lib/forecast/types";
 import { describeDaySummary, WEEKDAY_LABEL_KEYS } from "@/lib/forecast/day-parts";
-import { CAPAlert, alertLevel } from "@/lib/alerts/providers/cap-alerts/alert";
+import { CAPAlert, alertLevel, selectInfo } from "@/lib/alerts/providers/cap-alerts/alert";
 import { ALERT_LEAD_WORD_KEYS, getWarningTintColors } from "@/lib/alerts/providers/cap-alerts/icons";
 import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
 import { useTheme } from "@/lib/hooks/use-theme";
@@ -24,7 +24,7 @@ type DayRowProps = {
 };
 
 const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -49,7 +49,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const dayLabel = isTomorrow ? `${t('today.tomorrow')} — ${weekday}` : weekday;
   const description = describeDaySummary(t, summary);
 
-  const alertInfo = alert?.info?.[0];
+  const alertInfo = alert ? selectInfo(alert, i18n.language) : undefined;
   const level = alertInfo ? alertLevel(alertInfo) : undefined;
   const tint = level ? getWarningTintColors(colors)[level] : undefined;
 
@@ -78,7 +78,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
           accessibilityLabel={`${t(ALERT_LEAD_WORD_KEYS[level])}: ${alertInfo.event}`}
         >
           <Icon source="alert" size={18} color={tint.text} />
-          <Text style={[styles.alertChipText, { color: tint.text }]} numberOfLines={1}>
+          <Text style={[styles.alertChipText, { color: tint.text }]}>
             {t(ALERT_LEAD_WORD_KEYS[level])}: {alertInfo.event}
           </Text>
           <Icon source="chevron-right" size={18} color={tint.text} />

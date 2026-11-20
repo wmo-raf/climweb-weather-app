@@ -5,6 +5,8 @@ import { booleanPointInPolygon, polygon } from '@turf/turf';
 import * as turf from '@turf/turf';
 import { stripPrefix } from 'xml2js/lib/processors';
 
+import { LANGUAGES } from '@/lib/localization/translations';
+
 
 /**
  * The area part of a CAP message.
@@ -399,12 +401,41 @@ export const parseFromXML = async (xmlString: string): Promise<CAPAlert> => {
  * @returns A boolean indicating whether the alert is relevant for the specified location.
  */
 export function alertInLocation(alert: CAPAlert, location: { latitude: number, longitude: number }): boolean {
-  if (!alert.info)
-      return false
+  // Any info block counts: a multi-language alert may only carry the area
+  // polygon in one of them.
+  return (alert.info ?? []).some(info => !!info.area && isValidFor(info.area, location));
+}
 
-  const info = alert.info[0]
-  if (!info.area || !isValidFor(info.area, location))
-      return false
-  
-  return true
+// "sw-TZ", "SW_tz" -> "sw"; "en-US" -> "en". Compares on the main language
+// subtag only, so a feed's regional variant still matches the app language.
+export function baseLanguage(code: string | undefined): string {
+  return (code ?? '').trim().toLowerCase().split(/[-_]/)[0];
+}
+
+// The CAP <language> values that count as the given app language: its own
+// code plus any cap_language_aliases its language file lists (e.g. "swa"
+// for a feed using 3-letter codes). Nothing here is specific to a language.
+function capLanguagesFor(language: string): Set<string> {
+  const code = baseLanguage(language);
+  const aliases = LANGUAGES[code]?.capLanguageAliases ?? [];
+  return new Set([code, ...aliases.map(baseLanguage)]);
+}
+
+/**
+ * The <info> block to show for the given app language: the one whose
+ * <language> matches, otherwise the first block. Used everywhere an alert's
+ * text or details are read, so switching language needs no other logic.
+ * Severity, timing and area are the same across blocks, but when the chosen
+ * block has no <area> it borrows one from another block, so the map still shows.
+ */
+export function selectInfo(alert: CAPAlert, language: string): CAPInfo | undefined {
+  const infos = alert.info ?? [];
+  if (!infos.length) return undefined;
+
+  const wanted = capLanguagesFor(language);
+  const info = infos.find(i => wanted.has(baseLanguage(i.language))) ?? infos[0];
+
+  if (info.area) return info;
+  const area = infos.find(i => i.area)?.area;
+  return area ? { ...info, area } : info;
 }

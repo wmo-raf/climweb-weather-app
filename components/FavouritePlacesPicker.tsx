@@ -101,7 +101,7 @@ function FavouritePlacesPicker({ initialSelected = [], finishLabel, onFinish, th
         <View style={styles.chipRow}>
           {selected.map(place => (
             <View key={`${place.name}-${place.latitude}-${place.longitude}`} style={styles.chip}>
-              <Text style={styles.chipText} numberOfLines={1}>{place.name}</Text>
+              <Text style={styles.chipText}>{place.name}</Text>
               <TouchableOpacity
                 onPress={() => removePlace(place)}
                 accessibilityLabel={t('places.removeChip', { name: place.name })}
