@@ -389,7 +389,10 @@
       },
       "fromDirection": "{{wind}} kutoka {{direction}}",
       "fromSpoken": "kutoka {{direction}}",
-      "gusts": "Upepo wa ghafla wenye kasi ya hadi {{speed}}"
+      "gusts": "Upepo wa ghafla wenye kasi ya hadi {{speed}}",
+      "speedDirection": "Upepo kutoka {{direction}} kwa kasi ya {{speed}}.",
+      "speedOnly": "Upepo kwa kasi ya {{speed}}.",
+      "speedZero": "Kasi ya upepo {{speed}}."
     },
     "condition": {
       "clear": "Anga angavu",
@@ -492,7 +495,15 @@
       "in": "Inchi (in)",
       "spoken": {
         "celsius": "{{value}} digrii za Selsiasi",
-        "fahrenheit": "{{value}} digrii za Fahrenheit"
+        "fahrenheit": "{{value}} digrii za Fahrenheit",
+        "kmh_one": "kilomita {{count}} kwa saa",
+        "kmh_other": "kilomita {{count}} kwa saa",
+        "ms_one": "mita {{count}} kwa sekunde",
+        "ms_other": "mita {{count}} kwa sekunde",
+        "knots_one": "noti {{count}}",
+        "knots_other": "noti {{count}}",
+        "mph_one": "maili {{count}} kwa saa",
+        "mph_other": "maili {{count}} kwa saa"
       }
     },
     "More": "Zaidi",

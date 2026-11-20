@@ -389,7 +389,10 @@
       },
       "fromDirection": "{{wind}} from the {{direction}}",
       "fromSpoken": "from {{direction}}",
-      "gusts": "Gusts up to {{speed}}"
+      "gusts": "Gusts up to {{speed}}",
+      "speedDirection": "Wind from the {{direction}} at {{speed}}.",
+      "speedOnly": "Wind at {{speed}}.",
+      "speedZero": "Wind speed {{speed}}."
     },
     "condition": {
       "clear": "Clear sky",
@@ -492,7 +495,15 @@
       "in": "Inches (in)",
       "spoken": {
         "celsius": "{{value}} degrees Celsius",
-        "fahrenheit": "{{value}} degrees Fahrenheit"
+        "fahrenheit": "{{value}} degrees Fahrenheit",
+        "kmh_one": "{{count}} kilometre per hour",
+        "kmh_other": "{{count}} kilometres per hour",
+        "ms_one": "{{count}} metre per second",
+        "ms_other": "{{count}} metres per second",
+        "knots_one": "{{count}} knot",
+        "knots_other": "{{count}} knots",
+        "mph_one": "{{count}} mile per hour",
+        "mph_other": "{{count}} miles per hour"
       }
     },
     "More": "More",
