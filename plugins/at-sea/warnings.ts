@@ -13,15 +13,18 @@ export function keywordMatcher(keywords: string[]): RegExp | undefined {
   return words.length ? new RegExp(`\\b(?:${words.join('|')})s?\\b`, 'i') : undefined;
 }
 
-// Whether a CAP alert is about wind or conditions at sea, judged from its
-// first info block's event, headline and eventCode values.
+// Whether a CAP alert is about wind or conditions at sea, judged from the
+// event, headline and eventCode values. Any info block counts: a
+// multi-language alert has one block per language, and the keywords may
+// only cover some of those languages.
 export function isAtSeaWarning(alert: CAPAlert, keywords: string[] = AT_SEA_WARNING_KEYWORDS): boolean {
-  const info = alert.info?.[0];
   const matcher = keywordMatcher(keywords);
-  if (!info || !matcher) return false;
+  if (!matcher) return false;
 
-  const fields = [info.event, info.headline, ...(info.eventCode ?? []).map(code => code.value)];
-  return fields.some(field => typeof field === 'string' && matcher.test(field));
+  return (alert.info ?? []).some(info =>
+    [info.event, info.headline, ...(info.eventCode ?? []).map(code => code.value)]
+      .some(field => typeof field === 'string' && matcher.test(field))
+  );
 }
 
 // The At sea page's advisories: wind/marine warnings that cover the place

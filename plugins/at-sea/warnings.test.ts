@@ -57,6 +57,12 @@ describe('isAtSeaWarning', () => {
     expect(isAtSeaWarning(makeAlert('a', { event: 'Weather warning', eventCode: [{ valueName: 'TMA', value: 'Wind' }] }), KEYWORDS)).toBe(true);
   });
 
+  test('checks every language block, not just the first', () => {
+    const alert = makeAlert('a', { language: 'am', event: 'ኃይለኛ ነፋስ' });
+    alert.info!.push({ ...alert.info![0], language: 'en', event: 'Strong winds' });
+    expect(isAtSeaWarning(alert, KEYWORDS)).toBe(true);
+  });
+
   test('matches nothing with no keywords configured', () => {
     expect(isAtSeaWarning(makeAlert('a', { event: 'Strong winds' }), [])).toBe(false);
   });
