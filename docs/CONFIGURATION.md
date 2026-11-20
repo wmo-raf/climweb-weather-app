@@ -703,21 +703,33 @@ All of these are optional. The values above are the defaults.
 
 ---
 
-## Today Sections
+## Sparse Forecast
 
-Two optional flags choose which sections appear on Today, the landing page, below the day parts. Both take `'true'` or `'false'`; any other value keeps the default.
+One optional flag says whether the forecast is too sparse for an hour-by-hour view, i.e. whether its steps are 2 hours or more apart. It takes `'true'` or `'false'`; any other value keeps the default.
 
 ```env
-EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY='false'
-EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN='true'
+EXPO_PUBLIC_SPARSE_FORECAST='true'
 ```
 
-| Flag | Default | Shows |
-|---|---|---|
-| `EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY` | `false` | "Today, hour by hour": the next five hours, tapping through to the hourly forecast. Phone layout only; the tablet layout never had it. |
-| `EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN` | `true` | The wind card (direction and speed now) and the sunrise/sunset card. Phone and tablet layouts. |
+Set it to match the forecast source: `'true'` for a 3-hourly WRF run, `'false'` for an hourly source such as MET's Locationforecast. The parser reads either; this only chooses the pages (see Time resolution under Forecast Source Configuration).
 
-With both on, hour by hour comes first, then wind, then sun. These are build-time values: rebuild or restart the bundler after changing them.
+| | `'true'` (default) | `'false'` |
+|---|---|---|
+| Today, below the day parts | The wind card (direction and speed now) and the sunrise/sunset card | "Today, hour by hour": the next five hours, tapping through to the hourly forecast (phone layout only) |
+| Tapping a day in Five Days | The day-detail screen | The hourly table |
+
+The day-detail screen follows the steps the provider sent for that day, whatever their length:
+
+| Steps that day | Day parts | Table | Note |
+|---|---|---|---|
+| Hourly or 3-hourly | Night, Morning, Afternoon, Evening | "Every hour" / "Every 3 hours", one row per step | — |
+| 6-hourly | Night, Morning, Afternoon, Evening | "Every 6 hours" | — |
+| 12-hourly | Day and Night | none | "Less detail is available this far ahead." |
+| One step | none; the summary shows the one value and its period | none | "Only one forecast time is available for this day." |
+
+A day that mixes step lengths is treated as its longest step, and its table title gives the range ("Every 1–6 hours"). Each part and row uses only the steps that start inside its own window. The rules are in [lib/forecast/day-detail.ts](../lib/forecast/day-detail.ts).
+
+This is a build-time value: rebuild or restart the bundler (`npx expo start --clear`) after changing it. It replaces `EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY` and `EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN`, which are no longer read; development builds warn if either is still set.
 
 ---
 

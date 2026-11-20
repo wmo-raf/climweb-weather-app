@@ -149,7 +149,13 @@ export function formatWind(metresPerSecond: number | undefined, unit: WindUnit):
   return `${roundWind(metresPerSecond ?? 0, unit)} ${WIND_SYMBOLS[unit]}`;
 }
 
+const precipitationDecimals = (unit: PrecipitationUnit) => (unit === 'in' ? 2 : 1);
+
 export function formatPrecipitation(millimetres: number, unit: PrecipitationUnit): string {
-  const decimals = unit === 'in' ? 2 : 1;
-  return `${convertPrecipitation(millimetres, unit).toFixed(decimals)} ${PRECIPITATION_SYMBOLS[unit]}`;
+  return `${convertPrecipitation(millimetres, unit).toFixed(precipitationDecimals(unit))} ${PRECIPITATION_SYMBOLS[unit]}`;
+}
+
+// The figure formatPrecipitation shows, as a number (0 when it shows 0.0).
+export function roundPrecipitation(millimetres: number, unit: PrecipitationUnit): number {
+  return Number(convertPrecipitation(millimetres, unit).toFixed(precipitationDecimals(unit))) || 0;
 }

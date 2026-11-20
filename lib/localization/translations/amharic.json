@@ -176,12 +176,27 @@
         "morning": "ጥዋት",
         "afternoon": "ከሰዓት",
         "evening": "ምሽት",
-        "night": "ሌሊት"
+        "night": "ሌሊት",
+        "day": "Day"
       },
       "morning": "ጥዋት",
       "afternoon": "ከሰዓት",
       "evening": "ምሽት",
-      "night": "ሌሊት"
+      "night": "ሌሊት",
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      }
     },
     "alerts": {
       "title": "ማንቂያዎች"
@@ -503,7 +518,11 @@
         "knots_one": "{{count}} knot",
         "knots_other": "{{count}} knots",
         "mph_one": "{{count}} mile per hour",
-        "mph_other": "{{count}} miles per hour"
+        "mph_other": "{{count}} miles per hour",
+        "mm_one": "{{count}} millimetre",
+        "mm_other": "{{count}} millimetres",
+        "in_one": "{{count}} inch",
+        "in_other": "{{count}} inches"
       }
     },
     "More": "More",
@@ -637,6 +656,21 @@
         "seasonalForecast": "Seasonal forecast",
         "agrometBulletins": "Agromet bulletins"
       }
+    },
+    "dayDetail": {
+      "title": "{{weekday}} {{day}} {{month}}",
+      "singleLine": "{{condition}}, {{range}}",
+      "interval_one": "Every hour",
+      "interval_other": "Every {{count}} hours",
+      "intervalMixed": "Every {{shortest}}–{{longest}} hours",
+      "note": {
+        "coarse": "Less detail is available this far ahead.",
+        "single": "Only one forecast time is available for this day."
+      },
+      "rainNone": "None",
+      "rainNoneSpoken": "no rain",
+      "rangeSpoken": "{{start}} to {{end}}",
+      "windCell": "{{direction}} {{speed}}"
     }
   }
 }

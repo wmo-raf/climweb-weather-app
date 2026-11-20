@@ -6,6 +6,7 @@ import {
   formatPrecipitation,
   formatTemperature,
   formatWind,
+  roundPrecipitation,
   roundTemperature,
 } from '@/lib/units';
 
@@ -18,6 +19,8 @@ import {
 //   units.tempSpoken(24.3)  // "24 degrees Celsius" (screen readers)
 //   units.wind(6.1)         // "22 km/h"
 //   units.rain(1.24)        // "1.2 mm"
+//   units.rainSpoken(1.24)  // "1.2 millimetres"
+//   units.rainShows(0.02)   // false: it would show as 0.0 mm
 export function useUnits() {
   const { t } = useTranslation();
   const temperature = useUnitsStore(s => s.temperature);
@@ -32,5 +35,9 @@ export function useUnits() {
       t(`units.spoken.${temperature}`, { value: roundTemperature(celsius, temperature) }),
     wind: (metresPerSecond: number | undefined) => formatWind(metresPerSecond, wind),
     rain: (millimetres: number) => formatPrecipitation(millimetres, precipitation),
+    rainSpoken: (millimetres: number) =>
+      t(`units.spoken.${precipitation}`, { count: roundPrecipitation(millimetres, precipitation) }),
+    rainShows: (millimetres: number | undefined) =>
+      millimetres !== undefined && roundPrecipitation(millimetres, precipitation) > 0,
   }), [t, temperature, wind, precipitation]);
 }

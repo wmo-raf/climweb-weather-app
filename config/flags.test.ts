@@ -1,4 +1,4 @@
-// The Today section flags read EXPO_PUBLIC_* values once, at import.
+// EXPO_PUBLIC_SPARSE_FORECAST is read once, at import.
 const loadConfig = (env: Record<string, string | undefined>) => {
   const saved = { ...process.env };
   Object.assign(process.env, env);
@@ -9,25 +9,27 @@ const loadConfig = (env: Record<string, string | undefined>) => {
   return config;
 };
 
-const HOURLY = 'EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY';
-const WIND_SUN = 'EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN';
+const SPARSE = 'EXPO_PUBLIC_SPARSE_FORECAST';
 
-describe('Today section flags', () => {
-  test('default to wind and sun on, hour by hour off', () => {
-    const config = loadConfig({ [HOURLY]: undefined, [WIND_SUN]: undefined });
-    expect(config.SHOW_TODAY_HOURLY_SUMMARY).toBe(false);
-    expect(config.SHOW_TODAY_WIND_AND_SUN).toBe(true);
+describe('SPARSE_FORECAST', () => {
+  test('is on by default', () => {
+    expect(loadConfig({ [SPARSE]: undefined }).SPARSE_FORECAST).toBe(true);
   });
 
-  test('read "true" and "false" in any case, with spaces', () => {
-    const config = loadConfig({ [HOURLY]: ' TRUE ', [WIND_SUN]: 'False' });
-    expect(config.SHOW_TODAY_HOURLY_SUMMARY).toBe(true);
-    expect(config.SHOW_TODAY_WIND_AND_SUN).toBe(false);
+  test('reads "true" and "false" in any case, with spaces', () => {
+    expect(loadConfig({ [SPARSE]: ' FALSE ' }).SPARSE_FORECAST).toBe(false);
+    expect(loadConfig({ [SPARSE]: 'True' }).SPARSE_FORECAST).toBe(true);
   });
 
-  test('keep the default for anything else', () => {
-    const config = loadConfig({ [HOURLY]: 'yes', [WIND_SUN]: '' });
-    expect(config.SHOW_TODAY_HOURLY_SUMMARY).toBe(false);
-    expect(config.SHOW_TODAY_WIND_AND_SUN).toBe(true);
+  test('keeps the default for anything else', () => {
+    expect(loadConfig({ [SPARSE]: 'no' }).SPARSE_FORECAST).toBe(true);
+    expect(loadConfig({ [SPARSE]: '' }).SPARSE_FORECAST).toBe(true);
+  });
+
+  test('warns in development when the old Today flags are still set', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    loadConfig({ EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN: 'true' });
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('EXPO_PUBLIC_SPARSE_FORECAST'));
+    warn.mockRestore();
   });
 });

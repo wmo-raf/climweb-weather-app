@@ -19,7 +19,8 @@ import StatusCard from '@/components/StatusCard';
 import SunTimesCard from '@/components/SunTimesCard';
 import TodayWindCard from '@/components/TodayWindCard';
 
-import { SHOW_TODAY_HOURLY_SUMMARY, SHOW_TODAY_WIND_AND_SUN } from '@/config';
+import { SPARSE_FORECAST } from '@/config';
+import { dayHref } from '@/lib/layout/open-day';
 import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
@@ -147,15 +148,7 @@ const MainScreen = () => {
   }
 
   const today = DateTime.now();
-  const onSelectDay = (day: DateTime) =>
-    router.push({
-      pathname: SCREENS.Hourly, params: {
-        location: location,
-        dayString: day.toISO(),
-        startAtCurrentTime: "no",
-        title: day.toLocaleString({ weekday: 'long' })
-      }
-    });
+  const onSelectDay = (day: DateTime) => router.push(dayHref(day, location));
 
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({
@@ -209,10 +202,10 @@ const MainScreen = () => {
           <View style={styles.xlLeftPane}>
             <Alerts lat={lat} lon={lon} location={location} />
             <CurrentConditionsCard daySummary={todaySummary} location={location} tempFontSize={tempSize.xl} showWindSummary />
-            {SHOW_TODAY_HOURLY_SUMMARY && todaySummary && (
+            {!SPARSE_FORECAST && todaySummary && (
               <FiveHourSummary daySummary={todaySummary} location={location} />
             )}
-            {SHOW_TODAY_WIND_AND_SUN && !isUndefined(lat) && !isUndefined(lon) && (
+            {SPARSE_FORECAST && !isUndefined(lat) && !isUndefined(lon) && (
               <View style={styles.todayCards}>
                 <TodayWindCard forecast={forecast} />
                 <SunTimesCard lat={lat} lon={lon} />
@@ -232,10 +225,10 @@ const MainScreen = () => {
       mainContent = (
         <View style={styles.opacity}>
           <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} compact={breakpoint === 'small'} />
-          {SHOW_TODAY_HOURLY_SUMMARY && todaySummary && (
+          {!SPARSE_FORECAST && todaySummary && (
             <FiveHourSummary daySummary={todaySummary} location={location} />
           )}
-          {SHOW_TODAY_WIND_AND_SUN && todaySummary && !isUndefined(lat) && !isUndefined(lon) && (
+          {SPARSE_FORECAST && todaySummary && !isUndefined(lat) && !isUndefined(lon) && (
             <View style={styles.todayCards}>
               <TodayWindCard forecast={forecast} />
               <SunTimesCard lat={lat} lon={lon} />

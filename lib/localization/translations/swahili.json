@@ -176,12 +176,27 @@
         "morning": "Asubuhi",
         "afternoon": "Mchana",
         "evening": "Jioni",
-        "night": "Usiku"
+        "night": "Usiku",
+        "day": "Mchana"
       },
       "morning": "asubuhi",
       "afternoon": "mchana",
       "evening": "jioni",
-      "night": "usiku"
+      "night": "usiku",
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mac",
+        "apr": "Apr",
+        "may": "Mei",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Ago",
+        "sep": "Sep",
+        "oct": "Okt",
+        "nov": "Nov",
+        "dec": "Des"
+      }
     },
     "alerts": {
       "title": "Tahadhari"
@@ -503,7 +518,11 @@
         "knots_one": "noti {{count}}",
         "knots_other": "noti {{count}}",
         "mph_one": "maili {{count}} kwa saa",
-        "mph_other": "maili {{count}} kwa saa"
+        "mph_other": "maili {{count}} kwa saa",
+        "mm_one": "milimita {{count}}",
+        "mm_other": "milimita {{count}}",
+        "in_one": "inchi {{count}}",
+        "in_other": "inchi {{count}}"
       }
     },
     "More": "Zaidi",
@@ -637,6 +656,21 @@
         "seasonalForecast": "Utabiri wa msimu",
         "agrometBulletins": "Majarida ya hali ya hewa-kilimo"
       }
+    },
+    "dayDetail": {
+      "title": "{{weekday}} {{day}} {{month}}",
+      "singleLine": "{{condition}}, {{range}}",
+      "interval_one": "Kila saa",
+      "interval_other": "Kila saa {{count}}",
+      "intervalMixed": "Kila saa {{shortest}}–{{longest}}",
+      "note": {
+        "coarse": "Maelezo machache yanapatikana kwa siku za mbele zaidi.",
+        "single": "Kuna muda mmoja tu wa utabiri kwa siku hii."
+      },
+      "rainNone": "Hakuna",
+      "rainNoneSpoken": "hakuna mvua",
+      "rangeSpoken": "{{start}} hadi {{end}}",
+      "windCell": "{{direction}} {{speed}}"
     }
   }
 }

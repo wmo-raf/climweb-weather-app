@@ -207,19 +207,17 @@ describe('Landing page sections', () => {
       (n.props.accessibilityLabel ?? '').startsWith('Today, hour by hour')
     )).map(n => n.props.testID ?? 'hourly');
 
-  // index.tsx reads the flags from config at render (config/flags.test.ts
-  // covers parsing them from the env), so tests set them on the module.
-  const config = require('@/config') as { SHOW_TODAY_HOURLY_SUMMARY: boolean; SHOW_TODAY_WIND_AND_SUN: boolean };
-  const defaults = { hourly: config.SHOW_TODAY_HOURLY_SUMMARY, windAndSun: config.SHOW_TODAY_WIND_AND_SUN };
-  const renderLanding = (hourly = defaults.hourly, windAndSun = defaults.windAndSun) => {
-    config.SHOW_TODAY_HOURLY_SUMMARY = hourly;
-    config.SHOW_TODAY_WIND_AND_SUN = windAndSun;
+  // index.tsx reads SPARSE_FORECAST from config at render (config/flags.test.ts
+  // covers parsing it from the env), so tests set it on the module.
+  const config = require('@/config') as { SPARSE_FORECAST: boolean };
+  const defaultSparse = config.SPARSE_FORECAST;
+  const renderLanding = (sparse = defaultSparse) => {
+    config.SPARSE_FORECAST = sparse;
     return render(<LandingPage />);
   };
 
   afterAll(() => {
-    config.SHOW_TODAY_HOURLY_SUMMARY = defaults.hourly;
-    config.SHOW_TODAY_WIND_AND_SUN = defaults.windAndSun;
+    config.SPARSE_FORECAST = defaultSparse;
   });
 
   beforeEach(() => {
@@ -228,21 +226,20 @@ describe('Landing page sections', () => {
     mockForecast.data = todayForecast();
   });
 
-  test.each([
-    [true, true, ['hourly', 'today-wind-card', 'sun-times-card']],
-    [true, false, ['hourly']],
-    [false, true, ['today-wind-card', 'sun-times-card']],
-    [false, false, []],
-  ])('hour by hour %s, wind and sun %s', (hourly, windAndSun, expected) => {
-    expect(sectionOrder(renderLanding(hourly, windAndSun))).toEqual(expected);
+  test('a sparse forecast shows wind and sun, not hour by hour', () => {
+    expect(sectionOrder(renderLanding(true))).toEqual(['today-wind-card', 'sun-times-card']);
   });
 
-  test('defaults to wind and sun without hour by hour', () => {
+  test('an hourly forecast shows hour by hour, not wind and sun', () => {
+    expect(sectionOrder(renderLanding(false))).toEqual(['hourly']);
+  });
+
+  test('defaults to sparse', () => {
     expect(sectionOrder(renderLanding())).toEqual(['today-wind-card', 'sun-times-card']);
   });
 
   test('the sun card is for the selected place', () => {
-    const root = renderLanding(false, true);
+    const root = renderLanding(true);
     expect(byTestID(root, 'sun-times-card')[0].props).toMatchObject({ lat: -6.8, lon: 39.28 });
   });
 });
