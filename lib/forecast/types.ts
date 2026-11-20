@@ -88,8 +88,13 @@ export interface ForecastStepRecord {
   windSpeed?: number;           // m/s
   windDirection?: number;       // degrees the wind blows FROM (0 = north)
   windGust?: number;            // m/s; undefined when the provider sends no gusts
-  precipitation: number | "-";  // mm, pre-computed
-  weatherSymbol: string;        // pre-computed
+  precipitation: number | "-";  // mm over `period`, pre-computed
+  weatherSymbol: string;        // pre-computed, for `period`
+  // Hours the symbol and rain describe: the step's shortest period block
+  // (next_1_hours, next_6_hours or next_12_hours). Not the gap to the next
+  // step: a WRF run sends 6-hour amounts on 3-hourly steps. Undefined when
+  // the step has no period block.
+  period?: number;
 }
 
 export interface ForecastDayRecord {
