@@ -660,17 +660,11 @@
     "dayDetail": {
       "title": "{{weekday}} {{day}} {{month}}",
       "singleLine": "{{condition}}, {{range}}",
-      "interval_one": "Kila saa",
-      "interval_other": "Kila saa {{count}}",
-      "intervalMixed": "Kila saa {{shortest}}–{{longest}}",
       "note": {
         "coarse": "Maelezo machache yanapatikana kwa siku za mbele zaidi.",
         "single": "Kuna muda mmoja tu wa utabiri kwa siku hii."
       },
-      "rainNone": "Hakuna",
-      "rainNoneSpoken": "hakuna mvua",
-      "rangeSpoken": "{{start}} hadi {{end}}",
-      "windCell": "{{direction}} {{speed}}"
+      "rangeSpoken": "{{start}} hadi {{end}}"
     }
   }
 }

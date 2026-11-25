@@ -56,7 +56,6 @@ jest.mock('@/lib/hooks/use-units', () => {
 import DayDetail from '@/components/DayDetail';
 import DayRow from '@/components/DayRow';
 import { stepsForDay } from '@/lib/forecast/day-detail';
-import { useDayDetailStore } from '@/lib/store/day-detail.store';
 /* eslint-enable import/first */
 
 const TZ = 'Africa/Dar_es_Salaam';
@@ -104,38 +103,28 @@ function render(steps: ReturnType<typeof day>) {
 }
 
 const parts = (root: ReactTestInstance) => byTestID(root, /^detail-part-/).map(n => n.props.testID.replace('detail-part-', ''));
-const rows = (root: ReactTestInstance) => byTestID(root, /^day-detail-row-/);
-// The Pressable itself (its host View has no onPress).
-const toggle = (root: ReactTestInstance) =>
-  root.findAll(n => n.props.testID === 'day-detail-table-toggle' && typeof n.props.onPress === 'function')[0];
-const expand = (root: ReactTestInstance) => act(() => toggle(root).props.onPress());
+// The screen has no hour-by-hour table: the day parts are the breakdown.
+const hasTable = (root: ReactTestInstance) => byTestID(root, /^day-detail-(row-|table)/).length > 0;
 
 beforeEach(() => {
   mockLanguage.current = 'en';
-  act(() => useDayDetailStore.getState().setTableExpanded(false));
 });
 
 describe('3-hourly day (12a)', () => {
-  test('four parts and eight rows, every 3 hours', () => {
+  test('four parts, no table and no note', () => {
     const root = render(threeHourly());
     expect(parts(root)).toEqual(['night', 'morning', 'afternoon', 'evening']);
-    expect(textOf(toggle(root))).toContain('Every 3 hours');
-    expect(rows(root)).toHaveLength(0); // starts collapsed
-    expand(root);
-    expect(rows(root)).toHaveLength(8);
+    expect(hasTable(root)).toBe(false);
     expect(byTestID(root, 'day-detail-note')).toHaveLength(0);
   });
 });
 
 describe('6-hourly day (12b)', () => {
-  test('four parts and four rows titled "Every 6 hours"', () => {
+  test('four parts, no table and no note', () => {
     const root = render(sixHourly());
     expect(parts(root)).toEqual(['night', 'morning', 'afternoon', 'evening']);
-    expect(textOf(toggle(root))).toContain('Every 6 hours');
-    expand(root);
-    expect(rows(root).map(r => r.props.testID)).toEqual([
-      'day-detail-row-00:00–06:00', 'day-detail-row-06:00–12:00', 'day-detail-row-12:00–18:00', 'day-detail-row-18:00–00:00',
-    ]);
+    expect(hasTable(root)).toBe(false);
+    expect(byTestID(root, 'day-detail-note')).toHaveLength(0);
   });
 
   test('the summary gives the range, symbol and line', () => {
@@ -152,47 +141,20 @@ describe('6-hourly day (12b)', () => {
     expect(textOf(byTestID(render(sixHourly()), 'detail-part-morning')[0])).not.toContain('mm');
   });
 
-  test('rows show range, temperature, rain and wind, and read the same way', () => {
-    const root = render(sixHourly());
-    expand(root);
-    const [night, , afternoon] = rows(root);
-    expect(textOf(night)).toContain('00:00–06:00');
-    expect(textOf(night)).toContain('None');
-    expect(textOf(night)).toContain('SE 16 km/h');
-    expect(textOf(afternoon)).toContain('1.0 mm');
-    expect(afternoon.props.accessibilityLabel).toBe(
-      '12:00 to 18:00, 24 degrees Celsius, Light rain, 1 millimetre, Wind from the south-east at 16 kilometres per hour.');
-    expect(night.props.accessibilityLabel).toContain('no rain');
-  });
-
-  test('the expand control announces its state, and the choice lasts for the session', () => {
-    const root = render(sixHourly());
-    expect(toggle(root).props.accessibilityRole).toBe('button');
-    expect(toggle(root).props.accessibilityState).toEqual({ expanded: false });
-    expand(root);
-    expect(toggle(root).props.accessibilityState).toEqual({ expanded: true });
-    // Another day opened later in the session starts expanded.
-    const next = render(threeHourly());
-    expect(rows(next)).toHaveLength(8);
-  });
-
   test('works in Swahili', () => {
     mockLanguage.current = 'sw';
     const root = render(sixHourly());
-    expect(textOf(toggle(root))).toContain('Kila saa 6');
     expect(byTestID(root, 'detail-part-afternoon')[0].props.accessibilityLabel)
       .toBe('Mchana, 12:00 hadi 18:00, 24 digrii za Selsiasi, Mvua nyepesi, milimita 1');
-    expand(root);
-    expect(textOf(rows(root)[0])).toContain('Kus-Mas 16 km/h');
   });
 });
 
 describe('12-hourly day (12c)', () => {
-  test('Day and Night, no table, and the note', () => {
+  test('Day and Night, and the note', () => {
     const root = render(twelveHourly());
     expect(parts(root)).toEqual(['day', 'night']);
     expect(textOf(byTestID(root, 'detail-part-night')[0])).toContain('18:00–06:00');
-    expect(toggle(root)).toBeUndefined();
+    expect(hasTable(root)).toBe(false);
     expect(textOf(byTestID(root, 'day-detail-note')[0])).toContain('Less detail is available this far ahead.');
   });
 
@@ -212,7 +174,7 @@ describe('single-step day (12d)', () => {
   test('one value, no parts, and the note', () => {
     const root = render(singleStep());
     expect(parts(root)).toEqual([]);
-    expect(toggle(root)).toBeUndefined();
+    expect(hasTable(root)).toBe(false);
     expect(textOf(byTestID(root, 'day-summary')[0])).toContain('24°C');
     expect(textOf(byTestID(root, 'day-summary')[0])).toContain('Partly cloudy, 12:00–18:00');
     expect(textOf(byTestID(root, 'day-detail-note')[0])).toContain('Only one forecast time is available for this day.');

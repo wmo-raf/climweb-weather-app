@@ -1,5 +1,5 @@
 import React, { JSX, useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 
@@ -8,13 +8,9 @@ import PartCard, { WRAP_AT_SPACES } from './PartCard';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { CONDITION_LABEL_KEYS, conditionBucket } from '@/lib/forecast/day-parts';
 import {
-  DETAIL_PART_LABEL_KEYS, DetailPart, DetailStep, TableRow, dayDetailNote, dayParts, dayResolution, daySummary,
-  partRangeLabel, shortestStep, summaryLine, tableRows,
+  DETAIL_PART_LABEL_KEYS, DetailPart, DetailStep, dayDetailNote, dayParts, daySummary, partRangeLabel, summaryLine,
 } from '@/lib/forecast/day-detail';
-import { compassPoint } from '@/lib/forecast/plain-language';
-import { windSentence } from '@/lib/forecast/wind-sentence';
-import { useDayDetailStore } from '@/lib/store/day-detail.store';
-import { ThemeColors, Fonts, Radius, Spacing, touchTarget } from '@/lib/theme';
+import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useUnits } from '@/lib/hooks/use-units';
 
@@ -45,8 +41,8 @@ type DayDetailProps = {
 };
 
 // The body of a day's detail (Five Days › a day): summary, day parts, and a
-// table or a note, all following the step length the provider sent for
-// this day (lib/forecast/day-detail.ts).
+// note when the steps are coarse, all following the step length the
+// provider sent for this day (lib/forecast/day-detail.ts).
 function DayDetail({ steps }: DayDetailProps): JSX.Element | null {
   const { t } = useTranslation();
   const units = useUnits();
@@ -57,7 +53,6 @@ function DayDetail({ steps }: DayDetailProps): JSX.Element | null {
   if (!summary) return null;
 
   const parts = dayParts(steps);
-  const rows = tableRows(steps);
   const note = dayDetailNote(steps);
 
   // Summary card
@@ -93,8 +88,6 @@ function DayDetail({ steps }: DayDetailProps): JSX.Element | null {
           renderCard={(i, width) => <DetailPartCard key={parts[i].name} part={parts[i]} width={width} />}
         />
       )}
-
-      {rows && <StepTable rows={rows} steps={steps} />}
 
       {note && (
         <View style={styles.note} testID="day-detail-note">
@@ -135,97 +128,6 @@ function DetailPartCard({ part, width }: { part: DetailPart; width: number }): J
       testID={`detail-part-${part.name}`}
       style={{ width }}
     />
-  );
-}
-
-// Expandable table, one row per step. Starts collapsed; the choice lasts
-// for the session (lib/store/day-detail.store.ts).
-function StepTable({ rows, steps }: { rows: TableRow[]; steps: DetailStep[] }): JSX.Element {
-  const { t } = useTranslation();
-  const colors = useTheme();
-  const styles = useMemo(() => makeStyles(colors), [colors]);
-  const expanded = useDayDetailStore(s => s.tableExpanded);
-  const setExpanded = useDayDetailStore(s => s.setTableExpanded);
-
-  const longest = dayResolution(steps) as number;
-  const shortest = shortestStep(steps) ?? longest;
-  const title = shortest !== longest
-    ? t('dayDetail.intervalMixed', { shortest, longest })
-    : t('dayDetail.interval', { count: longest });
-
-  return (
-    <View style={styles.tableCard}>
-      <Pressable
-        onPress={() => setExpanded(!expanded)}
-        accessibilityRole="button"
-        accessibilityState={{ expanded }}
-        accessibilityLabel={title}
-        style={styles.tableHeader}
-        testID="day-detail-table-toggle"
-      >
-        <Text style={styles.tableTitle} {...WRAP_AT_SPACES}>{title}</Text>
-        <Icon source={expanded ? 'chevron-up' : 'chevron-down'} size={24} color={colors.primary} />
-      </Pressable>
-      {expanded && rows.map((row, i) => <StepRow key={row.start} row={row} first={i === 0} />)}
-    </View>
-  );
-}
-
-function StepRow({ row, first }: { row: TableRow; first: boolean }): JSX.Element {
-  const { t } = useTranslation();
-  const units = useUnits();
-  const colors = useTheme();
-  const styles = useMemo(() => makeStyles(colors), [colors]);
-
-  const iconSource = weatherIcons[row.symbol];
-  const condition = t(CONDITION_LABEL_KEYS[conditionBucket(row.symbol)]);
-  const temp = row.temp !== undefined ? units.temp(row.temp) : '';
-
-  const hasRain = units.rainShows(row.rain);
-  const rain = row.rain === undefined ? '–' : hasRain ? units.rain(row.rain) : t('dayDetail.rainNone');
-  const rainSpoken = row.rain === undefined ? undefined : hasRain ? units.rainSpoken(row.rain) : t('dayDetail.rainNoneSpoken');
-
-  // "SE 16 km/h"; no direction when it's missing or the speed shows as 0.
-  let wind = '';
-  let windSpoken: string | undefined;
-  if (row.windSpeed !== undefined && Number.isFinite(row.windSpeed)) {
-    const speed = units.wind(row.windSpeed);
-    const calm = units.wind(row.windSpeed) === units.wind(0);
-    const hasDirection = row.windFrom !== undefined && Number.isFinite(row.windFrom) && !calm;
-    wind = hasDirection
-      ? t('dayDetail.windCell', { direction: t(`compass.${compassPoint(row.windFrom!)}.short`), speed })
-      : speed;
-    windSpoken = windSentence(t, row.windSpeed, row.windFrom, units.prefs.wind, { spoken: true });
-  }
-
-  const spoken = [
-    spokenRange(t, row.label),
-    row.temp !== undefined ? units.tempSpoken(row.temp) : undefined,
-    condition,
-    rainSpoken,
-    windSpoken,
-  ].filter(Boolean).join(', ');
-
-  return (
-    <View style={[styles.row, !first && styles.rowDivider]} accessible={true} accessibilityLabel={spoken} testID={`day-detail-row-${row.label}`}>
-      <Text style={styles.rowTime} {...WRAP_AT_SPACES}>{row.label}</Text>
-      <View style={styles.rowCells}>
-        <View style={styles.cell}>
-          <View style={styles.rowIcon}>{iconSource && <Icon source={iconSource} size={32} />}</View>
-          <Text style={styles.rowTemp}>{temp}</Text>
-        </View>
-        <View style={styles.cell}>
-          <Icon source="water-outline" size={18} color={colors.textSubtle} />
-          <Text style={styles.rowValue} {...WRAP_AT_SPACES}>{rain}</Text>
-        </View>
-        {wind !== '' && (
-          <View style={styles.cell}>
-            <Icon source="weather-windy" size={18} color={colors.textSubtle} />
-            <Text style={styles.rowValue} {...WRAP_AT_SPACES}>{wind}</Text>
-          </View>
-        )}
-      </View>
-    </View>
   );
 }
 
@@ -274,81 +176,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
     flexShrink: 1,
     minWidth: 0,
     fontSize: 16,
-    fontFamily: Fonts.sans.regular,
-    color: colors.text,
-  },
-  tableCard: {
-    ...card(colors),
-    backgroundColor: colors.bg,
-    overflow: 'hidden',
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.md,
-    minHeight: touchTarget.nav,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
-  tableTitle: {
-    flexShrink: 1,
-    minWidth: 0,
-    fontSize: 16,
-    fontFamily: Fonts.sans.bold,
-    color: colors.textStrong,
-  },
-  // Time, then the values; they wrap onto further lines when the text is
-  // large or the screen narrow, rather than squeezing.
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    columnGap: Spacing.lg,
-    rowGap: Spacing.sm,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    minHeight: touchTarget.nav,
-  },
-  rowDivider: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  rowTime: {
-    minWidth: 104,
-    fontSize: 14,
-    fontFamily: Fonts.sans.bold,
-    color: colors.textStrong,
-  },
-  rowCells: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    columnGap: Spacing.lg,
-    rowGap: Spacing.xs,
-    flexShrink: 1,
-    minWidth: 0,
-  },
-  cell: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    flexShrink: 1,
-    minWidth: 0,
-  },
-  rowIcon: {
-    width: 32,
-    height: 32,
-  },
-  rowTemp: {
-    fontSize: 16,
-    fontFamily: Fonts.sans.bold,
-    color: colors.textStrong,
-  },
-  rowValue: {
-    flexShrink: 1,
-    minWidth: 0,
-    fontSize: 14,
     fontFamily: Fonts.sans.regular,
     color: colors.text,
   },

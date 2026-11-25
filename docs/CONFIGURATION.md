@@ -718,16 +718,15 @@ Set it to match the forecast source: `'true'` for a 3-hourly WRF run, `'false'` 
 | Today, below the day parts | The wind card (direction and speed now) and the sunrise/sunset card | "Today, hour by hour": the next five hours, tapping through to the hourly forecast (phone layout only) |
 | Tapping a day in Five Days | The day-detail screen | The hourly table |
 
-The day-detail screen follows the steps the provider sent for that day, whatever their length:
+The day-detail screen shows a summary card (the day's temperature range, symbol and a plain line), then the day parts, following the steps the provider sent for that day, whatever their length. There is no hour-by-hour breakdown: the day parts are the breakdown.
 
-| Steps that day | Day parts | Table | Note |
-|---|---|---|---|
-| Hourly or 3-hourly | Night, Morning, Afternoon, Evening | "Every hour" / "Every 3 hours", one row per step | — |
-| 6-hourly | Night, Morning, Afternoon, Evening | "Every 6 hours" | — |
-| 12-hourly | Day and Night | none | "Less detail is available this far ahead." |
-| One step | none; the summary shows the one value and its period | none | "Only one forecast time is available for this day." |
+| Steps that day | Day parts | Note |
+|---|---|---|
+| Hourly, 3-hourly or 6-hourly | Night, Morning, Afternoon, Evening | — |
+| 12-hourly | Day and Night | "Less detail is available this far ahead." |
+| One step | none; the summary shows the one value and its period | "Only one forecast time is available for this day." |
 
-A day that mixes step lengths is treated as its longest step, and its table title gives the range ("Every 1–6 hours"). Each part and row uses only the steps that start inside its own window. The rules are in [lib/forecast/day-detail.ts](../lib/forecast/day-detail.ts).
+A day that mixes step lengths is treated as its longest step. Each part uses only the steps that start inside its own window. The rules are in [lib/forecast/day-detail.ts](../lib/forecast/day-detail.ts).
 
 This is a build-time value: rebuild or restart the bundler (`npx expo start --clear`) after changing it. It replaces `EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY` and `EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN`, which are no longer read; development builds warn if either is still set.
 

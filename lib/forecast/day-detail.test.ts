@@ -6,7 +6,7 @@ import swahili from '@/lib/localization/translations/swahili.json';
 import { ForecastRecord, ForecastStepRecord } from './types';
 import {
   DetailStep, dayDetailNote, dayParts, dayResolution, daySummary, dominantSymbol, forecastSeries,
-  partRangeLabel, shortestStep, stepsForDay, summaryLine, symbolSignificance, tableRows, timeRangeLabel, totalRain,
+  partRangeLabel, stepsForDay, summaryLine, symbolSignificance, timeRangeLabel, totalRain,
 } from './day-detail';
 
 const TZ = 'Africa/Dar_es_Salaam'; // UTC+3, no daylight saving
@@ -114,7 +114,6 @@ describe('dayResolution', () => {
     const series = [...run(1, 0, 12), ...run(6, 12, 3)];
     const steps = stepsForDay(series, DAY, TZ);
     expect(dayResolution(steps)).toBe(6);
-    expect(shortestStep(steps)).toBe(1);
   });
 
   test('snaps in-between lengths up', () => {
@@ -244,26 +243,25 @@ describe('daySummary and summaryLine', () => {
   });
 });
 
-describe('tableRows and notes', () => {
-  test('3-hourly: eight rows labelled with ranges', () => {
-    const rows = tableRows(threeHourly())!;
-    expect(rows).toHaveLength(8);
-    expect(rows[0].label).toBe('00:00–03:00');
-    expect(rows[7].label).toBe('21:00–00:00');
+describe('notes', () => {
+  test('hourly to 6-hourly days have no note', () => {
     expect(dayDetailNote(threeHourly())).toBeUndefined();
+    expect(dayDetailNote(sixHourly())).toBeUndefined();
   });
 
-  test('6-hourly: four rows', () => {
-    expect(tableRows(sixHourly())!.map(r => r.label)).toEqual(['00:00–06:00', '06:00–12:00', '12:00–18:00', '18:00–00:00']);
-  });
-
-  test('12-hourly: no table, the "less detail" note', () => {
-    expect(tableRows(twelveHourly())).toBeNull();
+  test('12-hourly: the "less detail" note', () => {
     expect(dayDetailNote(twelveHourly())).toBe('coarse');
   });
 
-  test('single step: no table, the "one time" note', () => {
-    expect(tableRows(singleStep())).toBeNull();
+  test('single step: the "one time" note', () => {
     expect(dayDetailNote(singleStep())).toBe('single');
+  });
+});
+
+describe('timeRangeLabel', () => {
+  test('reads HH:mm–HH:mm, with midnight at the end as 00:00', () => {
+    const [first, , , last] = sixHourly();
+    expect(timeRangeLabel(first.start, first.end)).toBe('00:00–06:00');
+    expect(timeRangeLabel(last.start, last.end)).toBe('18:00–00:00');
   });
 });

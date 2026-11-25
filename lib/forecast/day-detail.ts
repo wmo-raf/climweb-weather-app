@@ -80,13 +80,6 @@ export function dayResolution(steps: DetailStep[]): DayResolution {
   return snap(Math.max(...steps.map(s => hoursBetween(s.start, s.end))));
 }
 
-// Shortest step length, for an honest table title on mixed days
-// ("Every 1–6 hours").
-export function shortestStep(steps: DetailStep[]): number | undefined {
-  if (steps.length === 0) return undefined;
-  return snap(Math.min(...steps.map(s => hoursBetween(s.start, s.end))));
-}
-
 // --- symbols ------------------------------------------------------------------
 
 // Least to most significant. A part or day takes its most significant
@@ -260,19 +253,9 @@ export function summaryLine(t: Translate, summary: DaySummary): string {
   return describeConditions(t, summary.symbol, summary.windSpeed, rainLevel(wettestStep));
 }
 
-// --- table --------------------------------------------------------------------
+// --- note ---------------------------------------------------------------------
 
-export type TableRow = DetailStep & { label: string };
-
-// One row per step, labelled with its range. Null for 12-hourly and
-// single-step days, where the rows would only repeat the day parts.
-export function tableRows(steps: DetailStep[]): TableRow[] | null {
-  const resolution = dayResolution(steps);
-  if (resolution === 12 || resolution === 'single') return null;
-  return steps.map(step => ({ ...step, label: timeRangeLabel(step.start, step.end) }));
-}
-
-// The grey note shown instead of a table.
+// The grey note under the day parts on 12-hourly and single-step days.
 export type DayDetailNote = 'coarse' | 'single';
 
 export function dayDetailNote(steps: DetailStep[]): DayDetailNote | undefined {

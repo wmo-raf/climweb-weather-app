@@ -636,17 +636,11 @@
     "dayDetail": {
       "title": "{{weekday}} {{day}} {{month}}",
       "singleLine": "{{condition}}, {{range}}",
-      "interval_one": "Every hour",
-      "interval_other": "Every {{count}} hours",
-      "intervalMixed": "Every {{shortest}}–{{longest}} hours",
       "note": {
         "coarse": "Less detail is available this far ahead.",
         "single": "Only one forecast time is available for this day."
       },
-      "rainNone": "None",
-      "rainNoneSpoken": "no rain",
-      "rangeSpoken": "{{start}} to {{end}}",
-      "windCell": "{{direction}} {{speed}}"
+      "rangeSpoken": "{{start}} to {{end}}"
     }
   }
 }
