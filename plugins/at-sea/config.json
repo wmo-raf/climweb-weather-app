@@ -1,0 +1,171 @@
+{
+  "thresholds": {
+    "wind_kt": {
+      "lake": {
+        "moderate": 10,
+        "strong": 15
+      },
+      "ocean": {
+        "moderate": 10,
+        "strong": 20
+      }
+    },
+    "rain_24h_mm": {
+      "light": 0.1,
+      "moderate": 25,
+      "heavy": 50
+    }
+  },
+  "areas": [
+    {
+      "id": "tanga",
+      "type": "ocean",
+      "lat": -5.05,
+      "lon": 39.2,
+      "name": {
+        "en": "Tanga coast",
+        "sw": "Pwani ya Tanga"
+      }
+    },
+    {
+      "id": "pemba",
+      "type": "ocean",
+      "lat": -5.3,
+      "lon": 39.45,
+      "name": {
+        "en": "Pemba Channel",
+        "sw": "Mkondo wa Pemba"
+      }
+    },
+    {
+      "id": "zanzibar",
+      "type": "ocean",
+      "lat": -6.3,
+      "lon": 39.05,
+      "name": {
+        "en": "Zanzibar Channel",
+        "sw": "Mkondo wa Zanzibar"
+      }
+    },
+    {
+      "id": "darEsSalaam",
+      "type": "ocean",
+      "lat": -6.8,
+      "lon": 39.4,
+      "name": {
+        "en": "Dar es Salaam coast",
+        "sw": "Pwani ya Dar es Salaam"
+      }
+    },
+    {
+      "id": "mafia",
+      "type": "ocean",
+      "lat": -7.85,
+      "lon": 39.55,
+      "name": {
+        "en": "Mafia Channel",
+        "sw": "Mkondo wa Mafia"
+      }
+    },
+    {
+      "id": "kilwa",
+      "type": "ocean",
+      "lat": -8.95,
+      "lon": 39.62,
+      "name": {
+        "en": "Kilwa coast",
+        "sw": "Pwani ya Kilwa"
+      }
+    },
+    {
+      "id": "lindi",
+      "type": "ocean",
+      "lat": -9.98,
+      "lon": 39.8,
+      "name": {
+        "en": "Lindi coast",
+        "sw": "Pwani ya Lindi"
+      }
+    },
+    {
+      "id": "mtwara",
+      "type": "ocean",
+      "lat": -10.25,
+      "lon": 40.3,
+      "name": {
+        "en": "Mtwara coast",
+        "sw": "Pwani ya Mtwara"
+      }
+    },
+    {
+      "id": "victoriaBukoba",
+      "type": "lake",
+      "lat": -1.33,
+      "lon": 31.9,
+      "name": {
+        "en": "Lake Victoria – Bukoba",
+        "sw": "Ziwa Victoria – Bukoba"
+      }
+    },
+    {
+      "id": "victoriaMusoma",
+      "type": "lake",
+      "lat": -1.48,
+      "lon": 33.72,
+      "name": {
+        "en": "Lake Victoria – Musoma",
+        "sw": "Ziwa Victoria – Musoma"
+      }
+    },
+    {
+      "id": "victoriaMwanza",
+      "type": "lake",
+      "lat": -2.45,
+      "lon": 32.9,
+      "name": {
+        "en": "Lake Victoria – Mwanza",
+        "sw": "Ziwa Victoria – Mwanza"
+      }
+    },
+    {
+      "id": "tanganyikaKigoma",
+      "type": "lake",
+      "lat": -4.88,
+      "lon": 29.55,
+      "name": {
+        "en": "Lake Tanganyika – Kigoma",
+        "sw": "Ziwa Tanganyika – Kigoma"
+      }
+    },
+    {
+      "id": "tanganyikaKipili",
+      "type": "lake",
+      "lat": -7.43,
+      "lon": 30.52,
+      "name": {
+        "en": "Lake Tanganyika – Kipili",
+        "sw": "Ziwa Tanganyika – Kipili"
+      }
+    },
+    {
+      "id": "nyasaMatema",
+      "type": "lake",
+      "lat": -9.6,
+      "lon": 34.05,
+      "name": {
+        "en": "Lake Nyasa – Matema",
+        "sw": "Ziwa Nyasa – Matema"
+      }
+    },
+    {
+      "id": "nyasaMbambaBay",
+      "type": "lake",
+      "lat": -11.28,
+      "lon": 34.7,
+      "name": {
+        "en": "Lake Nyasa – Mbamba Bay",
+        "sw": "Ziwa Nyasa – Mbamba Bay"
+      }
+    }
+  ]
+}

@@ -40,6 +40,18 @@ export const Colors = {
     dangerBg: '#FEE2E2',
     infoText: '#1E40AF',
     infoBg: '#DBEAFE',
+
+    // At sea advisories (okay / take care / danger): banner background,
+    // border and icon (also the part dot), and title.
+    advisoryOkayBg: '#E5F3E8',
+    advisoryOkay: '#1E6B34',
+    advisoryOkayTitle: '#175229',
+    advisoryTakeCareBg: '#FDEBD9',
+    advisoryTakeCare: '#A8500F',
+    advisoryTakeCareTitle: '#8A3D05',
+    advisoryDangerBg: '#FCE8E6',
+    advisoryDanger: '#B3261E',
+    advisoryDangerTitle: '#8C1D18',
   },
   dark: {
     primary: '#6FB3EA',
@@ -73,6 +85,18 @@ export const Colors = {
     dangerBg: '#2A1414',
     infoText: '#1E40AF',
     infoBg: '#DBEAFE',
+
+    // Dark tints with light text: titles and the line (textStrong) are 10:1
+    // or more on their banner, icons and dots 6.8:1 or more.
+    advisoryOkayBg: '#10261A',
+    advisoryOkay: '#6FCF8A',
+    advisoryOkayTitle: '#A6E3B6',
+    advisoryTakeCareBg: '#2E1D0C',
+    advisoryTakeCare: '#F0A45E',
+    advisoryTakeCareTitle: '#F8C99A',
+    advisoryDangerBg: '#2E1412',
+    advisoryDanger: '#F28B82',
+    advisoryDangerTitle: '#F9BDB7',
   },
 } as const;
 
