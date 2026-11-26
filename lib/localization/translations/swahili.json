@@ -404,10 +404,7 @@
       },
       "fromDirection": "{{wind}} kutoka {{direction}}",
       "fromSpoken": "kutoka {{direction}}",
-      "gusts": "Upepo wa ghafla wenye kasi ya hadi {{speed}}",
-      "speedDirection": "Upepo kutoka {{direction}} kwa kasi ya {{speed}}.",
-      "speedOnly": "Upepo kwa kasi ya {{speed}}.",
-      "speedZero": "Kasi ya upepo {{speed}}."
+      "gusts": "Upepo wa ghafla wenye kasi ya hadi {{speed}}"
     },
     "condition": {
       "clear": "Anga angavu",

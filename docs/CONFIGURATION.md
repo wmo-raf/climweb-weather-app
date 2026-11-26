@@ -715,7 +715,7 @@ Set it to match the forecast source: `'true'` for a 3-hourly WRF run, `'false'` 
 
 | | `'true'` (default) | `'false'` |
 |---|---|---|
-| Today, below the day parts | The wind card (direction and speed now) and the sunrise/sunset card | "Today, hour by hour": the next five hours, tapping through to the hourly forecast (phone layout only) |
+| Today, below the day parts | The sunrise/sunset card | "Today, hour by hour": the next five hours, tapping through to the hourly forecast (phone layout only) |
 | Tapping a day in Five Days | The day-detail screen | The hourly table |
 
 The day-detail screen shows a summary card (the day's temperature range, symbol and a plain line), then the day parts, following the steps the provider sent for that day, whatever their length. There is no hour-by-hour breakdown: the day parts are the breakdown.

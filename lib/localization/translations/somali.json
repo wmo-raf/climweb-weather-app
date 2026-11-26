@@ -404,10 +404,7 @@
       },
       "fromDirection": "{{wind}} from the {{direction}}",
       "fromSpoken": "from {{direction}}",
-      "gusts": "Gusts up to {{speed}}",
-      "speedDirection": "Wind from the {{direction}} at {{speed}}.",
-      "speedOnly": "Wind at {{speed}}.",
-      "speedZero": "Wind speed {{speed}}."
+      "gusts": "Gusts up to {{speed}}"
     },
     "condition": {
       "clear": "Clear sky",

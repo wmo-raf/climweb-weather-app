@@ -17,7 +17,6 @@ import FiveHourSummary from '@/components/FiveHourSummary';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
 import SunTimesCard from '@/components/SunTimesCard';
-import TodayWindCard from '@/components/TodayWindCard';
 
 import { SPARSE_FORECAST } from '@/config';
 import { dayHref } from '@/lib/layout/open-day';
@@ -207,7 +206,6 @@ const MainScreen = () => {
             )}
             {SPARSE_FORECAST && !isUndefined(lat) && !isUndefined(lon) && (
               <View style={styles.todayCards}>
-                <TodayWindCard forecast={forecast} />
                 <SunTimesCard lat={lat} lon={lon} />
               </View>
             )}
@@ -230,7 +228,6 @@ const MainScreen = () => {
           )}
           {SPARSE_FORECAST && todaySummary && !isUndefined(lat) && !isUndefined(lon) && (
             <View style={styles.todayCards}>
-              <TodayWindCard forecast={forecast} />
               <SunTimesCard lat={lat} lon={lon} />
             </View>
           )}
@@ -323,8 +320,6 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   xlRightPane: {
     flex: 1.3,
   },
-  // Wind then sun. Either card can be left out (no data), so spacing is a
-  // gap rather than card margins.
   todayCards: {
     marginTop: Spacing.lg,
     gap: Spacing.lg,
