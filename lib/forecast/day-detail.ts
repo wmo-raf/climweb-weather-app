@@ -138,8 +138,7 @@ export type DetailPart = {
   startHour: number;    // 0–23, local
   endHour: number;      // 0–24, local; Night in the two-part split is 18 → 6
   steps: DetailStep[];
-  tempMin?: number;     // °C; equal to tempMax for a single step
-  tempMax?: number;
+  temp?: number;        // °C: the part's highest, or lowest for Night
   symbol?: string;
   rain?: number;        // mm, see totalRain
 };
@@ -173,15 +172,22 @@ const startHour = (step: DetailStep) => parse(step.start).hour;
 const stepsIn = (steps: DetailStep[], window: PartWindow) =>
   steps.filter(step => window.hours.some(([from, to]) => startHour(step) >= from && startHour(step) < to));
 
-function summarisePart(window: PartWindow, steps: DetailStep[]): DetailPart {
+// One temperature for the part: its highest, or its lowest for Night,
+// which is what people want to know about the night. Undefined when no
+// step has a temperature.
+export function partTemperature(name: DetailPartName, steps: DetailStep[]): number | undefined {
   const temps = temperatures(steps);
+  if (!temps.length) return undefined;
+  return name === 'night' ? Math.min(...temps) : Math.max(...temps);
+}
+
+function summarisePart(window: PartWindow, steps: DetailStep[]): DetailPart {
   return {
     name: window.name,
     startHour: window.startHour,
     endHour: window.endHour,
     steps,
-    tempMin: temps.length ? Math.min(...temps) : undefined,
-    tempMax: temps.length ? Math.max(...temps) : undefined,
+    temp: partTemperature(window.name, steps),
     symbol: dominantSymbol(steps),
     rain: totalRain(steps),
   };

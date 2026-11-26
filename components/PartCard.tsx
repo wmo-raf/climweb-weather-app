@@ -10,14 +10,10 @@ export type PartCardProps = {
   label: string;
   // Small grey line under the name, e.g. "12:00–18:00".
   timeRange?: string;
+  // One value, e.g. "20°C", on one line.
   temperature: string;
-  // A range ("16° – 27°C") may wrap at its spaces on a narrow card; a single
-  // value stays on one line.
-  temperatureWraps?: boolean;
   symbol?: string;
   condition: string;
-  // Shown after the condition when there is rain, e.g. "1.0 mm".
-  rain?: string;
   // The whole card as one item for screen readers.
   accessibilityLabel: string;
   testID?: string;
@@ -39,9 +35,9 @@ export const WRAP_AT_SPACES = {
 //   Asubuhi
 //   06:00–12:00        (optional)
 //   20°C          [icon]
-//   Mawingu kiasi · 1.0 mm
+//   Mawingu kiasi
 // Used by Today's day parts and the day-detail screen.
-function PartCard({ label, timeRange, temperature, temperatureWraps = false, symbol, condition, rain, accessibilityLabel, testID, style }: PartCardProps): JSX.Element {
+function PartCard({ label, timeRange, temperature, symbol, condition, accessibilityLabel, testID, style }: PartCardProps): JSX.Element {
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const iconSource = symbol ? weatherIcons[symbol] : undefined;
@@ -51,15 +47,12 @@ function PartCard({ label, timeRange, temperature, temperatureWraps = false, sym
       <Text style={styles.label} {...WRAP_AT_SPACES}>{label}</Text>
       {timeRange && <Text style={styles.timeRange} {...WRAP_AT_SPACES}>{timeRange}</Text>}
       <View style={styles.tempRow}>
-        {temperatureWraps
-          ? <Text style={styles.temp} {...WRAP_AT_SPACES}>{temperature}</Text>
-          : <Text style={styles.temp} numberOfLines={1}>{temperature}</Text>}
+        <Text style={styles.temp} numberOfLines={1}>{temperature}</Text>
         <View style={styles.icon}>
           {iconSource && <Icon source={iconSource} size={ICON_SIZE} />}
         </View>
       </View>
       <Text style={styles.condition} numberOfLines={2} {...WRAP_AT_SPACES}>{condition}</Text>
-      {rain && <Text style={styles.condition} {...WRAP_AT_SPACES}>{rain}</Text>}
     </View>
   );
 }

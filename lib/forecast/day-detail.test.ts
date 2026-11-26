@@ -6,7 +6,7 @@ import swahili from '@/lib/localization/translations/swahili.json';
 import { ForecastRecord, ForecastStepRecord } from './types';
 import {
   DetailStep, dayDetailNote, dayParts, dayResolution, daySummary, dominantSymbol, forecastSeries,
-  partRangeLabel, stepsForDay, summaryLine, symbolSignificance, timeRangeLabel, totalRain,
+  partRangeLabel, partTemperature, stepsForDay, summaryLine, symbolSignificance, timeRangeLabel, totalRain,
 } from './day-detail';
 
 const TZ = 'Africa/Dar_es_Salaam'; // UTC+3, no daylight saving
@@ -127,18 +127,19 @@ describe('dayParts', () => {
     const temps = [14, 13, 18, 24, 27, 25, 21, 18, 15];
     const series = run(3, 0, 9).map((s, i) => ({ ...s, temperature: temps[i] }));
     const parts = dayParts(stepsForDay(series, DAY, TZ));
-    expect(parts.map(p => [p.name, partRangeLabel(p), p.steps.length, p.tempMin, p.tempMax])).toEqual([
-      ['night', '00:00–06:00', 2, 13, 14],
-      ['morning', '06:00–12:00', 2, 18, 24],
-      ['afternoon', '12:00–18:00', 2, 25, 27],
-      ['evening', '18:00–00:00', 2, 18, 21],
+    // One temperature each: the lowest for Night, the highest otherwise.
+    expect(parts.map(p => [p.name, partRangeLabel(p), p.steps.length, p.temp])).toEqual([
+      ['night', '00:00–06:00', 2, 13],
+      ['morning', '06:00–12:00', 2, 24],
+      ['afternoon', '12:00–18:00', 2, 27],
+      ['evening', '18:00–00:00', 2, 21],
     ]);
   });
 
   test('6-hourly: four parts with one value each', () => {
     const parts = dayParts(sixHourly());
     expect(parts.map(p => p.name)).toEqual(['night', 'morning', 'afternoon', 'evening']);
-    expect(parts.every(p => p.steps.length === 1 && p.tempMin === p.tempMax)).toBe(true);
+    expect(parts.every(p => p.steps.length === 1 && p.temp === p.steps[0].temp)).toBe(true);
   });
 
   test('12-hourly: Day and Night', () => {
@@ -157,7 +158,7 @@ describe('dayParts', () => {
     const series = run(1, 15, 9, { temperature: 25 });
     series[0] = { ...series[0], temperature: 30 };
     const parts = dayParts(stepsForDay(series, DAY, TZ));
-    expect(parts.map(p => [p.name, p.steps.length, p.tempMax])).toEqual([['day', 3, 30], ['night', 6, 25]]);
+    expect(parts.map(p => [p.name, p.steps.length, p.temp])).toEqual([['day', 3, 30], ['night', 6, 25]]);
   });
 
   test('steps only in one half give no parts', () => {
@@ -182,7 +183,22 @@ describe('dayParts', () => {
     const series = run(1, 0, 24);
     series[5] = { ...series[5], temperature: 40, precipitation: 9, weatherSymbol: 'heavyrain' };
     const morning = dayParts(stepsForDay(series, DAY, TZ)).find(p => p.name === 'morning')!;
-    expect([morning.tempMax, morning.rain, morning.symbol]).toEqual([20, 0, 'partlycloudy_day']);
+    expect([morning.temp, morning.rain, morning.symbol]).toEqual([20, 0, 'partlycloudy_day']);
+  });
+});
+
+describe('partTemperature', () => {
+  const at = (temp?: number): DetailStep => ({ start: '2026-11-26T12:00:00+03:00', end: '', symbol: 'cloudy', temp });
+
+  test('the highest for daytime parts, the lowest for Night', () => {
+    const steps = [at(22), at(27), at(25)];
+    for (const name of ['morning', 'afternoon', 'evening', 'day'] as const) expect(partTemperature(name, steps)).toBe(27);
+    expect(partTemperature('night', steps)).toBe(22);
+  });
+
+  test('skips steps without a temperature', () => {
+    expect(partTemperature('afternoon', [at(), at(25)])).toBe(25);
+    expect(partTemperature('night', [at()])).toBeUndefined();
   });
 });
 

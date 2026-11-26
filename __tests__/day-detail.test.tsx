@@ -133,19 +133,19 @@ describe('6-hourly day (12b)', () => {
     expect(summary.props.accessibilityLabel).toBe('18 degrees Celsius to 24 degrees Celsius. Light rain.');
   });
 
-  test('each part card reads as one item, with its rain', () => {
+  test('each part card reads as one item, with the rain described but no amount', () => {
     const afternoon = byTestID(render(sixHourly()), 'detail-part-afternoon')[0];
     expect(afternoon.props.accessible).toBe(true);
-    expect(afternoon.props.accessibilityLabel).toBe('Afternoon, 12:00 to 18:00, 24 degrees Celsius, Light rain, 1 millimetre');
-    expect(textOf(afternoon)).toContain('1.0 mm');
-    expect(textOf(byTestID(render(sixHourly()), 'detail-part-morning')[0])).not.toContain('mm');
+    expect(afternoon.props.accessibilityLabel).toBe('Afternoon, 12:00 to 18:00, 24 degrees Celsius, Light rain');
+    expect(textOf(afternoon)).toContain('Light rain');
+    expect(textOf(afternoon)).not.toContain('mm');
   });
 
   test('works in Swahili', () => {
     mockLanguage.current = 'sw';
     const root = render(sixHourly());
     expect(byTestID(root, 'detail-part-afternoon')[0].props.accessibilityLabel)
-      .toBe('Mchana, 12:00 hadi 18:00, 24 digrii za Selsiasi, Mvua nyepesi, milimita 1');
+      .toBe('Mchana, 12:00 hadi 18:00, 24 digrii za Selsiasi, Mvua nyepesi');
   });
 });
 

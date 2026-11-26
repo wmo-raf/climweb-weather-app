@@ -106,24 +106,20 @@ function DetailPartCard({ part, width }: { part: DetailPart; width: number }): J
   const label = t(DETAIL_PART_LABEL_KEYS[part.name]);
   const range = partRangeLabel(part);
   const condition = t(CONDITION_LABEL_KEYS[conditionBucket(part.symbol)]);
-  const rain = units.rainShows(part.rain) ? units.rain(part.rain!) : undefined;
   const spoken = [
     label,
     spokenRange(t, range),
-    tempRangeSpoken(t, units, part.tempMin, part.tempMax),
+    part.temp !== undefined ? units.tempSpoken(part.temp) : undefined,
     condition,
-    rain ? units.rainSpoken(part.rain!) : undefined,
   ].filter(Boolean).join(', ');
 
   return (
     <PartCard
       label={label}
       timeRange={range}
-      temperature={tempRange(units, part.tempMin, part.tempMax)}
-      temperatureWraps
+      temperature={part.temp !== undefined ? units.temp(part.temp) : ''}
       symbol={part.symbol}
       condition={condition}
-      rain={rain}
       accessibilityLabel={spoken}
       testID={`detail-part-${part.name}`}
       style={{ width }}
