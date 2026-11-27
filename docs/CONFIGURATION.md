@@ -711,20 +711,46 @@ One optional flag says whether the forecast is too sparse for an hour-by-hour vi
 EXPO_PUBLIC_SPARSE_FORECAST='true'
 ```
 
-Set it to match the forecast source: `'true'` for a 3-hourly WRF run, `'false'` for an hourly source such as MET's Locationforecast. The parser reads either; this only chooses the pages (see Time resolution under Forecast Source Configuration).
+Set it to match the forecast source: `'true'` for a 3-hourly WRF run, `'false'` for an hourly source such as MET's Locationforecast. It chooses the pages, and how the forecast's readings are grouped. With `'false'` everything works on the provider's own readings, as before.
 
 | | `'true'` (default) | `'false'` |
 |---|---|---|
 | Today, below the day parts | The sunrise/sunset card | "Today, hour by hour": the next five hours, tapping through to the hourly forecast (phone layout only) |
 | Tapping a day in Five Days | The day-detail screen | The hourly table |
 
-The day-detail screen shows a summary card (the day's temperature range, symbol and a plain line), then the day parts, following the steps the provider sent for that day, whatever their length. Each part shows one temperature, its highest (its lowest for Night), and its condition in words, with no rain amount. There is no hour-by-hour breakdown: the day parts are the breakdown.
+### Six-hour blocks
+
+With `'true'`, each day's readings are grouped into local six-hour blocks, 00–06, 06–12, 12–18 and 18–24 in `EXPO_PUBLIC_APP_TIMEZONE`, and the sparse pages (Today, the day-detail screen, At sea) work on the blocks. A reading belongs to the block its time falls in. For each block ([lib/forecast/providers/yr-forecast.provider.ts](../lib/forecast/providers/yr-forecast.provider.ts), `toSixHourBlocks`):
+
+| Value | From the block's readings |
+|---|---|
+| Temperature | the average |
+| Wind speed | the average; the highest is kept as well, for At sea's wind advice |
+| Wind direction | the most common 8-point compass sector (N, NE, …), shown as its centre; a tie goes to the stronger wind, then the earlier reading |
+| Gusts | the highest |
+| Symbol | `next_6_hours` of the 6-hour period nearest the block (below): the model's own six-hour summary |
+| Rain | `next_6_hours` amount of that same period |
+
+The period nearest the block is the one that overlaps it the most. When a reading starts at the block's start, that's its period, exactly the block's six hours: always the case for a 3-hourly WRF run in a UTC+3 deployment. When readings fall elsewhere, the block gets the period that overlaps it most, so its symbol and rain partly describe hours outside the block:
+
+| Readings | Block 06–12 gets | Inside the block |
+|---|---|---|
+| On the block starts (WRF in UTC+3) | 06–12 | all 6 hours |
+| An hour off (3-hourly UTC in UTC+2: 02, 05, 08 …) | 05–11 | 5 hours |
+| Two hours off (6-hourly UTC in UTC+2: 02, 08, 14, 20) | 08–14 | 4 hours |
+| Three hours off (MET's 6-hourly range in Tanzania: 03, 09, 15, 21) | 03–09 | 3 hours |
+
+A tie goes to the earlier period, so with readings three hours off each block gets the period starting three hours before it, and no period's rain is counted for two blocks. The search crosses midnight (a 21:00–03:00 period can serve the next day's 00–06 block). A block that no period overlaps has no symbol and no rain; development builds warn.
+
+The day's high and low (Five Days, the day-detail summary) and its top wind still come from the raw readings, as does the day's symbol in Five Days. On Today, blocks that have ended are left out, and the current block is shown whole.
+
+The day-detail screen shows a summary card (the day's temperature range from the raw readings, symbol and a plain line), then the day parts, following the day's steps, which in this mode are its six-hour blocks: Night 00–06, Morning 06–12, Afternoon 12–18, Evening 18–24. Each part shows its block's average temperature and its condition in words, with no rain amount. There is no hour-by-hour breakdown: the day parts are the breakdown.
 
 | Steps that day | Day parts | Note |
 |---|---|---|
-| Hourly, 3-hourly or 6-hourly | Night, Morning, Afternoon, Evening | — |
-| 12-hourly | Day and Night | "Less detail is available this far ahead." |
-| One step | none; the summary shows the one value and its period | "Only one forecast time is available for this day." |
+| Blocks spread across the day | Night, Morning, Afternoon, Evening | — |
+| Blocks 12 hours apart (a 12-hourly source) | Day and Night | "Less detail is available this far ahead." |
+| One block | none; the summary shows the day's range, or the one value and its period when the day had one reading | "Only one forecast time is available for this day." |
 
 A day that mixes step lengths is treated as its longest step. Each part uses only the steps that start inside its own window. The rules are in [lib/forecast/day-detail.ts](../lib/forecast/day-detail.ts).
 

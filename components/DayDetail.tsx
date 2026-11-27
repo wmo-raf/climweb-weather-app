@@ -8,7 +8,7 @@ import PartCard, { WRAP_AT_SPACES } from './PartCard';
 import weatherIcons from '@/lib/forecast/weathericons.constant';
 import { CONDITION_LABEL_KEYS, conditionBucket } from '@/lib/forecast/day-parts';
 import {
-  DETAIL_PART_LABEL_KEYS, DetailPart, DetailStep, dayDetailNote, dayParts, daySummary, partRangeLabel, summaryLine,
+  DETAIL_PART_LABEL_KEYS, DayReadings, DetailPart, DetailStep, dayDetailNote, dayParts, daySummary, partRangeLabel, summaryLine,
 } from '@/lib/forecast/day-detail';
 import { ThemeColors, Fonts, Radius, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -38,18 +38,20 @@ const tempRangeSpoken = (t: Translate, units: Units, low: number | undefined, hi
 
 type DayDetailProps = {
   steps: DetailStep[];
+  // The day's raw readings (high, low, top wind), for the summary card.
+  day?: DayReadings;
 };
 
 // The body of a day's detail (Five Days › a day): summary, day parts, and a
 // note when the steps are coarse, all following the step length the
 // provider sent for this day (lib/forecast/day-detail.ts).
-function DayDetail({ steps }: DayDetailProps): JSX.Element | null {
+function DayDetail({ steps, day }: DayDetailProps): JSX.Element | null {
   const { t } = useTranslation();
   const units = useUnits();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  const summary = daySummary(steps);
+  const summary = daySummary(steps, day);
   if (!summary) return null;
 
   const parts = dayParts(steps);

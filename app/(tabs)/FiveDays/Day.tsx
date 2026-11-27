@@ -63,9 +63,14 @@ function DayScreen(): JSX.Element {
     [forecast, day],
   );
 
+  const dayRecord = useMemo(
+    () => forecast?.days.find(d => DateTime.fromISO(d.day).setZone(APP_TIMEZONE).hasSame(day, 'day')),
+    [forecast, day],
+  );
+
   let content: JSX.Element;
   if (forecast && steps.length > 0) {
-    content = <DayDetail steps={steps} />;
+    content = <DayDetail steps={steps} day={dayRecord} />;
   } else if (forecast) {
     content = <Text style={styles.message}>{t('forecast.states.unavailable')}.</Text>;
   } else if (error) {

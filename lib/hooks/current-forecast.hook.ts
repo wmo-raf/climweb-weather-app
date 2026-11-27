@@ -4,14 +4,17 @@ import Axios from 'axios';
 
 import { ForecastRecord } from '@/lib/forecast/types';
 import { createForecastProvider } from '@/lib/forecast/providers';
+import { SPARSE_FORECAST } from '@/config';
 
 // Singleton so the underlying provider's circuit breaker (see
 // yr-location-forecast.provider.ts) actually tracks failures across
 // requests instead of resetting per call.
 const forecastProvider = createForecastProvider();
 
+// The layout is part of the key: sparse mode caches six-hour blocks, the
+// hourly screens readings, and neither may be served to the other.
 export const forecastQueryKey = (latitude: number | undefined, longitude: number | undefined) =>
-  ['forecast', latitude, longitude] as const;
+  ['forecast', latitude, longitude, SPARSE_FORECAST ? 'blocks' : 'steps'] as const;
 
 // Nothing else bounds how many distinct points end up cached — every city
 // row in NoLocation's list, every favourite, every search result, all get

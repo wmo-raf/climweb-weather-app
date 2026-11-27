@@ -44,8 +44,11 @@ export const persistOptions = {
   // an older build are discarded instead of misread. v2: forecast values
   // stored in canonical units (wind in m/s, previously km/h). v3: forecast
   // steps carry wind direction and gusts (At sea page). v4: forecast steps
-  // carry their period length, and 12-hour-only steps get a symbol.
-  buster: 'v4-step-period',
+  // carry their period length, and 12-hour-only steps get a symbol. v5:
+  // sparse mode caches six-hour blocks, and days carry their reading count.
+  // v6: blocks without a reading at their start take the nearest 6-hour
+  // period's symbol and rain (they were left empty).
+  buster: 'v6-nearest-period',
 };
 
 // React Native has no browser "window focus" event; Query's web default
