@@ -338,6 +338,7 @@
     "partlycloudy_day": "Mawingu kiasi",
     "partlycloudy_night": "Mawingu kiasi",
     "partlycloudy_polartwilight": "Mawingu kiasi wakati wa machweo au mapambazuko ya maeneo ya ncha za dunia",
+    "rain": "Mvua",
     "rainandthunder": "Mvua na radi",
     "conditions": {
       "rain": {
@@ -532,7 +533,7 @@
         "description": "Maeneo uliyohifadhi"
       },
       "atSea": {
-        "description": "Upepo, hatari na vipindi vya jua"
+        "description": "Upepo, mvua, hatari na vipindi vya jua"
       },
       "farming": {
         "description": "Unyevunyevu wa udongo, joto la udongo na vipindi vya jua"
@@ -540,11 +541,94 @@
     },
     "atSea": {
       "title": "Hali ya hewa baharini",
-      "windNow": "Upepo kwa sasa",
-      "nextHours": "Saa zijazo",
       "readMore": {
         "marineForecast": "Utabiri wa hali ya hewa ya bahari",
         "tsunamiCentre": "Kituo cha Tsunami"
+      },
+      "subtitle": "{{place}} · Leo",
+      "partByPart": "Leo, kipindi kwa kipindi",
+      "daylight_one": "Takribani saa {{count}} ya mwanga wa jua leo. Panga kurudi kabla ya giza.",
+      "daylight_other": "Takribani saa {{count}} za mwanga wa jua leo. Panga kurudi kabla ya giza.",
+      "wind": {
+        "light": "Upepo mwepesi",
+        "moderate": "Upepo wa wastani",
+        "strong": "Upepo mkali"
+      },
+      "advisory": {
+        "okay": "salama",
+        "takeCare": "chukua tahadhari",
+        "danger": "hatari"
+      },
+      "square": {
+        "spoken": "{{part}}, {{range}}. {{sky}}. {{wind}}, {{advisory}}."
+      },
+      "banner": {
+        "okay": "Salama siku nzima",
+        "when": {
+          "takeCare": "Chukua tahadhari {{when}}",
+          "danger": "Hatari {{when}}"
+        },
+        "mostOfDay": {
+          "takeCare": "Chukua tahadhari sehemu kubwa ya siku",
+          "danger": "Hatari sehemu kubwa ya siku"
+        },
+        "today": {
+          "takeCare": "Chukua tahadhari leo",
+          "danger": "Hatari leo"
+        }
+      },
+      "when": {
+        "morning": "leo asubuhi",
+        "afternoon": "leo mchana",
+        "evening": "leo jioni",
+        "night": "usiku wa leo",
+        "pair": {
+          "morning_afternoon": "leo asubuhi na mchana",
+          "morning_evening": "leo asubuhi na jioni",
+          "morning_night": "leo asubuhi na usiku",
+          "afternoon_evening": "leo mchana na jioni",
+          "afternoon_night": "leo mchana na usiku",
+          "evening_night": "leo jioni na usiku"
+        }
+      },
+      "time": {
+        "clock": "24h",
+        "am": "{{hour}} asubuhi",
+        "pm": "{{hour}} jioni",
+        "noon": "saa sita mchana",
+        "midnight": "saa sita usiku"
+      },
+      "line": {
+        "wind": {
+          "light": "Upepo mwepesi.",
+          "moderate": "Upepo wa wastani.",
+          "strong": "Upepo mkali."
+        },
+        "windAt": {
+          "moderate": {
+            "span": "Upepo wa wastani kuanzia {{start}} hadi {{end}}.",
+            "when": "Upepo wa wastani {{when}}."
+          },
+          "strong": {
+            "span": "Upepo mkali kuanzia {{start}} hadi {{end}}.",
+            "when": "Upepo mkali {{when}}."
+          }
+        },
+        "rain": {
+          "none": "Hakuna mvua leo.",
+          "light": "Mvua nyepesi leo.",
+          "moderate": "Mvua ya wastani leo.",
+          "heavy": "Mvua kubwa leo."
+        },
+        "rainExpected": {
+          "moderate": "Mvua ya wastani inatarajiwa leo.",
+          "heavy": "Mvua kubwa inatarajiwa leo."
+        }
+      },
+      "area": {
+        "label": "Unaenda wapi?",
+        "search": "Tafuta eneo la majini",
+        "nothingFound": "Hakuna eneo la majini linalolingana"
       }
     },
     "beaufort": {

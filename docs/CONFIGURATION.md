@@ -652,17 +652,52 @@ Each plugin's settings live in its own `plugins/<name>/settings.ts`, described b
 
 ## At Sea Page
 
-**More › At sea** shows wind, wind/marine warnings and sun times for the selected place. It's the `at-sea` plugin, in [plugins/at-sea/](../plugins/at-sea/); add `at-sea` to `EXPO_PUBLIC_MORE_PLUGINS` to show it. **Its defaults are TMA's (Tanzania).** Another deployment should set its own keywords and links.
+**More › At sea** gives one advisory for the day and the sky and wind for each part of it, for a marine area the user picks, in words only (no numbers, units or compass points). It's the `at-sea` plugin, in [plugins/at-sea/](../plugins/at-sea/); add `at-sea` to `EXPO_PUBLIC_MORE_PLUGINS` to show it. **Its defaults are TMA's (Tanzania).** Another deployment should set its own areas, thresholds and links.
 
-- **Wind** comes from the configured forecast provider (`EXPO_PUBLIC_FORECAST_PROVIDER`, `EXPO_PUBLIC_PRIMARY_API_URL` / `EXPO_PUBLIC_FALLBACK_API_URL`), through the same client and cache as Today and Five Days. For Yr-compatible APIs it reads `wind_speed`, `wind_from_direction` and `wind_speed_of_gust` from `instant.details`. Gusts are hidden when the API doesn't send them. MET's public `compact` format has no gusts.
+From the top: any warnings for the user's location (the same alert banner as the other screens), the area search ("Where are you going?"), the summary banner, "Today, part by part", the sun card ("Plan to be back before dark.") and Read more.
+
+- **Parts of the day**: Morning 06–12, Afternoon 12–18, Evening 18–00 and Night 00–06 (the night after the evening), in `EXPO_PUBLIC_APP_TIMEZONE`. In sparse mode each part is one six-hour block (see Sparse Forecast); otherwise a part takes the forecast steps that start inside it. Parts that are over, or have no data, are hidden.
+  - **Sky**: in sparse mode the block's symbol (the model's own six-hour summary); otherwise the most significant weather symbol in the part (thunder, then rain by intensity, then cloud, then clear). Shown with its icon and its own name from the language files ("Partly cloudy", "Rain showers"). Night uses night icons.
+  - **Wind**: the highest wind reading in the part (in sparse mode, its six-hour block's highest, not its average), in knots, against the area's water type: light, moderate or strong.
+- **Rain**: the total over the next 24 hours, without counting overlapping 6-hour amounts twice: none, light, moderate or heavy.
+- **Advice**: light wind and no or light rain are okay; moderate wind or rain is "take care"; strong wind or heavy rain is "danger". The banner takes the worst, names the parts that set it ("Danger this afternoon", "Take care most of the day"), or says "{level} today" when only the rain does.
+- **Marine areas and thresholds** come from [plugins/at-sea/config.json](../plugins/at-sea/config.json), which a deployment replaces with its own (the app templates overwrite it when building a flavour with At sea enabled). "Where are you going?" works like the place search: tapping it suggests the three areas nearest the selected place, and typing searches them all and shows up to four matches, nearest first (any case, accents ignored). The area nearest the selected place is picked to start with (the first area when no place is set), and the user's choice is remembered on the device for that place. The forecast and sun times are for the area's point. TMA's config lists Tanzania's coasts and lakes, with placeholder points a few kilometres offshore until TMA confirms its own.
+
+  ```json
+  {
+    "thresholds": {
+      "wind_kt": {
+        "lake": { "moderate": 10, "strong": 15 },
+        "ocean": { "moderate": 10, "strong": 20 }
+      },
+      "rain_24h_mm": { "light": 0.1, "moderate": 25, "heavy": 50 }
+    },
+    "areas": [
+      {
+        "id": "darEsSalaam",
+        "type": "ocean",
+        "lat": -6.8,
+        "lon": 39.4,
+        "name": { "en": "Dar es Salaam coast", "sw": "Pwani ya Dar es Salaam" }
+      }
+    ]
+  }
+  ```
+
+  - `thresholds`: wind in knots (below `moderate` is light) per water type, and rain in mm over the next 24 hours (below `light` is no rain). Every value is required: the type-check fails on a config.json that leaves one out.
+  - `id`: stable; the user's choice is saved under it, so don't rename an area's id between releases.
+  - `type`: `ocean` or `lake`, which picks the wind thresholds.
+  - `lat`/`lon`: the forecast point, on the water where boats go.
+  - `name`: per language code (`en`, `sw`, …). A language without one shows the English name, then the id.
+  - Areas are listed in file order. Invalid entries are left out (with a warning in development); with none left, the page says the forecast isn't available.
+- **Forecast** values come from the configured forecast provider, through the same client and cache as Today and Five Days, so the page works offline from the cached forecast ("Updated …").
 - **Sun times** come from MET Norway's [Sunrise 3.0 API](https://api.met.no/weatherapi/sunrise/3.0/documentation). They're requested with `EXPO_PUBLIC_APP_USER_AGENT` as the User-Agent, in the UTC offset of `EXPO_PUBLIC_APP_TIMEZONE`, and cached per place and date ([lib/sun/sunrise.ts](../lib/sun/sunrise.ts)). MET's service (Celestial) can be self-hosted. To use your own instance, point `EXPO_PUBLIC_SUNRISE_API_URL` at it.
-- **Advisory**: an active Yellow-or-above warning covering the place is shown when its event, headline or event code contains one of `EXPO_PUBLIC_AT_SEA_WARNING_KEYWORDS` (comma-separated, whole words, case-insensitive). The defaults are listed in [plugins/at-sea/settings.ts](../plugins/at-sea/settings.ts).
+- **Alerts**: active warnings whose area covers the user's location show at the top, in the same alert banner as the other screens (worst first; with several, "+N more" opens the Alerts tab). They don't change the generated advice below them.
 - **Read more** links open in the system browser. The card title is "Read more from `EXPO_PUBLIC_NAME_OF_THE_NHMS`" (default `TMA`).
 
 ```env
 EXPO_PUBLIC_SUNRISE_API_URL='https://api.met.no/weatherapi/sunrise/3.0'
 EXPO_PUBLIC_NAME_OF_THE_NHMS='TMA'
-EXPO_PUBLIC_AT_SEA_WARNING_KEYWORDS='wind,gale,marine,sea,wave,swell,cyclone,tropical storm,storm surge,tsunami,coastal,upepo,bahari,mawimbi,kimbunga'
 EXPO_PUBLIC_MARINE_FORECAST_URL='https://www.meteo.go.tz/services/marine-weather-forecast'
 EXPO_PUBLIC_TSUNAMI_CENTRE_URL='https://www.meteo.go.tz/services/tsunami-centre'
 ```

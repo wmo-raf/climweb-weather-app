@@ -3,20 +3,23 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
-import { useRouter, Href } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+import Alerts from '@/components/Alerts';
 import AppBar from '@/components/AppBar';
 import ReadMoreCard from '@/components/ReadMoreCard';
 import StatusCard from '@/components/StatusCard';
 import SunTimesCard from '@/components/SunTimesCard';
-import WeatherAlert from '@/components/WeatherAlert';
-import WindCard from './WindCard';
+import AdvisoryBanner from './AdvisoryBanner';
+import AreaPicker from './AreaPicker';
+import PartSquares from './PartSquares';
 
 import { APP_TIMEZONE, NAME_OF_THE_NHMS } from '@/config';
-import { MARINE_FORECAST_URL, TSUNAMI_CENTRE_URL } from './settings';
-import { atSeaWarningsFor } from './warnings';
-import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
+import { MARINE_AREAS, MARINE_FORECAST_URL, TSUNAMI_CENTRE_URL } from './settings';
+import { PartSummary, areaName, partsOfDay, rainBand24h, selectedArea, summarisePart, summaryBanner } from './marine';
+import { placeKey, useAreaChoiceStore } from './area.store';
+import { forecastSeries } from '@/lib/forecast/day-detail';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -24,10 +27,15 @@ import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { ThemeColors, Fonts, navRailWidth, Spacing } from '@/lib/theme';
 
-// "At sea" — wind, wind/marine warnings and sun times for the selected
-// place. Opened from More conditions, inside the More tab's stack.
+// "At sea": any warnings for the user's location at the top, as on the other
+// screens; then the user picks a marine area (the one nearest their place to
+// start with), and everything below is for a point on that water: one
+// advisory banner for the day, the parts of the day still to come (sky and
+// a wind word), sun times and links. Words only: no numbers, units or
+// compass points. Everything is worked out from the cached forecast, so it
+// holds offline. Opened from More conditions, inside the More tab's stack.
 export default function AtSeaScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const colors = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -36,11 +44,14 @@ export default function AtSeaScreen() {
   const location = useLocationStore(s => s.name);
   const lat = useLocationStore(s => s.lat);
   const lon = useLocationStore(s => s.lon);
-  const { data: forecast, isLoading, error, refetch, dataUpdatedAt } = useForecastQuery(lat, lon);
-  const { data: alerts = [] } = useAlertsQuery();
+  const place = lat !== undefined && lon !== undefined ? { lat, lon } : undefined;
+  const key = placeKey(place);
+  const chosenId = useAreaChoiceStore(s => s.choices[key]);
+  const choose = useAreaChoiceStore(s => s.choose);
+  const area = selectedArea(chosenId, place);
+  const name = area ? areaName(area, i18n.language) : undefined;
 
-  const hasPlace = lat !== undefined && lon !== undefined;
-  const warnings = hasPlace ? atSeaWarningsFor(alerts, { latitude: lat, longitude: lon }) : [];
+  const { data: forecast, isLoading, error, refetch, dataUpdatedAt } = useForecastQuery(area?.lat, area?.lon);
 
   const readMoreLinks = [
     { icon: 'sail-boat', label: t('atSea.readMore.marineForecast'), url: MARINE_FORECAST_URL },
@@ -48,18 +59,29 @@ export default function AtSeaScreen() {
   ];
 
   let windContent: React.ReactNode = null;
-  if (!hasPlace) {
+  if (!area) {
+    // No valid areas in config.json.
     windContent = (
-      <StatusCard
-        icon="map-marker-off-outline"
-        title={t('location.notSet.title')}
-        text={t('location.notSet.text')}
-        actionLabel={t('location.notSet.action')}
-        onRetry={() => router.push(SCREENS.Search.toString() as Href)}
-      />
+      <StatusCard icon="map-marker-off-outline" title={t('common.states.notAvailable')} />
     );
   } else if (forecast) {
-    windContent = <WindCard forecast={forecast} />;
+    const now = DateTime.now().setZone(APP_TIMEZONE);
+    const series = forecastSeries(forecast);
+    const parts = partsOfDay(series, now, APP_TIMEZONE, now)
+      .map(part => part && summarisePart(part, area.type));
+    const banner = summaryBanner(t, parts, rainBand24h(series, now));
+    const shown = parts.filter((part): part is PartSummary => part !== null);
+    windContent = (
+      <>
+        {banner && <AdvisoryBanner banner={banner} />}
+        {shown.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel} accessibilityRole="header">{t('atSea.partByPart')}</Text>
+            <PartSquares parts={shown} />
+          </View>
+        )}
+      </>
+    );
   } else if (isLoading) {
     windContent = (
       <View style={styles.loader}>
@@ -81,19 +103,15 @@ export default function AtSeaScreen() {
   return (
     // No bottom edge: the tab bar already pads for the home indicator.
     <SafeAreaView style={[styles.wrapper, isXL && styles.xlPadding]} edges={['top', 'left', 'right']}>
-      <AppBar location={t('atSea.title')} subtitle={location} backLabel={t('More conditions')} />
-      <ScrollView contentContainerStyle={styles.content}>
+      <AppBar location={t('atSea.title')} subtitle={name && t('atSea.subtitle', { place: name })} backLabel={t('More conditions')} />
+      {/* Taps on the area list land while the keyboard is up. */}
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.cards}>
-          {warnings.map(alert => (
-            <WeatherAlert
-              key={alert.identifier}
-              alert={alert}
-              showAreaAndExpiry
-              onPress={() => router.push({ pathname: SCREENS.WeatherWarning, params: { location, alertID: alert.identifier } })}
-            />
-          ))}
+          {/* Warnings for the user's location, as on the other screens. */}
+          <Alerts lat={lat} lon={lon} location={location} />
+          {area && <AreaPicker areas={MARINE_AREAS} selected={area} origin={place} onSelect={picked => choose(key, picked.id)} />}
           {windContent}
-          {hasPlace && <SunTimesCard lat={lat} lon={lon} />}
+          {area && <SunTimesCard lat={area.lat} lon={area.lon} daylightKey="atSea.daylight" />}
           <ReadMoreCard title={t('readMore.title', { name: NAME_OF_THE_NHMS })} links={readMoreLinks} />
         </View>
         {!!forecast && !!dataUpdatedAt && (
@@ -117,6 +135,15 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   cards: {
     gap: 10,
+  },
+  section: {
+    gap: Spacing.md,
+    marginTop: Spacing.sm,
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontFamily: Fonts.sans.bold,
+    color: colors.textStrong,
   },
   loader: {
     marginVertical: Spacing.xxxl,

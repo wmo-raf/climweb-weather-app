@@ -338,6 +338,7 @@
     "partlycloudy_day": "Partly cloudy",
     "partlycloudy_night": "Partly cloudy",
     "partlycloudy_polartwilight": "Partly cloudy polar twilight",
+    "rain": "Rain",
     "rainandthunder": "Rain and thunder",
     "conditions": {
       "rain": {
@@ -532,7 +533,7 @@
         "description": "Your saved places"
       },
       "atSea": {
-        "description": "Wind, warnings and sun times"
+        "description": "Wind, rain, warnings and sun times"
       },
       "farming": {
         "description": "Water in the soil, soil heat, sun times"
@@ -540,11 +541,94 @@
     },
     "atSea": {
       "title": "At sea",
-      "windNow": "Wind now",
-      "nextHours": "Next hours",
       "readMore": {
         "marineForecast": "Marine weather forecast",
         "tsunamiCentre": "Tsunami centre"
+      },
+      "subtitle": "{{place}} · Today",
+      "partByPart": "Today, part by part",
+      "daylight_one": "About {{count}} hour of daylight today. Plan to be back before dark.",
+      "daylight_other": "About {{count}} hours of daylight today. Plan to be back before dark.",
+      "wind": {
+        "light": "Light wind",
+        "moderate": "Moderate wind",
+        "strong": "Strong wind"
+      },
+      "advisory": {
+        "okay": "okay",
+        "takeCare": "take care",
+        "danger": "danger"
+      },
+      "square": {
+        "spoken": "{{part}}, {{range}}. {{sky}}. {{wind}}, {{advisory}}."
+      },
+      "banner": {
+        "okay": "Okay all day",
+        "when": {
+          "takeCare": "Take care {{when}}",
+          "danger": "Danger {{when}}"
+        },
+        "mostOfDay": {
+          "takeCare": "Take care most of the day",
+          "danger": "Danger most of the day"
+        },
+        "today": {
+          "takeCare": "Take care today",
+          "danger": "Danger today"
+        }
+      },
+      "when": {
+        "morning": "this morning",
+        "afternoon": "this afternoon",
+        "evening": "this evening",
+        "night": "tonight",
+        "pair": {
+          "morning_afternoon": "this morning and afternoon",
+          "morning_evening": "this morning and evening",
+          "morning_night": "this morning and tonight",
+          "afternoon_evening": "this afternoon and evening",
+          "afternoon_night": "this afternoon and tonight",
+          "evening_night": "this evening and tonight"
+        }
+      },
+      "time": {
+        "clock": "12h",
+        "am": "{{hour}} am",
+        "pm": "{{hour}} pm",
+        "noon": "noon",
+        "midnight": "midnight"
+      },
+      "line": {
+        "wind": {
+          "light": "Light wind.",
+          "moderate": "Moderate wind.",
+          "strong": "Strong wind."
+        },
+        "windAt": {
+          "moderate": {
+            "span": "Moderate wind from {{start}} to {{end}}.",
+            "when": "Moderate wind {{when}}."
+          },
+          "strong": {
+            "span": "Strong wind from {{start}} to {{end}}.",
+            "when": "Strong wind {{when}}."
+          }
+        },
+        "rain": {
+          "none": "No rain today.",
+          "light": "Light rain today.",
+          "moderate": "Moderate rain today.",
+          "heavy": "Heavy rain today."
+        },
+        "rainExpected": {
+          "moderate": "Moderate rain expected today.",
+          "heavy": "Heavy rain expected today."
+        }
+      },
+      "area": {
+        "label": "Where are you going?",
+        "search": "Search for a place on the water",
+        "nothingFound": "No place on the water matches"
       }
     },
     "beaufort": {
