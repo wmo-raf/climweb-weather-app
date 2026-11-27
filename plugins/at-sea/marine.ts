@@ -132,9 +132,11 @@ export type WindBand = 'light' | 'moderate' | 'strong';
 export const toKnots = (metresPerSecond: number) => Math.round(convertWind(metresPerSecond, 'knots') * 10) / 10;
 
 // The highest wind in the part, in knots, against the water type's
-// thresholds. Undefined when no step has a wind speed.
+// thresholds. In sparse mode a step is a six-hour block whose windSpeed is
+// an average, so its highest reading (windSpeedMax) is used. Undefined
+// when no step has a wind speed.
 export function windBand(steps: DetailStep[], waterType: WaterType, thresholds: MarineThresholds = MARINE_THRESHOLDS): WindBand | undefined {
-  const speeds = steps.map(s => s.windSpeed).filter((w): w is number => w !== undefined && Number.isFinite(w));
+  const speeds = steps.map(s => s.windSpeedMax ?? s.windSpeed).filter((w): w is number => w !== undefined && Number.isFinite(w));
   if (!speeds.length) return undefined;
   const knots = toKnots(Math.max(...speeds));
   const { moderate, strong } = thresholds.wind_kt[waterType];

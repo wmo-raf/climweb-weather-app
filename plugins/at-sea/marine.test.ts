@@ -183,6 +183,11 @@ describe('windBand', () => {
     expect(windBand([detail(5), detail(21), detail(8)], 'ocean')).toBe('strong');
   });
 
+  test('a six-hour block is judged by its highest reading, not its average', () => {
+    const block: DetailStep = { ...detail(8), windSpeedMax: kt(21) };
+    expect(windBand([block], 'ocean')).toBe('strong');
+  });
+
   test('is undefined with no wind data', () => {
     expect(windBand([detail(undefined)], 'ocean')).toBeUndefined();
   });
