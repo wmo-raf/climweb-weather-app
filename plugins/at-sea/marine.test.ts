@@ -293,7 +293,7 @@ describe('partsOfDay', () => {
   test('morning, afternoon, evening, then the night after', () => {
     const parts = partsOfDay(series([L, L, L, L]), DATE, TZ);
     expect(parts.map(p => p?.name)).toEqual(['morning', 'afternoon', 'evening', 'night']);
-    expect(parts.map(p => p?.steps.map(s => DateTime.fromISO(s.start).toFormat('dd HH')))).toEqual([
+    expect(parts.map(p => p?.steps.map(s => DateTime.fromISO(s.start, { setZone: true }).toFormat('dd HH')))).toEqual([
       ['26 06', '26 09'], ['26 12', '26 15'], ['26 18', '26 21'], ['27 00', '27 03'],
     ]);
   });
