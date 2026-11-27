@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon';
 
+import { SPARSE_FORECAST } from '@/config';
+
 import { ForecastDayRecord, ForecastRecord, ForecastStepRecord } from './types';
 import { RainLevel, rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
 
@@ -25,11 +27,21 @@ export const WEEKDAY_LABEL_KEYS: Record<number, string> = {
   7: 'time.days.sun',
 };
 
+// Hours each part covers on the hourly screens.
 const RANGE: Record<DayPart, [number, number]> = {
   morning: [6, 12],
   afternoon: [12, 18],
   evening: [18, 21],
   night: [21, 24],
+};
+
+// In sparse mode a day's steps are its six-hour blocks (00–06, 06–12,
+// 12–18, 18–24), and each part is one of them.
+const BLOCK_RANGE: Record<DayPart, [number, number]> = {
+  morning: [6, 12],
+  afternoon: [12, 18],
+  evening: [18, 24],
+  night: [0, 6],
 };
 
 const ANCHOR_HOUR: Record<DayPart, number> = {
@@ -50,9 +62,11 @@ export type DayPartSummary = {
 // than fabricated.
 export function getDayParts(daySummary: ForecastDayRecord): Partial<Record<DayPart, DayPartSummary>> {
   const result: Partial<Record<DayPart, DayPartSummary>> = {};
+  // Read at call time, so tests can switch it.
+  const ranges = SPARSE_FORECAST ? BLOCK_RANGE : RANGE;
 
   for (const part of DAY_PARTS) {
-    const [start, end] = RANGE[part];
+    const [start, end] = ranges[part];
     const stepsInRange = daySummary.steps.filter(s => {
       const hour = DateTime.fromISO(s.time).hour;
       return hour >= start && hour < end;

@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { ForecastRecord, ForecastStepRecord } from './types';
+import { ForecastDayRecord, ForecastRecord, ForecastStepRecord } from './types';
 import { CONDITION_LABEL_KEYS, ConditionBucket, conditionBucket, describeConditions } from './day-parts';
 import { rainLevel } from './plain-language';
 
@@ -16,7 +16,8 @@ export type DetailStep = {
   symbol: string;
   temp?: number;        // °C
   rain?: number;        // mm over `period`; undefined when the provider sent none
-  windSpeed?: number;   // m/s
+  windSpeed?: number;   // m/s (a six-hour block's average in sparse mode)
+  windSpeedMax?: number; // m/s, a six-hour block's highest; undefined on plain steps
   windFrom?: number;    // degrees the wind blows from
   period?: number;      // hours `symbol` and `rain` describe
 };
@@ -57,6 +58,7 @@ export function stepsForDay(series: ForecastStepRecord[], date: DateTime | strin
       temp: step.temperature,
       rain: typeof step.precipitation === 'number' ? step.precipitation : undefined,
       windSpeed: step.windSpeed,
+      windSpeedMax: step.windSpeedMax,
       windFrom: step.windDirection,
       period: step.period,
     });
@@ -214,19 +216,26 @@ export type DaySummary =
 
 // High and low only with two or more steps; one step gives its own value
 // and the period it covers.
-export function daySummary(steps: DetailStep[]): DaySummary | undefined {
+// The day's raw readings, from its ForecastDayRecord: in sparse mode the
+// steps are six-hour blocks whose temperatures and winds are averages, so
+// the high, low and top wind come from here instead.
+export type DayReadings = Pick<ForecastDayRecord, 'minTemperature' | 'maxTemperature' | 'windSpeed' | 'readings'>;
+
+export function daySummary(steps: DetailStep[], day?: DayReadings): DaySummary | undefined {
   if (steps.length === 0) return undefined;
-  const winds = steps.map(s => s.windSpeed).filter((w): w is number => w !== undefined);
-  const windSpeed = winds.length ? Math.max(...winds) : undefined;
-  if (steps.length === 1) {
+  const winds = steps.map(s => s.windSpeedMax ?? s.windSpeed).filter((w): w is number => w !== undefined);
+  const windSpeed = day?.windSpeed ?? (winds.length ? Math.max(...winds) : undefined);
+  // One block can hold several readings: that's still a low–high day.
+  const readings = day?.readings ?? steps.length;
+  if (readings === 1 || (steps.length === 1 && !day)) {
     const [only] = steps;
     return { kind: 'single', temp: only.temp, start: only.start, end: only.end, rain: only.rain, symbol: only.symbol, windSpeed };
   }
   const temps = temperatures(steps);
   return {
     kind: 'range',
-    low: temps.length ? Math.min(...temps) : undefined,
-    high: temps.length ? Math.max(...temps) : undefined,
+    low: day?.minTemperature ?? (temps.length ? Math.min(...temps) : undefined),
+    high: day?.maxTemperature ?? (temps.length ? Math.max(...temps) : undefined),
     rain: totalRain(steps),
     symbol: dominantSymbol(steps),
     windSpeed,

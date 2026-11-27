@@ -234,6 +234,24 @@ describe('totalRain', () => {
   });
 });
 
+describe('daySummary with the day\'s raw readings (sparse mode)', () => {
+  test('the high, low and top wind come from the raw readings, not the block averages', () => {
+    const blocks = stepsForDay(run(6, 0, 4).map((s, i) => ({ ...s, temperature: [20, 24, 28, 22][i], windSpeed: 3, windSpeedMax: 6 })), DAY, TZ);
+    const summary = daySummary(blocks, { minTemperature: 17, maxTemperature: 31, windSpeed: 9, readings: 8 });
+    expect(summary).toMatchObject({ kind: 'range', low: 17, high: 31, windSpeed: 9 });
+  });
+
+  test('one block holding several readings is still a low–high day', () => {
+    const summary = daySummary(singleStep(), { minTemperature: 22, maxTemperature: 26, readings: 2 });
+    expect(summary).toMatchObject({ kind: 'range', low: 22, high: 26 });
+  });
+
+  test('without the day, the block\'s highest wind is used', () => {
+    const blocks = stepsForDay(run(6, 0, 4).map(s => ({ ...s, windSpeed: 3, windSpeedMax: 6 })), DAY, TZ);
+    expect(daySummary(blocks)?.windSpeed).toBe(6);
+  });
+});
+
 describe('daySummary and summaryLine', () => {
   test('a range for two or more steps', () => {
     const series = run(6, 0, 4).map((s, i) => ({ ...s, temperature: [16, 22, 27, 20][i], precipitation: [0, 0, 1.2, 0][i], weatherSymbol: i === 2 ? 'lightrainshowers_day' : 'partlycloudy_day' }));

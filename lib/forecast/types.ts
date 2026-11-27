@@ -95,6 +95,10 @@ export interface ForecastStepRecord {
   // step: a WRF run sends 6-hour amounts on 3-hourly steps. Undefined when
   // the step has no period block.
   period?: number;
+  // A six-hour block's highest wind reading, in m/s (sparse mode, where a
+  // step is a block and `windSpeed` is the block's average). Undefined on
+  // plain steps, where `windSpeed` is the reading itself.
+  windSpeedMax?: number;
 }
 
 export interface ForecastDayRecord {
@@ -103,6 +107,10 @@ export interface ForecastDayRecord {
   maxTemperature?: number;       // °C
   minTemperature?: number;       // °C
   windSpeed?: number;            // m/s, the day's highest
+  // How many forecast readings the day had. In sparse mode `steps` holds
+  // six-hour blocks, so this, not steps.length, says whether the day had
+  // one reading or several.
+  readings?: number;
   steps: ForecastStepRecord[];
 }
 

@@ -193,7 +193,13 @@ const MainScreen = () => {
   }
 
   if (forecast) {
-    const todaySummary = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
+    const todayRecord = forecast.days.find(d => DateTime.fromISO(d.day).hasSame(today, "day"));
+    // In sparse mode today's steps are six-hour blocks: keep the ones that
+    // haven't ended, so the first is the block covering now (shown whole)
+    // and parts that are over drop out, as past hours do on hourly screens.
+    const todaySummary = todayRecord && SPARSE_FORECAST
+      ? { ...todayRecord, steps: todayRecord.steps.filter(s => DateTime.fromISO(s.time).plus({ hours: s.period ?? 6 }) > DateTime.now()) }
+      : todayRecord;
 
     if (isXL && todaySummary) {
       mainContent = (

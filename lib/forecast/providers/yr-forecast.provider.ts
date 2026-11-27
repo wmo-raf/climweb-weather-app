@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-import { APP_TIMEZONE } from "@/config";
+import { APP_TIMEZONE, SPARSE_FORECAST } from "@/config";
 import { YrForecast, YrForecastPeriod, YrForecastTimestep, ForecastRecord, ForecastDayRecord, ForecastStepRecord } from "../types";
 import { ForecastProviderInterface } from "../interfaces";
 import { toCelsius, toMetresPerSecond, toMillimetres } from "@/lib/units";
@@ -11,7 +11,7 @@ export class YrForecastProvider implements ForecastProviderInterface {
 
   async getForecast(lat: number, lon: number, alt?: number): Promise<ForecastRecord> {
     const raw = await this.locationProvider.getForecast(lat, lon, alt);
-    return parseYrForecast(raw);
+    return parseYrForecast(raw, SPARSE_FORECAST ? "blocks" : "steps");
   }
 }
 
@@ -20,7 +20,12 @@ export class YrForecastProvider implements ForecastProviderInterface {
 // a given backend happens to send.
 type SourceUnits = YrForecast["properties"]["meta"]["units"];
 
-export function parseYrForecast(raw: YrForecast): ForecastRecord {
+// How a day's `steps` come out: one per forecast reading ("steps", the
+// hourly screens), or one per local six-hour block, 00–06, 06–12, 12–18 and
+// 18–24 ("blocks", sparse mode; see toSixHourBlocks).
+export type ForecastLayout = "steps" | "blocks";
+
+export function parseYrForecast(raw: YrForecast, layout: ForecastLayout = "steps"): ForecastRecord {
   const units: SourceUnits = raw.properties.meta?.units ?? {};
   const dayMap = new Map<string, YrForecastTimestep[]>();
 
@@ -30,15 +35,21 @@ export function parseYrForecast(raw: YrForecast): ForecastRecord {
     dayMap.get(dayKey)!.push(step);
   }
 
+  // Every 6-hour period in the forecast, for the blocks to choose from
+  // across day boundaries.
+  const periods = sixHourPeriods(raw.properties.timeseries);
+
   const days: ForecastDayRecord[] = [];
   for (const [dayIso, daySteps] of dayMap) {
-    days.push(parseDayRecord(dayIso, daySteps, units));
+    days.push(parseDayRecord(dayIso, daySteps, units, layout, periods));
   }
 
   return { days };
 }
 
-function parseDayRecord(dayIso: string, rawSteps: YrForecastTimestep[], units: SourceUnits): ForecastDayRecord {
+// The day's high, low, top wind and symbol come from the raw readings in
+// either layout; only `steps` differs.
+function parseDayRecord(dayIso: string, rawSteps: YrForecastTimestep[], units: SourceUnits, layout: ForecastLayout, periods: SixHourPeriod[]): ForecastDayRecord {
   const temperatures = rawSteps
     .map(s => s.data.instant.details.air_temperature)
     .filter((t): t is number => t !== undefined)
@@ -55,7 +66,8 @@ function parseDayRecord(dayIso: string, rawSteps: YrForecastTimestep[], units: S
     maxTemperature: temperatures.length ? Math.max(...temperatures) : undefined,
     minTemperature: temperatures.length ? Math.min(...temperatures) : undefined,
     windSpeed: windSpeeds.length ? Math.max(...windSpeeds) : undefined,
-    steps: rawSteps.map(step => parseStepRecord(step, units)),
+    readings: rawSteps.length,
+    steps: layout === "blocks" ? toSixHourBlocks(rawSteps, units, periods) : rawSteps.map(step => parseStepRecord(step, units)),
   };
 }
 
@@ -101,6 +113,127 @@ function parseStepRecord(step: YrForecastTimestep, units: SourceUnits): Forecast
     weatherSymbol: shortest?.symbol ?? "??",
     period: shortest?.hours,
   };
+}
+
+// --- six-hour blocks (sparse mode) ---------------------------------------------
+
+export const BLOCK_HOURS = 6;
+
+const mean = (values: (number | undefined)[]): number | undefined => {
+  const known = values.filter((v): v is number => v !== undefined && Number.isFinite(v));
+  return known.length ? known.reduce((sum, v) => sum + v, 0) / known.length : undefined;
+};
+
+const highest = (values: (number | undefined)[]): number | undefined => {
+  const known = values.filter((v): v is number => v !== undefined && Number.isFinite(v));
+  return known.length ? Math.max(...known) : undefined;
+};
+
+// 8-point compass sector (0 = N, 1 = NE, ... 7 = NW) of a direction in
+// degrees; a boundary belongs to the sector clockwise from it.
+const sectorOf = (degrees: number) => Math.round((((degrees % 360) + 360) % 360) / 45) % 8;
+
+// The block's wind direction: the most common 8-point compass sector among
+// its readings, as that sector's centre in degrees (0, 45, ... 315). A tie
+// goes to the sector with the stronger wind, then the earlier reading.
+// Undefined when no reading has a direction. (To be confirmed with TMA's
+// forecasters.)
+export function modeDirection(readings: { direction?: number; speed?: number }[]): number | undefined {
+  const sectors = new Map<number, { count: number; strongest: number; first: number }>();
+  readings.forEach(({ direction, speed }, i) => {
+    if (direction === undefined || !Number.isFinite(direction)) return;
+    const sector = sectorOf(direction);
+    const entry = sectors.get(sector) ?? { count: 0, strongest: -Infinity, first: i };
+    entry.count += 1;
+    entry.strongest = Math.max(entry.strongest, speed ?? -Infinity);
+    sectors.set(sector, entry);
+  });
+  let best: [number, { count: number; strongest: number; first: number }] | undefined;
+  for (const candidate of sectors) {
+    const [, a] = candidate;
+    const b = best?.[1];
+    if (!b || a.count > b.count || (a.count === b.count && (a.strongest > b.strongest || (a.strongest === b.strongest && a.first < b.first)))) {
+      best = candidate;
+    }
+  }
+  return best ? best[0] * 45 : undefined;
+}
+
+export type SixHourPeriod = { start: number; period: YrForecastPeriod };
+
+// The forecast's next_6_hours periods, in time order, with their start in
+// epoch ms.
+export function sixHourPeriods(timeseries: YrForecastTimestep[]): SixHourPeriod[] {
+  return timeseries
+    .filter(step => step.data.next_6_hours)
+    .map(step => ({ start: DateTime.fromISO(step.time).toMillis(), period: step.data.next_6_hours! }))
+    .sort((a, b) => a.start - b.start);
+}
+
+const SIX_HOURS_MS = BLOCK_HOURS * 3_600_000;
+
+// The 6-hour period that overlaps the block starting at `blockStart` the
+// most: the one starting at the block's start when there is one (all six
+// hours), else the nearest, e.g. 05–11 for 06–12 when readings are an hour
+// off. A tie goes to the earlier period, so with readings three hours off
+// (03, 09, 15, 21) each block gets the period starting three hours before
+// it and no period is used twice. Undefined when none overlaps.
+export function nearestPeriod(blockStart: DateTime, periods: SixHourPeriod[]): SixHourPeriod | undefined {
+  const from = blockStart.toMillis();
+  const to = from + SIX_HOURS_MS;
+  let best: SixHourPeriod | undefined;
+  let bestOverlap = 0;
+  for (const candidate of periods) {
+    const overlap = Math.min(to, candidate.start + SIX_HOURS_MS) - Math.max(from, candidate.start);
+    if (overlap > bestOverlap) { best = candidate; bestOverlap = overlap; }
+  }
+  return best;
+}
+
+// A day's readings as local six-hour blocks: 00–06, 06–12, 12–18, 18–24 in
+// the app timezone, in time order; blocks without readings are left out.
+// Each block is one step record:
+// - time: the block's start; period: 6
+// - temperature, windSpeed: the average of the block's readings
+// - windSpeedMax, windGust: the highest
+// - windDirection: modeDirection
+// - weatherSymbol, precipitation: the model's own six-hour summary and
+//   amount (next_6_hours) for the period nearest the block: nearestPeriod.
+export function toSixHourBlocks(rawSteps: YrForecastTimestep[], units: SourceUnits, periods: SixHourPeriod[] = sixHourPeriods(rawSteps)): ForecastStepRecord[] {
+  const groups = new Map<string, { start: DateTime; raw: YrForecastTimestep[] }>();
+  for (const step of rawSteps) {
+    const local = DateTime.fromISO(step.time).setZone(APP_TIMEZONE);
+    const start = local.startOf("day").set({ hour: Math.floor(local.hour / BLOCK_HOURS) * BLOCK_HOURS });
+    const key = start.toISO()!;
+    if (!groups.has(key)) groups.set(key, { start, raw: [] });
+    groups.get(key)!.raw.push(step);
+  }
+
+  let missing = 0;
+  const blocks = [...groups.values()]
+    .sort((a, b) => a.start.toMillis() - b.start.toMillis())
+    .map(({ start, raw }) => {
+      const readings = raw.map(step => parseStepRecord(step, units));
+      const six = nearestPeriod(start, periods)?.period;
+      if (!six) missing += 1;
+      const rain = six?.details?.precipitation_amount;
+      return {
+        time: start.toISO()!,
+        temperature: mean(readings.map(r => r.temperature)),
+        windSpeed: mean(readings.map(r => r.windSpeed)),
+        windSpeedMax: highest(readings.map(r => r.windSpeed)),
+        windDirection: modeDirection(readings.map(r => ({ direction: r.windDirection, speed: r.windSpeed }))),
+        windGust: highest(readings.map(r => r.windGust)),
+        precipitation: rain !== undefined ? toMillimetres(rain, units.precipitation_amount) : "-" as const,
+        weatherSymbol: six?.summary?.symbol_code ?? "??",
+        period: BLOCK_HOURS,
+      };
+    });
+
+  if (__DEV__ && missing > 0) {
+    console.warn(`Six-hour blocks: ${missing} block(s) overlap no next_6_hours period, so have no symbol or rain.`);
+  }
+  return blocks;
 }
 
 // Local daytime a day's symbol describes.

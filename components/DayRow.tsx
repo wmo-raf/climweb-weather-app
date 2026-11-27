@@ -48,8 +48,9 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const weekday = t(WEEKDAY_LABEL_KEYS[day.weekday] ?? '');
   const dayLabel = isTomorrow ? `${t('today.tomorrow')} — ${weekday}` : weekday;
   const description = describeDaySummary(t, summary);
-  // A day with one forecast step has one temperature, not a range.
-  const single = summary.steps.length === 1;
+  // A day with one forecast reading has one temperature, not a range. In
+  // sparse mode steps are six-hour blocks, so count the readings.
+  const single = (summary.readings ?? summary.steps.length) === 1;
   const tempText = single ? maxTempText : `${minTempText} – ${maxTempText}`;
   const tempSpoken = single
     ? units.tempSpoken(summary.maxTemperature || 0)
