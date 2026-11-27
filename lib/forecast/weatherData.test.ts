@@ -111,3 +111,65 @@ describe("parseYrForecast units", () => {
     });
   });
 });
+
+describe("parseYrForecast time resolutions", () => {
+  const sampleForecast: YrForecast = require("./weatherData.test.json");
+  const raw = sampleForecast.properties.timeseries;
+  const at = (time: string) => raw.find(s => s.time === time)!;
+
+  test("records each step's period from its shortest block", () => {
+    const steps = parseYrForecast(sampleForecast).days.flatMap(d => d.steps);
+    steps.forEach((step, i) => {
+      const data = raw[i].data;
+      const expected = data.next_1_hours ? 1 : data.next_6_hours ? 6 : data.next_12_hours ? 12 : undefined;
+      expect(step.period).toBe(expected);
+    });
+    // MET's forecast is hourly at first, then 6-hourly.
+    expect(steps.some(s => s.period === 1)).toBe(true);
+    expect(steps.some(s => s.period === 6)).toBe(true);
+  });
+
+  test("a step with only next_12_hours gets its symbol", () => {
+    const base = raw[0];
+    const only12: YrForecast = {
+      ...sampleForecast,
+      properties: {
+        ...sampleForecast.properties,
+        timeseries: [{
+          time: base.time,
+          data: { instant: base.data.instant, next_12_hours: { summary: { symbol_code: "cloudy" } } },
+        }],
+      },
+    };
+    const [step] = parseYrForecast(only12).days[0].steps;
+    expect(step).toMatchObject({ weatherSymbol: "cloudy", period: 12, precipitation: "-" });
+  });
+
+  test("a full day takes the 12-hour block from 06:00 local", () => {
+    // 13 Jan in Malawi (UTC+2): 06:00 local is 04:00Z.
+    const day = parseYrForecast(sampleForecast).days[2];
+    expect(day.day).toBe("2024-01-13T00:00:00.000+02:00");
+    expect(day.weatherSymbol).toBe(at("2024-01-13T04:00:00Z").data.next_12_hours!.summary!.symbol_code);
+  });
+
+  test("a day already under way takes the block covering the rest of its daytime", () => {
+    // 11 Jan starts at 13:00 local: its 6-hour block (13:00–19:00) covers the
+    // afternoon better than the 1-hour one.
+    const day = parseYrForecast(sampleForecast).days[0];
+    expect(day.weatherSymbol).toBe(at("2024-01-11T11:00:00Z").data.next_6_hours!.summary!.symbol_code);
+  });
+
+  test("a day that starts after dark takes its first step's symbol", () => {
+    const evening: YrForecast = {
+      ...sampleForecast,
+      properties: {
+        ...sampleForecast.properties,
+        timeseries: [{
+          time: "2024-01-11T18:00:00Z", // 20:00 local
+          data: { instant: raw[0].data.instant, next_1_hours: { summary: { symbol_code: "clearsky_night" } } },
+        }],
+      },
+    };
+    expect(parseYrForecast(evening).days[0].weatherSymbol).toBe("clearsky_night");
+  });
+});

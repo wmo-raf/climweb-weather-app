@@ -354,6 +354,21 @@ EXPO_PUBLIC_DEFAULT_PRECIPITATION_UNIT=mm      # mm | in
 
 All three are optional; unset or invalid values fall back to `celsius`, `kmh` and `mm`.
 
+#### Time resolution
+
+The response shape is fixed, but its time resolution can vary. MET's forecast is hourly for the first days, then 6-hourly. A national WRF run served in the same shape is typically 3-hourly, with 6-hour and 12-hour blocks and no 1-hour block. Both work with the default `yr` provider, from the same URL variables, with no code changes:
+
+```env
+EXPO_PUBLIC_PRIMARY_API_URL=https://wrf.example.org/forecast.json
+```
+
+- **Steps:** a step's symbol and rain come from its shortest block (`next_1_hours`, else `next_6_hours`, else `next_12_hours`), and the step records that block's length as its `period`. That's how the day-detail screen knows a WRF step's rain covers 6 hours, not 3.
+- **Steps with no block** (often the last ones of a run) keep their temperature and wind, with no symbol or rain.
+- **Days:** times are read as UTC and grouped into days in `EXPO_PUBLIC_APP_TIMEZONE`. A day's symbol is the block that covers most of local daytime (06:00–18:00) still ahead. For a full day that's the 12-hour block from 06:00 local, and for a day already under way it's the block covering the rest of its daytime.
+- **Gusts** are hidden when the API sends none, as WRF output usually doesn't.
+
+Sparse forecasts such as WRF's suit the day-detail pages better than hour by hour; see Sparse Forecast. Use an `https://` URL in production: Android release builds refuse plain `http://`.
+
 ---
 
 ### 2. Using a different forecast API
@@ -685,6 +700,50 @@ EXPO_PUBLIC_AGROMET_BULLETINS_URL='https://www.meteo.go.tz/publications/agromete
 ```
 
 All of these are optional. The values above are the defaults.
+
+---
+
+## Sparse Forecast
+
+One optional flag says whether the forecast is too sparse for an hour-by-hour view, i.e. whether its steps are 2 hours or more apart. It takes `'true'` or `'false'`; any other value keeps the default.
+
+```env
+EXPO_PUBLIC_SPARSE_FORECAST='true'
+```
+
+Set it to match the forecast source: `'true'` for a 3-hourly WRF run, `'false'` for an hourly source such as MET's Locationforecast. The parser reads either; this only chooses the pages (see Time resolution under Forecast Source Configuration).
+
+| | `'true'` (default) | `'false'` |
+|---|---|---|
+| Today, below the day parts | The sunrise/sunset card | "Today, hour by hour": the next five hours, tapping through to the hourly forecast (phone layout only) |
+| Tapping a day in Five Days | The day-detail screen | The hourly table |
+
+The day-detail screen shows a summary card (the day's temperature range, symbol and a plain line), then the day parts, following the steps the provider sent for that day, whatever their length. Each part shows one temperature, its highest (its lowest for Night), and its condition in words, with no rain amount. There is no hour-by-hour breakdown: the day parts are the breakdown.
+
+| Steps that day | Day parts | Note |
+|---|---|---|
+| Hourly, 3-hourly or 6-hourly | Night, Morning, Afternoon, Evening | — |
+| 12-hourly | Day and Night | "Less detail is available this far ahead." |
+| One step | none; the summary shows the one value and its period | "Only one forecast time is available for this day." |
+
+A day that mixes step lengths is treated as its longest step. Each part uses only the steps that start inside its own window. The rules are in [lib/forecast/day-detail.ts](../lib/forecast/day-detail.ts).
+
+This is a build-time value: rebuild or restart the bundler (`npx expo start --clear`) after changing it. It replaces `EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY` and `EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN`, which are no longer read; development builds warn if either is still set.
+
+---
+
+## Sunrise and Sunset
+
+The sun card ([components/SunTimesCard.tsx](../components/SunTimesCard.tsx)), shared by Today, At sea and For farming, shows "Sun up", "Sun down" and the hours of daylight. The times come from MET Norway's [Sunrise 3.0 API](https://api.met.no/weatherapi/sunrise/3.0/documentation) through [lib/sun/sunrise.ts](../lib/sun/sunrise.ts). They are never calculated on the device.
+
+```env
+EXPO_PUBLIC_SUNRISE_API_URL='https://api.met.no/weatherapi/sunrise/3.0'
+```
+
+- Requests send `EXPO_PUBLIC_APP_USER_AGENT`. MET refuses requests without one.
+- Responses are cached per place and date until their `Expires` time, then checked again with `If-Modified-Since`. The cache is also what's shown offline.
+- When there's no network and nothing cached for today, the card is hidden.
+- The service can be self-hosted, so a deployment can point the URL at its own instance.
 
 ---
 

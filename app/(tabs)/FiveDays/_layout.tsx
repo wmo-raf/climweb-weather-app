@@ -1,7 +1,8 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 
-// The 24-hour full hourly breakdown opens inside the Five Days tab's own stack
+// A day's detail (Day, for sparse forecasts) and the 24-hour full hourly
+// breakdown (Hourly) open inside the Five Days tab's own stack
 // so the tab bar stays visible (with Five Days selected), and back / swipe-back
 // return to the Five Days list.
 export const unstable_settings = {
@@ -13,6 +14,7 @@ export default function FiveDaysLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="Hourly" />
+      <Stack.Screen name="Day" />
     </Stack>
   );
 }

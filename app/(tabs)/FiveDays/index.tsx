@@ -13,6 +13,7 @@ import StatusCard from '@/components/StatusCard';
 
 import { useLocationStore } from '@/lib/store/location.store';
 import { SCREENS } from '@/lib/layout/constants';
+import { dayHref } from '@/lib/layout/open-day';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
 import { useAlertsQuery } from '@/lib/hooks/alerts.hook';
 import { useBreakpoint } from '@/lib/hooks/breakpoint.hook';
@@ -49,15 +50,7 @@ const FiveDaysScreen = () => {
     relevantAlerts = alerts.filter(alert => alertInLocation(alert, { latitude: lat, longitude: lon }));
   }
 
-  const onSelectDay = (day: DateTime) =>
-    router.push({
-      pathname: SCREENS.Hourly, params: {
-        location: location,
-        dayString: day.toISO(),
-        startAtCurrentTime: "no",
-        title: day.toLocaleString({ weekday: 'long' })
-      }
-    });
+  const onSelectDay = (day: DateTime) => router.push(dayHref(day, location));
 
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({

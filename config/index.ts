@@ -18,6 +18,21 @@ export const ALERTS_PROVIDER = process.env.EXPO_PUBLIC_ALERTS_PROVIDER ?? 'cap';
 // MET Norway Sunrise 3.0 (lib/sun). The service ("Celestial") can also be
 // self-hosted, so a deployment may point this at its own instance.
 export const SUNRISE_API_URL = process.env.EXPO_PUBLIC_SUNRISE_API_URL ?? 'https://api.met.no/weatherapi/sunrise/3.0';
+
+// "true"/"false", any case; anything else keeps the default.
+const flag = (value: string | undefined, fallback: boolean): boolean => {
+  const v = value?.trim().toLowerCase();
+  return v === 'true' ? true : v === 'false' ? false : fallback;
+};
+// Whether the forecast is too sparse for an hour-by-hour view (steps every
+// 2 hours or more). On: Today shows the wind and sunrise/sunset cards, and
+// tapping a day in Five Days opens the day-detail screen (day parts, plus a
+// table when the steps allow). Off: Today shows "Today, hour by hour" and a
+// day opens the hourly table.
+export const SPARSE_FORECAST = flag(process.env.EXPO_PUBLIC_SPARSE_FORECAST, true);
+if (__DEV__ && (process.env.EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY || process.env.EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN)) {
+  console.warn('EXPO_PUBLIC_SHOW_TODAY_HOURLY_SUMMARY and EXPO_PUBLIC_SHOW_TODAY_WIND_AND_SUN are no longer used; set EXPO_PUBLIC_SPARSE_FORECAST instead.');
+}
 // XYZ raster tile URL template for the alert detail mini-map (AlertAreaMap).
 // Defaults to the public OSM tile server, which is fine for development but
 // not for production traffic (see OSM's tile usage policy) — deployments

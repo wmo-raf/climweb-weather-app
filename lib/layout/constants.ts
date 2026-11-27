@@ -3,6 +3,7 @@
     Home = "/",
     NoLocation = "NoLocation",
     Hourly = "/FiveDays/Hourly",
+    DayDetail = "/FiveDays/Day",
     Search = "Search",
     Feedback = "Feedback",
     AboutUs = "AboutUs",

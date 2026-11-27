@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
 import { ForecastDayRecord, ForecastRecord, ForecastStepRecord } from './types';
-import { rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
+import { RainLevel, rainLevel, windLevel, RAIN_LEVEL_SENTENCE_KEYS } from './plain-language';
 
 export type DayPart = 'morning' | 'afternoon' | 'evening' | 'night';
 
@@ -207,9 +207,20 @@ export function dayRainLevel(daySummary: ForecastDayRecord) {
 // One-sentence plain-language description of a whole day, for the 5-day
 // list ("Cloudy. Light rain expected." / "Cloudy and very windy.").
 export function describeDaySummary(t: Translate, daySummary: ForecastDayRecord): string {
-  const bucket = conditionBucket(daySummary.weatherSymbol);
+  return describeConditions(t, daySummary.weatherSymbol, daySummary.windSpeed, dayRainLevel(daySummary));
+}
+
+// The sentence itself, from a symbol, the highest wind (m/s) and a rain
+// level. Shared with the day-detail summary (lib/forecast/day-detail.ts).
+export function describeConditions(
+  t: Translate,
+  weatherSymbol: string | undefined,
+  windSpeed: number | undefined,
+  rain: RainLevel,
+): string {
+  const bucket = conditionBucket(weatherSymbol);
   const condition = t(CONDITION_LABEL_KEYS[bucket]);
-  const isWindy = ['breezy', 'strong', 'severe'].includes(windLevel(daySummary.windSpeed));
+  const isWindy = ['breezy', 'strong', 'severe'].includes(windLevel(windSpeed));
 
   const lead = isWindy ? t('day.conditionWindy', { condition }) : `${condition}.`;
 
@@ -217,8 +228,7 @@ export function describeDaySummary(t: Translate, daySummary: ForecastDayRecord):
     return lead;
   }
 
-  const rainSentence = t(RAIN_LEVEL_SENTENCE_KEYS[dayRainLevel(daySummary)]);
-  return `${lead} ${rainSentence}`;
+  return `${lead} ${t(RAIN_LEVEL_SENTENCE_KEYS[rain])}`;
 }
 
 // Slices a forecast to the 5-day window starting at startDate (inclusive),

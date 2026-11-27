@@ -175,12 +175,27 @@
         "morning": "Ganama",
         "afternoon": "Guyyaa / Waaree Booda",
         "evening": "Galgala",
-        "night": "Halkan"
+        "night": "Halkan",
+        "day": "Day"
       },
       "morning": "ganama",
       "afternoon": "waaree booda",
       "evening": "galgala",
-      "night": "halkan"
+      "night": "halkan",
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      }
     },
     "alerts": {
       "title": "Akeekkachiisota"
@@ -598,6 +613,31 @@
         "seasonalForecast": "Seasonal forecast",
         "agrometBulletins": "Agromet bulletins"
       }
+    },
+    "units": {
+      "spoken": {
+        "kmh_one": "{{count}} kilometre per hour",
+        "kmh_other": "{{count}} kilometres per hour",
+        "ms_one": "{{count}} metre per second",
+        "ms_other": "{{count}} metres per second",
+        "knots_one": "{{count}} knot",
+        "knots_other": "{{count}} knots",
+        "mph_one": "{{count}} mile per hour",
+        "mph_other": "{{count}} miles per hour",
+        "mm_one": "{{count}} millimetre",
+        "mm_other": "{{count}} millimetres",
+        "in_one": "{{count}} inch",
+        "in_other": "{{count}} inches"
+      }
+    },
+    "dayDetail": {
+      "title": "{{weekday}} {{day}} {{month}}",
+      "singleLine": "{{condition}}, {{range}}",
+      "note": {
+        "coarse": "Less detail is available this far ahead.",
+        "single": "Only one forecast time is available for this day."
+      },
+      "rangeSpoken": "{{start}} to {{end}}"
     }
   }
 }

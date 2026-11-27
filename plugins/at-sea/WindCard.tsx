@@ -1,15 +1,17 @@
 import React, { JSX, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Icon, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 
 import { APP_TIMEZONE } from '@/config';
 import { ForecastRecord, ForecastStepRecord } from '@/lib/forecast/types';
+import { currentStep } from '@/lib/forecast/current-step';
 import { compassPoint, describeWind } from '@/lib/forecast/plain-language';
 import { ThemeColors, Fonts, Radius, shadow, Spacing } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useUnits } from '@/lib/hooks/use-units';
+import WindArrow from '@/components/WindArrow';
 
 const HOURS_SHOWN = 6;
 
@@ -18,24 +20,13 @@ type WindCardProps = {
   now?: DateTime;
 };
 
-// The forecast step covering "now" (the latest one that has started), and
-// the ones after it.
+// The forecast step covering "now" (the app's currentStep), and the ones
+// after it.
 export function windSteps(forecast: ForecastRecord, now: DateTime): { current?: ForecastStepRecord; upcoming: ForecastStepRecord[] } {
   const steps = forecast.days.flatMap(day => day.steps);
-  const started = steps.filter(step => DateTime.fromISO(step.time) <= now);
-  const current = started[started.length - 1] ?? steps[0];
+  const current = currentStep(forecast, now);
   const upcoming = current ? steps.slice(steps.indexOf(current) + 1, steps.indexOf(current) + 1 + HOURS_SHOWN) : [];
   return { current, upcoming };
-}
-
-// Arrow pointing the way the wind blows (downwind), as on Yr: arrow-down
-// points south, so a north wind (0°) needs no rotation.
-function WindArrow({ fromDegrees, size, color }: { fromDegrees: number; size: number; color: string }) {
-  return (
-    <View style={{ transform: [{ rotate: `${fromDegrees}deg` }] }}>
-      <Icon source="arrow-down" size={size} color={color} />
-    </View>
-  );
 }
 
 // At sea page: wind now in plain words, speed, direction and gusts, then

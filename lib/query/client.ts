@@ -43,8 +43,9 @@ export const persistOptions = {
   // Bump when the shape or units of cached data change, so caches saved by
   // an older build are discarded instead of misread. v2: forecast values
   // stored in canonical units (wind in m/s, previously km/h). v3: forecast
-  // steps carry wind direction and gusts (At sea page).
-  buster: 'v3-wind-direction',
+  // steps carry wind direction and gusts (At sea page). v4: forecast steps
+  // carry their period length, and 12-hour-only steps get a symbol.
+  buster: 'v4-step-period',
 };
 
 // React Native has no browser "window focus" event; Query's web default

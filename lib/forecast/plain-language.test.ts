@@ -1,5 +1,5 @@
 import englishFile from '@/lib/localization/translations/english.json';
-import { beaufortForce, compassPoint, describeWind } from './plain-language';
+import { CompassPoint, beaufortForce, compassPoint, describeWind } from './plain-language';
 
 const en = englishFile.translations;
 
@@ -34,6 +34,33 @@ describe('compassPoint', () => {
     [180, 's'], [225, 'sw'], [270, 'w'], [315, 'nw'], [338, 'n'], [360, 'n'], [-45, 'nw'],
   ])('%p° is %p', (degrees, point) => {
     expect(compassPoint(degrees)).toBe(point);
+  });
+
+  // Each sector's centre and the boundaries on either side. A boundary
+  // belongs to the next sector clockwise.
+  const sectors: [CompassPoint, number, number][] = [
+    ['n', 337.5, 22.5],
+    ['ne', 22.5, 67.5],
+    ['e', 67.5, 112.5],
+    ['se', 112.5, 157.5],
+    ['s', 157.5, 202.5],
+    ['sw', 202.5, 247.5],
+    ['w', 247.5, 292.5],
+    ['nw', 292.5, 337.5],
+  ];
+
+  test.each(sectors)('%s covers [%d°, %d°)', (point, start, end) => {
+    const centre = (start + 22.5) % 360;
+    expect(compassPoint(centre)).toBe(point);
+    expect(compassPoint(start)).toBe(point);
+    expect(compassPoint(end - 0.01)).toBe(point);
+    expect(compassPoint(end)).not.toBe(point);
+  });
+
+  test('wraps whole turns and negative angles', () => {
+    expect(compassPoint(360)).toBe('n');
+    expect(compassPoint(359.99)).toBe('n');
+    expect(compassPoint(495)).toBe('se'); // 135°
   });
 });
 

@@ -92,7 +92,7 @@ export class CAPCollector {
         if (alert.status !== 'Actual') return false;
         if (alert.scope !== 'Public') return false;
         //commenting out this filter for now to make dev testing of alerts UI/UX changes easier
-        //if (info.expires && DateTime.fromISO(info.expires) <= DateTime.now()) return false;
+        if (info.expires && DateTime.fromISO(info.expires) <= DateTime.now()) return false;
 
         return true
     }

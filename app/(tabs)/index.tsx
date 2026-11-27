@@ -13,9 +13,13 @@ import Alerts from '@/components/Alerts';
 import CurrentConditionsCard from '@/components/CurrentConditionsCard';
 import DayPartsGrid from '@/components/DayPartsGrid';
 import FiveDays from '@/components/FiveDays';
+import FiveHourSummary from '@/components/FiveHourSummary';
 import LastUpdatedFooter from '@/components/LastUpdatedFooter';
 import StatusCard from '@/components/StatusCard';
+import SunTimesCard from '@/components/SunTimesCard';
 
+import { SPARSE_FORECAST } from '@/config';
+import { dayHref } from '@/lib/layout/open-day';
 import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { useForecastQuery } from '@/lib/hooks/current-forecast.hook';
@@ -143,15 +147,7 @@ const MainScreen = () => {
   }
 
   const today = DateTime.now();
-  const onSelectDay = (day: DateTime) =>
-    router.push({
-      pathname: SCREENS.Hourly, params: {
-        location: location,
-        dayString: day.toISO(),
-        startAtCurrentTime: "no",
-        title: day.toLocaleString({ weekday: 'long' })
-      }
-    });
+  const onSelectDay = (day: DateTime) => router.push(dayHref(day, location));
 
   const onSelectAlert = (alert: CAPAlert) =>
     router.push({
@@ -205,9 +201,17 @@ const MainScreen = () => {
           <View style={styles.xlLeftPane}>
             <Alerts lat={lat} lon={lon} location={location} />
             <CurrentConditionsCard daySummary={todaySummary} location={location} tempFontSize={tempSize.xl} showWindSummary />
+            {!SPARSE_FORECAST && todaySummary && (
+              <FiveHourSummary daySummary={todaySummary} location={location} />
+            )}
+            {SPARSE_FORECAST && !isUndefined(lat) && !isUndefined(lon) && (
+              <View style={styles.todayCards}>
+                <SunTimesCard lat={lat} lon={lon} />
+              </View>
+            )}
           </View>
           <View style={styles.xlRightPane}>
-            <DayPartsGrid dayParts={getDayParts(todaySummary)} columns={4} />
+            <DayPartsGrid dayParts={getDayParts(todaySummary)} />
             <View style={styles.xlFiveDaysSection}>
               <Text style={styles.xlSectionHeader}>{t("time.nextFiveDays")}</Text>
               <FiveDays name={location} startDate={today.plus({ days: 1 })} forecast={forecast} onClick={onSelectDay} alerts={relevantAlerts} onSelectAlert={onSelectAlert} />
@@ -219,6 +223,14 @@ const MainScreen = () => {
       mainContent = (
         <View style={styles.opacity}>
           <Today daySummary={todaySummary} location={location} tempFontSize={tempSize[breakpoint]} compact={breakpoint === 'small'} />
+          {!SPARSE_FORECAST && todaySummary && (
+            <FiveHourSummary daySummary={todaySummary} location={location} />
+          )}
+          {SPARSE_FORECAST && todaySummary && !isUndefined(lat) && !isUndefined(lon) && (
+            <View style={styles.todayCards}>
+              <SunTimesCard lat={lat} lon={lon} />
+            </View>
+          )}
         </View>
       )
     }
@@ -307,6 +319,10 @@ const makeStyles = (colors: ThemeColors) => StyleSheet.create({
   },
   xlRightPane: {
     flex: 1.3,
+  },
+  todayCards: {
+    marginTop: Spacing.lg,
+    gap: Spacing.lg,
   },
   xlFiveDaysSection: {
     marginTop: Spacing.xl,

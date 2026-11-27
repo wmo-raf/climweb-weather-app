@@ -48,6 +48,12 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
   const weekday = t(WEEKDAY_LABEL_KEYS[day.weekday] ?? '');
   const dayLabel = isTomorrow ? `${t('today.tomorrow')} — ${weekday}` : weekday;
   const description = describeDaySummary(t, summary);
+  // A day with one forecast step has one temperature, not a range.
+  const single = summary.steps.length === 1;
+  const tempText = single ? maxTempText : `${minTempText} – ${maxTempText}`;
+  const tempSpoken = single
+    ? units.tempSpoken(summary.maxTemperature || 0)
+    : `${minTemp} to ${units.tempSpoken(summary.maxTemperature || 0)}`;
 
   const alertInfo = alert ? selectInfo(alert, i18n.language) : undefined;
   const level = alertInfo ? alertLevel(alertInfo) : undefined;
@@ -58,7 +64,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
       <View
         style={[styles.card, alertInfo && styles.cardWithChip]}
         accessible={true}
-        accessibilityLabel={`${dayLabel}: ${description} ${minTemp} to ${units.tempSpoken(summary.maxTemperature || 0)}.`}
+        accessibilityLabel={`${dayLabel}: ${description} ${tempSpoken}.`}
       >
         {iconSource && <Icon source={iconSource} size={40} />}
         <View style={styles.textBlock}>
@@ -66,7 +72,7 @@ const DayRow = ({ summary, isTomorrow, alert, onSelectAlert }: DayRowProps) => {
           <Text style={styles.description}>{description}</Text>
         </View>
         <View style={styles.rightBlock}>
-          <Text style={styles.tempRange}>{minTempText} – {maxTempText}</Text>
+          <Text style={styles.tempRange}>{tempText}</Text>
           <Icon source="chevron-right" size={20} color={colors.textSubtle} />
         </View>
       </View>

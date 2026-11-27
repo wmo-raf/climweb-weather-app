@@ -81,12 +81,17 @@ export const beaufortLabelKey = (force: BeaufortForce): string => `beaufort.${fo
 export type CompassPoint = 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw';
 const COMPASS_POINTS: CompassPoint[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
 
+// Each point covers 45°, centred on it. A boundary belongs to the sector
+// clockwise from it, so north is [337.5°, 22.5°) and 22.5° is north-east.
 export function compassPoint(degrees: number): CompassPoint {
   const normalised = ((degrees % 360) + 360) % 360;
   return COMPASS_POINTS[Math.round(normalised / 45) % 8];
 }
 
-type Translate = (key: string, options?: Record<string, unknown>) => string;
+// i18n key for a point's name, e.g. "south-east".
+export const compassLabelKey = (point: CompassPoint): string => `compass.${point}.long`;
+
+export type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 // "Strong wind from the south-east" / "Calm". Direction is left out when
 // it's unknown or the air is calm (force 0 has no meaningful direction).
@@ -94,5 +99,5 @@ export function describeWind(t: Translate, windSpeedMs: number, fromDegrees?: nu
   const force = beaufortForce(windSpeedMs);
   const label = t(beaufortLabelKey(force));
   if (force === 0 || fromDegrees === undefined) return label;
-  return t('wind.fromDirection', { wind: label, direction: t(`compass.${compassPoint(fromDegrees)}.long`) });
+  return t('wind.fromDirection', { wind: label, direction: t(compassLabelKey(compassPoint(fromDegrees))) });
 }

@@ -7,7 +7,6 @@ import { ForecastDayRecord } from '@/lib/forecast/types';
 import { getDayParts } from '@/lib/forecast/day-parts';
 import CurrentConditionsCard from './CurrentConditionsCard';
 import DayPartsGrid from './DayPartsGrid';
-import FiveHourSummary from './FiveHourSummary';
 import { ThemeColors, Fonts, Spacing, tempSize } from '@/lib/theme';
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -23,6 +22,8 @@ type TodaysForecastProps = {
 // two-pane layout is assembled directly in app/(tabs)/index.tsx from the
 // same CurrentConditionsCard/DayPartsGrid pieces, since it needs different
 // grouping (conditions+wind on the left, day-parts+5-day list on the right).
+// The sections below the day parts (hour by hour, wind and sun) are added
+// by app/(tabs)/index.tsx, each behind its env flag.
 function Today({ daySummary, location, tempFontSize = tempSize.large, compact }: TodaysForecastProps): JSX.Element {
   const { t } = useTranslation();
   const colors = useTheme();
@@ -39,8 +40,7 @@ function Today({ daySummary, location, tempFontSize = tempSize.large, compact }:
   return (
     <View style={[styles.wrapper, compact && styles.wrapperCompact]}>
       <CurrentConditionsCard daySummary={daySummary} location={location} tempFontSize={tempFontSize} compact={compact} />
-      <DayPartsGrid dayParts={getDayParts(daySummary)} columns={2} />
-      <FiveHourSummary daySummary={daySummary} location={location} />
+      <DayPartsGrid dayParts={getDayParts(daySummary)} />
     </View>
   );
 };
