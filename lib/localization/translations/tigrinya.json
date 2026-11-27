@@ -533,7 +533,7 @@
         "description": "Your saved places"
       },
       "atSea": {
-        "description": "Wind, rain and sun times"
+        "description": "Wind, rain, warnings and sun times"
       },
       "farming": {
         "description": "Water in the soil, soil heat, sun times"

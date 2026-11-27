@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+import Alerts from '@/components/Alerts';
 import AppBar from '@/components/AppBar';
 import ReadMoreCard from '@/components/ReadMoreCard';
 import StatusCard from '@/components/StatusCard';
@@ -26,12 +27,13 @@ import { SCREENS } from '@/lib/layout/constants';
 import { useLocationStore } from '@/lib/store/location.store';
 import { ThemeColors, Fonts, navRailWidth, Spacing } from '@/lib/theme';
 
-// "At sea": the user picks a marine area at the top (the one nearest their
-// place to start with), and everything below is for a point on that water:
-// one advisory banner for the day, the parts of the day still to come (sky and a wind word), sun times and links. Words only: no
-// numbers, units or compass points. Everything is worked out from the
-// cached forecast, so it holds offline. Opened from More conditions, inside
-// the More tab's stack.
+// "At sea": any warnings for the user's location at the top, as on the other
+// screens; then the user picks a marine area (the one nearest their place to
+// start with), and everything below is for a point on that water: one
+// advisory banner for the day, the parts of the day still to come (sky and
+// a wind word), sun times and links. Words only: no numbers, units or
+// compass points. Everything is worked out from the cached forecast, so it
+// holds offline. Opened from More conditions, inside the More tab's stack.
 export default function AtSeaScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -39,6 +41,7 @@ export default function AtSeaScreen() {
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isXL = useBreakpoint() === 'xl';
 
+  const location = useLocationStore(s => s.name);
   const lat = useLocationStore(s => s.lat);
   const lon = useLocationStore(s => s.lon);
   const place = lat !== undefined && lon !== undefined ? { lat, lon } : undefined;
@@ -104,6 +107,8 @@ export default function AtSeaScreen() {
       {/* Taps on the area list land while the keyboard is up. */}
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.cards}>
+          {/* Warnings for the user's location, as on the other screens. */}
+          <Alerts lat={lat} lon={lon} location={location} />
           {area && <AreaPicker areas={MARINE_AREAS} selected={area} origin={place} onSelect={picked => choose(key, picked.id)} />}
           {windContent}
           {area && <SunTimesCard lat={area.lat} lon={area.lon} daylightKey="atSea.daylight" />}

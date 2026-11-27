@@ -654,7 +654,7 @@ Each plugin's settings live in its own `plugins/<name>/settings.ts`, described b
 
 **More › At sea** gives one advisory for the day and the sky and wind for each part of it, for a marine area the user picks, in words only (no numbers, units or compass points). It's the `at-sea` plugin, in [plugins/at-sea/](../plugins/at-sea/); add `at-sea` to `EXPO_PUBLIC_MORE_PLUGINS` to show it. **Its defaults are TMA's (Tanzania).** Another deployment should set its own areas, thresholds and links.
 
-From the top: the area search ("Where are you going?"), the summary banner, "Today, part by part", the sun card ("Plan to be back before dark.") and Read more.
+From the top: any warnings for the user's location (the same alert banner as the other screens), the area search ("Where are you going?"), the summary banner, "Today, part by part", the sun card ("Plan to be back before dark.") and Read more.
 
 - **Parts of the day**: Morning 06–12, Afternoon 12–18, Evening 18–00 and Night 00–06 (the night after the evening), in `EXPO_PUBLIC_APP_TIMEZONE`. In sparse mode each part is one six-hour block (see Sparse Forecast); otherwise a part takes the forecast steps that start inside it. Parts that are over, or have no data, are hidden.
   - **Sky**: in sparse mode the block's symbol (the model's own six-hour summary); otherwise the most significant weather symbol in the part (thunder, then rain by intensity, then cloud, then clear). Shown with its icon and its own name from the language files ("Partly cloudy", "Rain showers"). Night uses night icons.
@@ -692,7 +692,7 @@ From the top: the area search ("Where are you going?"), the summary banner, "Tod
   - Areas are listed in file order. Invalid entries are left out (with a warning in development); with none left, the page says the forecast isn't available.
 - **Forecast** values come from the configured forecast provider, through the same client and cache as Today and Five Days, so the page works offline from the cached forecast ("Updated …").
 - **Sun times** come from MET Norway's [Sunrise 3.0 API](https://api.met.no/weatherapi/sunrise/3.0/documentation). They're requested with `EXPO_PUBLIC_APP_USER_AGENT` as the User-Agent, in the UTC offset of `EXPO_PUBLIC_APP_TIMEZONE`, and cached per place and date ([lib/sun/sunrise.ts](../lib/sun/sunrise.ts)). MET's service (Celestial) can be self-hosted. To use your own instance, point `EXPO_PUBLIC_SUNRISE_API_URL` at it.
-- **Alerts** are not shown on this page, and don't affect its advice; they stay on the Alerts tab.
+- **Alerts**: active warnings whose area covers the user's location show at the top, in the same alert banner as the other screens (worst first; with several, "+N more" opens the Alerts tab). They don't change the generated advice below them.
 - **Read more** links open in the system browser. The card title is "Read more from `EXPO_PUBLIC_NAME_OF_THE_NHMS`" (default `TMA`).
 
 ```env
